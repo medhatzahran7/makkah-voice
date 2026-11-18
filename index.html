@@ -10,6 +10,8 @@
        التطبيق يقبل فقط الرسائل التي تحمل الـ nonce الحالي ومن origin الصفحة.
      - targetOrigin في postMessage هو '*' لأن نافذة التطبيق (iframe معزول)
        لها origin غامض لا يمكن تسميته؛ التحقق يتم من جهة التطبيق (origin + nonce).
+     - زر «بدء البودكاست» يظهر فقط عند ?target=podcast بدلاً من زر المايك العام،
+       ويبدأ/يوقف الاستماع المستمر الذي يبث كل مقطع نهائي إلى التطبيق.
      معايير التشخيص المدمجة: حالة الـ opener، الـ origin، حالة إذن الميكروفون،
      وسجلّ أحداث التعرف — لا يُبتلع أي خطأ أبداً (درس الـ watchdog). -->
 <html lang="ar" dir="rtl">
@@ -25,6 +27,8 @@
   #micBtn{display:block;width:132px;height:132px;margin:10px auto;border-radius:50%;border:3px solid #d4af37;background:#241f16;color:#f3e9d2;font-size:52px;cursor:pointer}
   #micBtn.live{background:#7a1f2b;border-color:#fb7185;animation:pulse 1.2s infinite}
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(251,113,133,.5)}50%{box-shadow:0 0 0 16px rgba(251,113,133,0)}}
+  #podBtn{display:none;width:250px;margin:14px auto;padding:16px 20px;border-radius:12px;border:3px solid #d4af37;background:#d4af37;color:#241f16;font-size:18px;font-weight:800;cursor:pointer}
+  #podBtn.live{background:#7a1f2b;border-color:#fb7185;color:#fecdd3}
   #state{text-align:center;font-weight:700;margin:10px 0 4px;min-height:24px}
   #interim{text-align:center;color:#9ec5ff;min-height:22px;font-size:15px}
   #finalBox{background:#241f16;border:1px solid #d4af37;border-radius:12px;padding:12px;margin:14px 0;min-height:56px;font-size:17px;line-height:1.8}
@@ -43,6 +47,7 @@
 <h1>🎤 صوت الصايغ</h1>
 <div class="sub">اتكلم، والنص هيوصل للنظام لوحده</div>
 <button id="micBtn" aria-label="ابدأ التسجيل">🎤</button>
+<button id="podBtn">🎙️ بدء البودكاست</button>
 <div id="state">اضغط المايك واتكلم</div>
 <div id="interim"></div>
 <div id="finalBox"><span class="ph">النص النهائي هيظهر هنا…</span></div>
@@ -66,7 +71,7 @@
 
   var logEl = $('log'), errEl = $('err'), stateEl = $('state'),
       interimEl = $('interim'), finalBox = $('finalBox'),
-      micBtn = $('micBtn'), sendBtn = $('sendBtn');
+      micBtn = $('micBtn'), sendBtn = $('sendBtn'), podBtn = $('podBtn');
   function log(msg){
     var t = new Date().toLocaleTimeString('en-GB');
     logEl.textContent += '[' + t + '] ' + msg + '\n';
@@ -96,6 +101,19 @@
   } else { log('permissions API unavailable'); }
   log('page loaded. target=' + TARGET + ' opener=' + (window.opener ? 'yes' : 'no'));
 
+  // Podcast mode: a dedicated start/stop button replaces the generic mic.
+  function setPodBtn(live){
+    if (TARGET !== 'podcast') return;
+    podBtn.textContent = live ? '⏹ إيقاف البودكاست' : '🎙️ بدء البودكاست';
+    if (live) podBtn.classList.add('live'); else podBtn.classList.remove('live');
+  }
+  if (TARGET === 'podcast') {
+    micBtn.style.display = 'none';
+    podBtn.style.display = 'block';
+    setState('اضغط بدء البودكاست واتكلم');
+    log('podcast mode: podBtn shown, mic hidden');
+  }
+
   var recog = null, listening = false, finalText = '', lastSent = '';
 
   function postToOpener(text, isFinal){
@@ -113,6 +131,7 @@
     listening = false;
     micBtn.classList.remove('live');
     micBtn.textContent = '🎤';
+    setPodBtn(false);
     if (manual) setState('اضغط المايك واتكلم');
   }
 
@@ -127,7 +146,7 @@
     recog.maxAlternatives = 1;
     finalText = '';
     interimEl.textContent = '';
-    recog.onstart = function(){ listening = true; micBtn.classList.add('live'); micBtn.textContent = '⏹'; setState('بسمعك… اتكلم'); log('recognition started'); };
+    recog.onstart = function(){ listening = true; micBtn.classList.add('live'); micBtn.textContent = '⏹'; setPodBtn(true); setState('بسمعك… اتكلم'); log('recognition started'); };
     recog.onresult = function(ev){
       var interim = '', fin = '';
       for (var i = ev.resultIndex; i < ev.results.length; i++) {
@@ -159,6 +178,7 @@
       listening = false;
       micBtn.classList.remove('live');
       micBtn.textContent = '🎤';
+      setPodBtn(false);
       var msg = 'المايك وقف: ';
       if (name === 'not-allowed' || name === 'service-not-allowed') msg += 'مرفوض (not-allowed) — المتصفح رفض الوصول للمايك من الصفحة دي.';
       else if (name === 'network') msg += 'مشكلة شبكة (network) — الصوت محتاج اتصال بخدمة جوجل.';
@@ -175,6 +195,7 @@
         listening = false;
         micBtn.classList.remove('live');
         micBtn.textContent = '🎤';
+        setPodBtn(false);
         if (!finalText) setState('خلّص من غير ما يسمع حاجة — اضغط تاني');
       }
     };
@@ -189,6 +210,7 @@
   }
 
   micBtn.addEventListener('click', startRecog);
+  podBtn.addEventListener('click', startRecog);
   sendBtn.addEventListener('click', function(){
     if (!finalText) return;
     if (postToOpener(finalText, true)) { lastSent = finalText; setState('✅ اتبعت للنظام'); }
