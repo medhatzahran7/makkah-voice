@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!-- صفحة الصوت الخارجية لنظام مجوهرات مكة — مسودة إثبات مفهوم (لم تُنشر بعد).
+     لماذا صفحة خارجية؟ تطبيق Apps Script يعمل داخل iframe معزول (sandboxed)
+     يمنع المتصفح فيه الوصول للميكروفون حتى مع سماح المستخدم. هذه الصفحة
+     تُستضاف على نطاق عادي (GitHub Pages) فتعمل فيها Web Speech API، وتعيد
+     النص المنطوق إلى التطبيق عبر window.opener.postMessage.
+     بروتوكول الرسائل: {type:'makkah-voice', v:1, target, nonce, text, final, at}
+     - target: analyst | command | podcast | test (من ?target=)
+     - nonce: رمز جلسة يولّده التطبيق ويمرّره في ?nonce=، والصفحة تردّده كما هو؛
+       التطبيق يقبل فقط الرسائل التي تحمل الـ nonce الحالي ومن origin الصفحة.
+     - targetOrigin في postMessage هو '*' لأن نافذة التطبيق (iframe معزول)
+       لها origin غامض لا يمكن تسميته؛ التحقق يتم من جهة التطبيق (origin + nonce).
+     معايير التشخيص المدمجة: حالة الـ opener، الـ origin، حالة إذن الميكروفون،
+     وسجلّ أحداث التعرف — لا يُبتلع أي خطأ أبداً (درس الـ watchdog). -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎤 صوت الصايغ</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#14100a;color:#f3e9d2;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;padding:18px 14px 28px}
+  h1{font-size:20px;color:#d4af37;margin:4px 0 2px;text-align:center}
+  .sub{text-align:center;color:#b8a888;font-size:13px;margin-bottom:16px}
+  #micBtn{display:block;width:132px;height:132px;margin:10px auto;border-radius:50%;border:3px solid #d4af37;background:#241f16;color:#f3e9d2;font-size:52px;cursor:pointer}
+  #micBtn.live{background:#7a1f2b;border-color:#fb7185;animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(251,113,133,.5)}50%{box-shadow:0 0 0 16px rgba(251,113,133,0)}}
+  #state{text-align:center;font-weight:700;margin:10px 0 4px;min-height:24px}
+  #interim{text-align:center;color:#9ec5ff;min-height:22px;font-size:15px}
+  #finalBox{background:#241f16;border:1px solid #d4af37;border-radius:12px;padding:12px;margin:14px 0;min-height:56px;font-size:17px;line-height:1.8}
+  #finalBox .ph{color:#7a6f52;font-size:14px}
+  .row{display:flex;gap:8px;justify-content:center;margin:10px 0}
+  button.act{background:#d4af37;color:#241f16;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer}
+  button.ghost{background:transparent;color:#d4af37;border:1px solid #d4af37;border-radius:10px;padding:12px 18px;font-size:15px;cursor:pointer}
+  #err{display:none;background:#3d0f16;border:1px solid #fb7185;color:#fecdd3;border-radius:10px;padding:10px 12px;margin:12px 0;font-size:14px;line-height:1.7}
+  #diag{background:#1c1710;border:1px solid #4a4030;border-radius:10px;padding:10px 12px;font-size:12.5px;color:#b8a888;line-height:1.9;margin-top:16px;direction:ltr;text-align:left}
+  #diag b{color:#d4af37}
+  #log{background:#0d0a06;border:1px solid #4a4030;border-radius:10px;padding:10px 12px;font-size:12px;color:#9db08a;line-height:1.8;margin-top:10px;direction:ltr;text-align:left;max-height:220px;overflow:auto;white-space:pre-wrap}
+  .foot{text-align:center;color:#7a6f52;font-size:12px;margin-top:18px}
+</style>
+</head>
+<body>
+<h1>🎤 صوت الصايغ</h1>
+<div class="sub">اتكلم، والنص هيوصل للنظام لوحده</div>
+<button id="micBtn" aria-label="ابدأ التسجيل">🎤</button>
+<div id="state">اضغط المايك واتكلم</div>
+<div id="interim"></div>
+<div id="finalBox"><span class="ph">النص النهائي هيظهر هنا…</span></div>
+<div id="err"></div>
+<div class="row">
+  <button class="act" id="sendBtn" disabled>📨 إرسال للنظام</button>
+  <button class="ghost" id="closeBtn">إغلاق</button>
+</div>
+<div id="diag"></div>
+<div id="log"></div>
+<div class="foot">جميع الحقوق محفوظة © <span id="yr"></span> مدحت زهران — مؤسس النظام</div>
+<script>
+(function(){
+  'use strict';
+  var qs = new URLSearchParams(location.search);
+  var TARGET = qs.get('target') || 'test';
+  var NONCE = qs.get('nonce') || '';
+  var AUTOCLOSE = qs.get('autoclose') === '1';
+  var $ = function(id){ return document.getElementById(id); };
+  $('yr').textContent = new Date().getFullYear();
+
+  var logEl = $('log'), errEl = $('err'), stateEl = $('state'),
+      interimEl = $('interim'), finalBox = $('finalBox'),
+      micBtn = $('micBtn'), sendBtn = $('sendBtn');
+  function log(msg){
+    var t = new Date().toLocaleTimeString('en-GB');
+    logEl.textContent += '[' + t + '] ' + msg + '\n';
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function showErr(msg){
+    errEl.style.display = 'block';
+    errEl.textContent = msg;
+    log('ERROR: ' + msg);
+  }
+  function setState(t){ stateEl.textContent = t; }
+
+  // Diagnostics (never guessed, always measured).
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var diag = 'origin: <b>' + location.origin + '</b><br>' +
+    'target: <b>' + TARGET + '</b> &nbsp; nonce: <b>' + (NONCE ? 'present(' + NONCE.length + ')' : 'NONE') + '</b><br>' +
+    'window.opener: <b>' + (window.opener ? 'present' : 'NONE') + '</b><br>' +
+    'SpeechRecognition: <b>' + (SR ? 'available' : 'NOT SUPPORTED') + '</b><br>' +
+    'secure context: <b>' + window.isSecureContext + '</b><br>' +
+    'mic permission: <b id="permState">checking…</b>';
+  $('diag').innerHTML = diag;
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({name:'microphone'}).then(function(s){
+      var el = $('permState'); if (el) el.textContent = s.state;
+      log('permission microphone = ' + s.state);
+    }).catch(function(e){ log('permission query failed: ' + e.message); });
+  } else { log('permissions API unavailable'); }
+  log('page loaded. target=' + TARGET + ' opener=' + (window.opener ? 'yes' : 'no'));
+
+  var recog = null, listening = false, finalText = '', lastSent = '';
+
+  function postToOpener(text, isFinal){
+    var payload = {type:'makkah-voice', v:1, target:TARGET, nonce:NONCE, text:text, final:!!isFinal, at:Date.now()};
+    if (!window.opener) { log('postMessage SKIPPED: no opener'); showErr('مفيش نافذة نظام مفتوحة تستقبل النص — افتح الصفحة دي من زرار المايك جوه النظام.'); return false; }
+    try {
+      window.opener.postMessage(payload, '*');
+      log('postMessage sent: ' + JSON.stringify(payload).slice(0, 160));
+      return true;
+    } catch (e) { showErr('فشل إرسال النص للنظام: ' + e.message); return false; }
+  }
+
+  function stopRecog(manual){
+    if (recog) { try { recog.stop(); } catch (e) { log('stop() threw: ' + e.message); } }
+    listening = false;
+    micBtn.classList.remove('live');
+    micBtn.textContent = '🎤';
+    if (manual) setState('اضغط المايك واتكلم');
+  }
+
+  function startRecog(){
+    errEl.style.display = 'none';
+    if (!SR) { showErr('المتصفح ده مش بيدعم التعرف على الكلام — استخدم كروم.'); return; }
+    if (listening) { stopRecog(true); return; }
+    recog = new SR();
+    recog.lang = 'ar-EG';
+    recog.interimResults = true;
+    recog.continuous = (TARGET === 'podcast');
+    recog.maxAlternatives = 1;
+    finalText = '';
+    interimEl.textContent = '';
+    recog.onstart = function(){ listening = true; micBtn.classList.add('live'); micBtn.textContent = '⏹'; setState('بسمعك… اتكلم'); log('recognition started'); };
+    recog.onresult = function(ev){
+      var interim = '', fin = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var r = ev.results[i];
+        if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript;
+      }
+      if (interim) interimEl.textContent = interim;
+      if (fin) {
+        finalText = (finalText + ' ' + fin).trim();
+        finalBox.textContent = finalText;
+        interimEl.textContent = '';
+        sendBtn.disabled = false;
+        log('final result: ' + fin);
+        if (TARGET !== 'podcast') {
+          if (postToOpener(finalText, true)) {
+            lastSent = finalText;
+            setState('✅ اتبعت للنظام');
+            if (AUTOCLOSE) { log('autoclose in 1.2s'); setTimeout(function(){ window.close(); }, 1200); }
+          }
+        } else {
+          postToOpener(fin, true); // podcast: stream each final chunk
+        }
+      }
+    };
+    recog.onerror = function(ev){
+      // LOUD, exact error — never swallowed (the watchdog lesson).
+      var name = (ev && ev.error) || 'unknown';
+      log('recognition ERROR event: ' + name + (ev && ev.message ? ' — ' + ev.message : ''));
+      listening = false;
+      micBtn.classList.remove('live');
+      micBtn.textContent = '🎤';
+      var msg = 'المايك وقف: ';
+      if (name === 'not-allowed' || name === 'service-not-allowed') msg += 'مرفوض (not-allowed) — المتصفح رفض الوصول للمايك من الصفحة دي.';
+      else if (name === 'network') msg += 'مشكلة شبكة (network) — الصوت محتاج اتصال بخدمة جوجل.';
+      else if (name === 'no-speech') msg += 'ما اتسمعش صوت (no-speech) — جرّب تاني واتكلم أوضح.';
+      else if (name === 'audio-capture') msg += 'مفيش جهاز مايك شغال (audio-capture).';
+      else if (name === 'aborted') { setState('اتوقف'); return; }
+      else msg += name;
+      showErr(msg);
+      setState('حصلت مشكلة — شوف التفاصيل فوق');
+    };
+    recog.onend = function(){
+      log('recognition ended. listening=' + listening);
+      if (listening) { // ended without manual stop (e.g. silence): reflect it
+        listening = false;
+        micBtn.classList.remove('live');
+        micBtn.textContent = '🎤';
+        if (!finalText) setState('خلّص من غير ما يسمع حاجة — اضغط تاني');
+      }
+    };
+    try {
+      recog.start();
+      setState('بيجهّز المايك…');
+      log('recog.start() called');
+    } catch (e) {
+      showErr('تعذّر تشغيل المايك: ' + e.message);
+      log('start() threw: ' + e.message);
+    }
+  }
+
+  micBtn.addEventListener('click', startRecog);
+  sendBtn.addEventListener('click', function(){
+    if (!finalText) return;
+    if (postToOpener(finalText, true)) { lastSent = finalText; setState('✅ اتبعت للنظام'); }
+  });
+  $('closeBtn').addEventListener('click', function(){ stopRecog(false); window.close(); });
+
+  // Test hook: ?autostart=1 begins listening on load (popup opened by user gesture keeps the gesture chain).
+  if (qs.get('autostart') === '1') {
+    log('autostart requested');
+    setTimeout(startRecog, 600);
+  }
+})();
+</script>
+</body>
+</html>
