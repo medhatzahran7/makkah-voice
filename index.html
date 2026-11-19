@@ -13,7 +13,10 @@
      - زر «بدء البودكاست» يظهر فقط عند ?target=podcast بدلاً من زر المايك العام،
        ويبدأ/يوقف الاستماع المستمر الذي يبث كل مقطع نهائي إلى التطبيق.
      معايير التشخيص المدمجة: حالة الـ opener، الـ origin، حالة إذن الميكروفون،
-     وسجلّ أحداث التعرف — لا يُبتلع أي خطأ أبداً (درس الـ watchdog). -->
+     وسجلّ أحداث التعرف — لا يُبتلع أي خطأ أبداً (درس الـ watchdog).
+     ?brand=manzoma يعرض نفس الصفحة بعلامة «منظومة» (عنوان «صوت منظومة»
+     وألوان كحلي/تركوازي وبلا أي إشارة لنظام الذهب)؛ بلا البرامتر تبقى
+     بهوية «صوت الصايغ» كما هي. البرامتر يتركّب مع ?target= بلا تعارض. -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -41,6 +44,22 @@
   #diag b{color:#d4af37}
   #log{background:#0d0a06;border:1px solid #4a4030;border-radius:10px;padding:10px 12px;font-size:12px;color:#9db08a;line-height:1.8;margin-top:10px;direction:ltr;text-align:left;max-height:220px;overflow:auto;white-space:pre-wrap}
   .foot{text-align:center;color:#7a6f52;font-size:12px;margin-top:18px}
+  /* علامة منظومة (?brand=manzoma): نفس الصفحة، ألوان كحلي/تركوازي —
+     تُفعَّل بإضافة class على <html> من السكربت؛ بلا class تبقى هوية الذهب. */
+  html.brand-manzoma body{background:#0f172a;color:#f1f5f9}
+  html.brand-manzoma h1{color:#2dd4bf}
+  html.brand-manzoma .sub{color:#94a3b8}
+  html.brand-manzoma #micBtn{border-color:#14b8a6;background:#1e293b;color:#f1f5f9}
+  html.brand-manzoma #podBtn{border-color:#14b8a6;background:#14b8a6;color:#0f172a}
+  html.brand-manzoma #podBtn.live{background:#7f1d1d;border-color:#fb7185;color:#fecdd3}
+  html.brand-manzoma #finalBox{background:#1e293b;border-color:#14b8a6}
+  html.brand-manzoma #finalBox .ph{color:#64748b}
+  html.brand-manzoma button.act{background:#14b8a6;color:#0f172a}
+  html.brand-manzoma button.ghost{color:#2dd4bf;border-color:#14b8a6}
+  html.brand-manzoma #diag{background:#1e293b;border-color:#334155;color:#94a3b8}
+  html.brand-manzoma #diag b{color:#2dd4bf}
+  html.brand-manzoma #log{background:#020617;border-color:#334155}
+  html.brand-manzoma .foot{color:#64748b}
 </style>
 </head>
 <body>
@@ -65,9 +84,21 @@
   var qs = new URLSearchParams(location.search);
   var TARGET = qs.get('target') || 'test';
   var NONCE = qs.get('nonce') || '';
+  var BRAND = qs.get('brand') || '';
   var AUTOCLOSE = qs.get('autoclose') === '1';
   var $ = function(id){ return document.getElementById(id); };
   $('yr').textContent = new Date().getFullYear();
+  /* علامة منظومة: نفس الصفحة بلا أي إشارة مرئية لنظام الذهب — العنوان،
+     الترويسة، التذييل، والألوان كلها تتبدل؛ بروتوكول postMessage
+     (type 'makkah-voice') لا يتغير لأنه هوية البروتوكول لا العلامة. */
+  if (BRAND === 'manzoma') {
+    document.documentElement.classList.add('brand-manzoma');
+    document.title = '🎤 صوت منظومة';
+    var h1 = document.querySelector('h1');
+    if (h1) h1.textContent = '🎤 صوت منظومة';
+    var foot = document.querySelector('.foot');
+    if (foot) foot.textContent = 'جميع الحقوق محفوظة © ' + new Date().getFullYear() + ' منظومة';
+  }
 
   var logEl = $('log'), errEl = $('err'), stateEl = $('state'),
       interimEl = $('interim'), finalBox = $('finalBox'),
