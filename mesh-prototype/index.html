@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.10.1 — اكتشاف العقد أُصلح</title>
+<title>شبكة الناس v2.11 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -88,6 +88,15 @@ body{padding-bottom:92px}
 .path-badge{text-align:center;font-size:17px;font-weight:800;padding:8px 10px;border-radius:12px;background:#111811;border:1px solid #33402f;margin-top:8px}
 .help{margin:10px 0}
 .help summary{cursor:pointer;font-weight:800;color:#d4a853;font-size:16px}
+/* ===== v2.11: هوية فخمة — الجيل الجديد من الاتصال ===== */
+.hero{text-align:center;padding:20px 14px 10px;background:linear-gradient(160deg,#2b2110,#141a12 55%,#0f1410);border:1px solid #6b5316;border-radius:22px;margin:10px 0 14px;box-shadow:0 8px 28px rgba(212,168,83,.20)}
+.hero-ic{font-size:56px;line-height:1}
+.hero h1{font-size:34px;margin:6px 0 2px;color:#f5d97e}
+.hero-tag{font-size:18px;font-weight:800;color:#f5d97e}
+.hero-badge{display:inline-block;margin-top:10px;padding:7px 16px;border-radius:999px;background:linear-gradient(90deg,#d4a853,#b8860b);color:#1a1409;font-weight:800;font-size:15px}
+.node .letter{color:#f5d97e}
+.node .tname{font-size:14px;font-weight:800;color:#f5d97e;margin-top:2px}
+.node .sig{font-size:16px;margin-top:4px;opacity:.85}
 /* video layouts: 1-1 = big remote + small self PiP; group = mini grid */
 .video-grid{position:relative;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
 .video-grid .remote-wrap img{width:160px;height:120px}
@@ -106,11 +115,16 @@ body{padding-bottom:92px}
 <button id="sosBtnTop" class="btn-red sos-top">🆘 استغاثة</button>
 </header>
 <div class="wrap">
-<h1>📡 شبكة الناس v2.10.1</h1>
+<div class="hero">
+<div class="hero-ic">📡</div>
+<h1>شبكة الناس</h1>
+<div class="hero-tag">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
+<div class="hero-badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
 <p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
+</div>
 <div id="sosBanner" style="display:none;border:3px solid #ff5252;border-radius:16px;padding:16px;background:#4a0f0f;text-align:center;margin-top:10px"><h3 style="font-size:26px;margin:0 0 8px">🚨 استغاثة واردة!</h3><div id="sosBannerText" style="font-size:18px;font-weight:800"></div><div id="sosBannerMap" style="margin-top:8px"></div><button id="sosAckBtn" class="btn-green" style="margin-top:10px">✅ أنا سمعت الاستغاثة — أوقف التنبيه</button></div>
-<p class="hint" style="text-align:center">الاستغاثة تصل عبر الشبكة فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112 / النجدة عند عدم وجود أي عقدة قريبة.</p>
+<p class="hint" style="text-align:center">الاستغاثة تصل عبر الشبكة فقط إذا وُجد مسار أبراج متصلة — ليست بديلاً عن 112 / النجدة عند عدم وجود أي برج قريب.</p>
 <div id="peerWarn" class="err" style="display:none">❌ مكتبة PeerJS ما اتحملتش — اتأكد إن عندك نت وإن الصفحة مفتوحة من https أو localhost، وحدّث الصفحة.</div>
 <div id="cryptoWarn" class="warn" style="display:none">⚠️ التشفير (WebCrypto) مش متاح في السياق ده — افتح الصفحة من <b>https</b> أو من <b>localhost</b> (سيرفر محلي) مش من ملف file:// مباشرة. التشفير شرط أساسي، فالرسايل والصوت مش هيتبعتوا لحد ما يشتغل.</div>
 
@@ -120,45 +134,26 @@ body{padding-bottom:92px}
 <p class="hint">الدخول التلقائي يضع الجميع في غرفة واحدة عامة — الغرف الخاصة تبقى عبر تغيير الغرفة يدوياً.</p>
 <div id="autoCountdown" class="warn" style="display:none;text-align:center"></div>
 <div id="autoNodeGrid" class="nodes" style="margin-top:10px"></div>
-<button id="autoJoinBtn" class="btn-green" style="margin-top:12px">🚀 ادخل تلقائياً — أول عقدة متاحة</button>
+<button id="autoJoinBtn" class="btn-green" style="margin-top:12px">🚀 ادخل تلقائياً — أول برج متاح</button>
 <div id="autoJoinMsg" style="margin-top:8px"></div>
 </div>
 <div id="joinMsg"></div>
 <details class="card" id="manualJoinBox">
-<summary style="cursor:pointer;font-size:20px;font-weight:800">🔧 تغيير الغرفة/العقدة</summary>
+<summary style="cursor:pointer;font-size:20px;font-weight:800">🔧 تغيير الغرفة/البرج</summary>
 <div class="row" style="margin-top:10px">
-<div><label for="nodeSel">اسم العقدة بتاعتك</label>
-<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option><option value="D">د — D</option><option value="E">هـ — E</option><option value="F">و — F</option><option value="G">ز — G</option><option value="H">ح — H</option></select><button id="nodeApplyBtn" class="btn-green" style="margin-top:8px">✅ نفّذ العقدة دي</button></div>
+<div><label for="nodeSel">اسم البرج بتاعك</label>
+<select id="nodeSel"><option value="1">برج ١ — المحطة الرئيسية</option><option value="2">برج ٢</option><option value="3">برج ٣</option><option value="4">برج ٤</option><option value="5">برج ٥</option><option value="6">برج ٦</option><option value="7">برج ٧</option><option value="8">برج ٨</option></select><button id="nodeApplyBtn" class="btn-green" style="margin-top:8px">✅ نفّذ البرج ده</button></div>
 <div><label for="roomInp">كود الغرفة</label>
 <input id="roomInp" value="sayegh-mesh-1" dir="ltr" autocomplete="off"></div>
 </div>
 <button id="joinBtn" class="btn-green">ادخل الشبكة</button>
 <button id="retryDetBtn" class="btn-grey" style="display:none;margin-top:8px">🔄 حاول المعرّف الحتمي مجدداً</button>
-<p class="hint" id="retryDetHint" style="display:none">دخلت بمعرّف احتياطي (لاحقة عشوائية) لأن المعرّف الحتمي كان محجوزاً — باقي العقد قد لا تكتشفك بسهولة. إن تحرر المعرّف الحتمي، دوس الزر لإعادة الدخول به.</p>
-<p class="hint">كل تليفون يختار عقدة مختلفة: واحد أ، واحد ب، واحد ج، د، هـ، و، ز، ح — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
-<p class="hint">🔒 تُحفظ جلستك على هذا الجهاز فقط (العقدة والغرفة والإعدادات) — لا تُحفظ مفاتيح التشفير ولا محتوى المكالمات أو الرسائل أبداً. عند تحديث الصفحة ترجع للشبكة تلقائياً بنفس العقدة، من غير ما تدخل من جديد. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.</p>
+<p class="hint" id="retryDetHint" style="display:none">دخلت بمعرّف احتياطي (لاحقة عشوائية) لأن المعرّف الحتمي كان محجوزاً — باقي الأبراج قد لا تكتشفك بسهولة. إن تحرر المعرّف الحتمي، دوس الزر لإعادة الدخول به.</p>
+<p class="hint">كل تليفون يختار برجاً مختلفاً: برج ١، برج ٢، برج ٣، برج ٤، برج ٥، برج ٦، برج ٧، برج ٨ — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
+<p class="hint">🔒 تُحفظ جلستك على هذا الجهاز فقط (البرج والغرفة والإعدادات) — لا تُحفظ مفاتيح التشفير ولا محتوى المكالمات أو الرسائل أبداً. عند تحديث الصفحة ترجع للشبكة تلقائياً بنفس البرج، من غير ما تدخل من جديد. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.</p>
 <button id="copyBtn" class="btn-grey">📋 انسخ لينك الغرفة</button>
 <p class="hint">ابعت اللينك للتليفونين التانيين — هيفتحوا نفس الغرفة على طول. اللينك فيه <span dir="ltr">?room=...</span> بس، من غير أي بيانات شخصية.</p>
 </details>
-<div class="card">
-<h2>حالة العقد — مين متصل؟</h2>
-<div class="nodes" id="nodeCards">
-<div class="node" id="card-A"><div class="letter">أ</div><span class="dot off" id="dot-A"></span><div class="st" id="st-A">غير متصل</div><div class="key" id="key-A">—</div></div>
-<div class="node" id="card-B"><div class="letter">ب</div><span class="dot off" id="dot-B"></span><div class="st" id="st-B">غير متصل</div><div class="key" id="key-B">—</div></div>
-<div class="node" id="card-C"><div class="letter">ج</div><span class="dot off" id="dot-C"></span><div class="st" id="st-C">غير متصل</div><div class="key" id="key-C">—</div></div>
-<div class="node" id="card-D"><div class="letter">د</div><span class="dot off" id="dot-D"></span><div class="st" id="st-D">غير متصل</div><div class="key" id="key-D">—</div></div>
-<div class="node" id="card-E"><div class="letter">هـ</div><span class="dot off" id="dot-E"></span><div class="st" id="st-E">غير متصل</div><div class="key" id="key-E">—</div></div>
-<div class="node" id="card-F"><div class="letter">و</div><span class="dot off" id="dot-F"></span><div class="st" id="st-F">غير متصل</div><div class="key" id="key-F">—</div></div>
-<div class="node" id="card-G"><div class="letter">ز</div><span class="dot off" id="dot-G"></span><div class="st" id="st-G">غير متصل</div><div class="key" id="key-G">—</div></div>
-<div class="node" id="card-H"><div class="letter">ح</div><span class="dot off" id="dot-H"></span><div class="st" id="st-H">غير متصل</div><div class="key" id="key-H">—</div></div>
-</div>
-<div class="stats" style="margin-top:12px">
-<div class="stat"><b id="statNodes">0</b><span>عقدة متصلة</span></div>
-<div class="stat"><b id="statHops">—</b><span>آخر عدد قفزات</span></div>
-<div class="stat"><b id="statMs">—</b><span>آخر زمن (ms)</span></div>
-</div>
-</div>
-
 <div class="card">
 <h2>اتصل بمين؟ 🔒 طلب خاص</h2>
 <div id="privateCallList" style="text-align:center">⏳ ادخل الشبكة الأول عشان تشوف المتصلين.</div>
@@ -168,7 +163,29 @@ body{padding-bottom:92px}
 <div class="card">
 <h2>👥 مكالمة جماعية</h2>
 <button id="groupCallBtn" class="btn-green">👥 ابدأ مكالمة جماعية (كل المتصلين في الغرفة)</button>
-<p class="hint" style="text-align:center">تتصل بكل العقد المتصلة في نفس الغرفة في نفس الوقت — كل واحد يسمع الباقين معاً.</p>
+<p class="hint" style="text-align:center">تتصل بكل الأبراج المتصلة في نفس الغرفة في نفس الوقت — كل واحد يسمع الباقين معاً.</p>
+</div>
+</section>
+<section class="tab-page" id="tab-net">
+<div class="card">
+<h2>🛰️ خريطة الأبراج — مين متصل؟</h2>
+<div class="nodes" id="nodeCards">
+<div class="node" id="card-1"><div class="letter">١</div><div class="tname">برج ١ — المحطة الرئيسية</div><span class="dot off" id="dot-1"></span><div class="st" id="st-1">غير متصل</div><div class="key" id="key-1">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-2"><div class="letter">٢</div><div class="tname">برج ٢</div><span class="dot off" id="dot-2"></span><div class="st" id="st-2">غير متصل</div><div class="key" id="key-2">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-3"><div class="letter">٣</div><div class="tname">برج ٣</div><span class="dot off" id="dot-3"></span><div class="st" id="st-3">غير متصل</div><div class="key" id="key-3">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-4"><div class="letter">٤</div><div class="tname">برج ٤</div><span class="dot off" id="dot-4"></span><div class="st" id="st-4">غير متصل</div><div class="key" id="key-4">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-5"><div class="letter">٥</div><div class="tname">برج ٥</div><span class="dot off" id="dot-5"></span><div class="st" id="st-5">غير متصل</div><div class="key" id="key-5">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-6"><div class="letter">٦</div><div class="tname">برج ٦</div><span class="dot off" id="dot-6"></span><div class="st" id="st-6">غير متصل</div><div class="key" id="key-6">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-7"><div class="letter">٧</div><div class="tname">برج ٧</div><span class="dot off" id="dot-7"></span><div class="st" id="st-7">غير متصل</div><div class="key" id="key-7">—</div><div class="sig">📶</div></div>
+<div class="node" id="card-8"><div class="letter">٨</div><div class="tname">برج ٨</div><span class="dot off" id="dot-8"></span><div class="st" id="st-8">غير متصل</div><div class="key" id="key-8">—</div><div class="sig">📶</div></div>
+</div>
+<div class="stats" style="margin-top:12px">
+<div class="stat"><b id="statNodes">0</b><span>برج متصل</span></div>
+<div class="stat"><b id="statHops">—</b><span>آخر عدد قفزات</span></div>
+<div class="stat"><b id="statMs">—</b><span>آخر زمن (ms)</span></div>
+</div>
+<div id="netBestPath" class="hint" style="text-align:center;margin-top:10px">⭐ أفضل مسار حالياً: —</div>
+<p class="hint" style="text-align:center">📶 كل برج في الشبكة تليفون حقيقي — التليفونات نفسها أبراج. دوس على أي برج في تبويب المكالمات للاتصال به.</p>
 </div>
 </section>
 <section class="tab-page" id="tab-call">
@@ -176,10 +193,10 @@ body{padding-bottom:92px}
 <h2>المكالمة 📞 <span class="lock">🔒 مشفرة</span></h2>
 <div id="callIdle">
 <p class="hint" style="text-align:center">لا توجد مكالمة جارية — اختار هدفاً واتصل، أو استقبل مكالمة واردة.</p>
-<label for="targetSel">اختار العقدة الهدف</label>
-<select id="targetSel"><option value="B">ب — B</option><option value="C">ج — C</option></select>
+<label for="targetSel">اختار البرج الهدف</label>
+<select id="targetSel"><option value="2">برج ٢</option><option value="3">برج ٣</option></select>
 <button id="callBtn" class="btn-green" disabled>📞 اتصل</button>
-<div id="callReadyMsg" class="hint" style="text-align:center">⏳ زر الاتصال يشتغل بعد ما يظهر "🔒 مفتاح مشترك جاهز" مع العقدة الهدف في الاتجاهين.</div>
+<div id="callReadyMsg" class="hint" style="text-align:center">⏳ زر الاتصال يشتغل بعد ما يظهر "🔒 مفتاح مشترك جاهز" مع البرج الهدف في الاتجاهين.</div>
 <p class="hint">هيتبعت طلب خاص مشفر للهدف اللي اخترته (مباشرة أو عبر الوسيط حسب الوضع) — لا أحد غير الهدف يعرف أنه طلب مكالمة. الطرف التاني يرد أو يرفض. لما يرد، المكالمة تفضل مفتوحة والطرفان يتكلمان بحرية في نفس الوقت — من غير حد ٥ ثواني.</p>
 </div>
 <div id="callingBox" style="display:none">
@@ -225,14 +242,14 @@ body{padding-bottom:92px}
 <div id="videoWarn" class="warn" style="display:none">📹 الكاميرا مرفوضة — المكالمة صوت فقط</div>
 <div id="videoGrid" class="video-grid p2p">
 <div class="self-wrap" style="text-align:center"><video id="myVideoPreview" autoplay muted playsinline style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #d4a853;background:#000;object-fit:cover"></video><div id="videoLab-Me" style="font-size:14px">أنا 📹</div></div>
-<div class="remote-wrap" id="videoWrap-A" style="text-align:center"><img id="videoImg-A" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-A" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-B" style="text-align:center"><img id="videoImg-B" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-B" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-C" style="text-align:center"><img id="videoImg-C" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-C" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-D" style="text-align:center"><img id="videoImg-D" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-D" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-E" style="text-align:center"><img id="videoImg-E" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-E" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-F" style="text-align:center"><img id="videoImg-F" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-F" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-G" style="text-align:center"><img id="videoImg-G" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-G" style="font-size:14px"></div></div>
-<div class="remote-wrap" id="videoWrap-H" style="text-align:center"><img id="videoImg-H" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-H" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-1" style="text-align:center"><img id="videoImg-1" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-1" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-2" style="text-align:center"><img id="videoImg-2" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-2" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-3" style="text-align:center"><img id="videoImg-3" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-3" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-4" style="text-align:center"><img id="videoImg-4" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-4" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-5" style="text-align:center"><img id="videoImg-5" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-5" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-6" style="text-align:center"><img id="videoImg-6" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-6" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-7" style="text-align:center"><img id="videoImg-7" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-7" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-8" style="text-align:center"><img id="videoImg-8" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-8" style="font-size:14px"></div></div>
 </div>
 <div class="card">
 <h2>👥 المكالمة الجماعية</h2>
@@ -271,7 +288,7 @@ body{padding-bottom:92px}
 <section class="tab-page" id="tab-dash">
 <div class="card" id="dashCard">
 <h2>🎛️ لوحة تحكم المالك</h2>
-<p class="hint">بصراحة: اللوحة محلية على جهازك في هذا النموذج — بياناتها في localStorage على جهازك، وقرارات الطرد والتعيين تسري على اتصالاتك أنت بالعقد. لوحة تحكم مركزية على سيرفر تحتاج تطبيقاً وسيرفراً حقيقياً — هذا النموذج يثبت الشكل والتدفق.</p>
+<p class="hint">بصراحة: اللوحة محلية على جهازك في هذا النموذج — بياناتها في localStorage على جهازك، وقرارات الطرد والتعيين تسري على اتصالاتك أنت بالأبراج. لوحة تحكم مركزية على سيرفر تحتاج تطبيقاً وسيرفراً حقيقياً — هذا النموذج يثبت الشكل والتدفق.</p>
 <h3 style="margin:10px 0 6px">🏙️ المدن</h3>
 <div id="dashCities"></div>
 <div class="row"><div><label for="newCityName">اسم مدينة جديدة</label><input id="newCityName" placeholder="مثلاً: المنصورة"></div><div><label for="newCityCode">كود المدينة</label><input id="newCityCode" dir="ltr" placeholder="sayegh-mansoura" autocomplete="off"></div></div>
@@ -285,7 +302,7 @@ body{padding-bottom:92px}
 <div id="dashChannels"></div>
 <div class="row"><div><label for="newChanName">اسم قناة جديدة</label><input id="newChanName" placeholder="مثلاً: المبيعات"></div><div><label for="newChanCode">كود القناة (لاتيني)</label><input id="newChanCode" dir="ltr" placeholder="sales" autocomplete="off"></div></div>
 <button id="addChanBtn" class="btn-gold">➕ إنشاء قناة</button>
-<h3 style="margin:14px 0 6px">👥 المتصلون الآن في الغرفة الحالية</h3>
+<h3 style="margin:14px 0 6px">🛰️ الأبراج المتصلة الآن في الغرفة الحالية</h3>
 <div id="dashConnected"></div>
 <h3 style="margin:14px 0 6px">🌉 البوابات بين المدن</h3>
 <div id="dashGateways"></div>
@@ -303,8 +320,8 @@ body{padding-bottom:92px}
 <h2>اختبر الترحيل 🔒</h2>
 <p style="margin:10px 0 4px;font-weight:700">وضع الإرسال:</p>
 <div class="mode">
-<label id="modeDirectLbl"><input type="radio" name="mode" value="direct"> مباشر<br><span class="small">أ → ج على طول</span></label>
-<label id="modeRelayLbl" class="sel"><input type="radio" name="mode" value="relay" checked> ترحيل إجباري عبر الوسيط<br><span class="small">أ → ب → ج — حتى لو المباشر شغال</span></label>
+<label id="modeDirectLbl"><input type="radio" name="mode" value="direct"> مباشر<br><span class="small">١ → ٣ على طول</span></label>
+<label id="modeRelayLbl" class="sel"><input type="radio" name="mode" value="relay" checked> ترحيل إجباري عبر الوسيط<br><span class="small">١ → ٢ → ٣ — حتى لو المباشر شغال</span></label>
 </div>
 <button id="testBtn" class="btn-gold" disabled>اختبر الترحيل 🔒</button>
 <div id="pathBox">المسار هيظهر هنا بعد الاختبار</div>
@@ -346,14 +363,14 @@ body{padding-bottom:92px}
 <div id="superState" class="hint">النقطة الثابتة: تليفون موصول بالشاحن وموجود دائماً (محل/بيت) — يُفضَّل كوسيط دائماً، فتثبت الشبكة حتى لو غابت باقي التليفونات.</div>
 <div id="bestPathBox" style="font-size:18px;text-align:center;padding:12px;background:#111811;border-radius:12px;margin-top:10px;min-height:52px">⏳ أفضل مسار حالياً: — (ادخل الشبكة الأول)</div>
 <div id="routeStatsBox" class="dirStats" style="margin-top:10px">📊 قياس المسارات سيظهر هنا: زمن الوصول + عدد القفزات + الاستقرار لكل مسار.</div>
-<p class="hint">التوجيه الذكي: كل عقدة تقيس زمن الوصول وعدد القفزات والاستقرار لكل مسار متاح، وتختار الأسرع تلقائياً. وإذا سقط وسيط أثناء المكالمة، تعيد التوجيه تلقائياً لمسار بديل مع تنبيه "تم تحويل المسار".</p>
+<p class="hint">التوجيه الذكي: كل برج يقيس زمن الوصول وعدد القفزات والاستقرار لكل مسار متاح، وتختار الأسرع تلقائياً. وإذا سقط وسيط أثناء المكالمة، تعيد التوجيه تلقائياً لمسار بديل مع تنبيه "تم تحويل المسار".</p>
 <h2 style="margin-top:14px">🌉 بوابة بين المدن</h2>
 <div class="row">
 <div><label for="gwRoomInp">كود غرفة المدينة الثانية</label>
 <input id="gwRoomInp" value="sayegh-mesh-2" dir="ltr" autocomplete="off"></div>
 </div>
 <button id="gwBtn" class="btn-green">🌉 فعّل البوابة بين المدن</button>
-<div id="gwState" class="hint">البوابة: أي عقدة عندها إنترنت تنضم لغرفتين (مثلاً sayegh-mesh-1 للقاهرة وsayegh-mesh-2 للإسكندرية) وتربطهما — مكالمة من غرفة لأخرى تمر عبر البوابة مشفرة دون أن تُفك. مثال: غرفتك sayegh-mesh-1، والغرفة الثانية sayegh-mesh-2.</div>
+<div id="gwState" class="hint">البوابة: أي برج عنده إنترنت ينضم لغرفتين (مثلاً sayegh-mesh-1 للقاهرة وsayegh-mesh-2 للإسكندرية) وتربطهما — مكالمة من غرفة لأخرى تمر عبر البوابة مشفرة دون أن تُفك. مثال: غرفتك sayegh-mesh-1، والغرفة الثانية sayegh-mesh-2.</div>
 </div>
 
 <div class="card">
@@ -383,14 +400,16 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.10.1 — اكتشاف العقد أُصلح (إعادة محاولة المعرّف الحتمي + إعلان المعرّف الفعلي) فوق دخول تلقائي وصوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
-<details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
+<p class="small" style="text-align:center">نموذج أولي v2.11 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي — الفيديو إطارات منخفضة، الترجمة تحتاج إنترنت، الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
+<details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار أبراج متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
 </div>
 <nav class="bottomnav">
 <button type="button" class="navbtn active" data-tab="calls"><span class="ic">📞</span>المكالمات</button>
+<button type="button" class="navbtn" data-tab="net"><span class="ic">🛰️</span>الشبكة</button>
 <button type="button" class="navbtn" data-tab="call"><span class="ic">📹</span>المكالمة</button>
-<button type="button" class="navbtn" data-tab="dash"><span class="ic">🎛️</span>اللوحة</button>
+<button type="button" class="navbtn" data-tab="dash"><span class="ic">🎛️</span>التحكم</button>
 <button type="button" class="navbtn" data-tab="settings"><span class="ic">⚙️</span>الإعدادات</button>
 </nav>
 <script>
@@ -420,7 +439,7 @@ function sanitizeRoom(v){
   v=(v||"").trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,"");
   return v||"sayegh-mesh-1";
 }
-function nodeLabel(n){ return arLetter(n)+" — "+n; }
+function nodeLabel(n){ return towerName(n); }
 function fmtDuration(sec){
   var m=Math.floor(sec/60), s=sec%60;
   return (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
@@ -459,20 +478,25 @@ function loadSession(){
 function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
 
 // ---------- state (v1 preserved) ----------
-var NODES=["A","B","C","D","E","F","G","H"];
-// v2.9: خريطة الحروف العربية للعقد (أ..ح) + عقد الضيف (Gnnnn -> ضيف-nnnn)
-var AR_LETTER={A:"أ",B:"ب",C:"ج",D:"د",E:"هـ",F:"و",G:"ز",H:"ح"};
+var NODES=["1","2","3","4","5","6","7","8"];
+// v2.11: الأبراج بالأرقام — الرقم العربي المشرقي للعرض (١..٨) + عقد الضيف (Gnnnn -> ضيف-nnnn)
+var AR_NUM={"1":"١","2":"٢","3":"٣","4":"٤","5":"٥","6":"٦","7":"٧","8":"٨"};
 function arLetter(n){
-  if(AR_LETTER[n]) return AR_LETTER[n];
+  if(AR_NUM[n]) return AR_NUM[n];
   if(/^G\d{4}$/.test(n||"")) return "ضيف-"+n.slice(1);
   return n;
+}
+function towerName(n){
+  if(AR_NUM[n]) return "برج "+AR_NUM[n]+(n==="1"?" — المحطة الرئيسية":"");
+  if(/^G\d{4}$/.test(n||"")) return "ضيف-"+n.slice(1);
+  return "برج "+n;
 }
 function ensureNodeCard(nd){
   if($("card-"+nd)) return;
   var grid=$("nodeCards"); if(!grid) return;
   var d=document.createElement("div");
   d.className="node"; d.id="card-"+nd;
-  d.innerHTML='<div class="letter">'+arLetter(nd)+'</div><span class="dot off" id="dot-'+nd+'"></span><div class="st" id="st-'+nd+'">غير متصل</div><div class="key" id="key-'+nd+'">—</div>';
+  d.innerHTML='<div class="letter">'+arLetter(nd)+'</div><div class="tname">'+towerName(nd)+'</div><span class="dot off" id="dot-'+nd+'"></span><div class="st" id="st-'+nd+'">غير متصل</div><div class="key" id="key-'+nd+'">—</div><div class="sig">📶</div>';
   grid.appendChild(d);
 }
 function ensureVideoWrap(nd){
@@ -485,11 +509,12 @@ function ensureVideoWrap(nd){
 }
 var myNode="", myRoom="", myId="", peer=null, myKeyPair=null, myPubJwk=null;
 var conns={};
+var connTryTimers={}; // v2.11: مؤقت مهلة لكل محاولة اتصال (10 ثوانٍ)
 var connStatus={};
 var sharedKeys={};
 var peerPub={};
 var helloSent={};
-// v2.10.1: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
+// v2.11: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
 var actualPeerIds={};
 var detIdRetries=0, usedSuffixFallback=false, joinGen=0, lastSigWarn=0;
 var pendingTests={};
@@ -514,7 +539,7 @@ function resumeAudio(){
   try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
 }
 
-// v2.10.1.1: فتح قفل الصوت بإيماءة المستخدم — بدونه يبقى AudioContext متوقفاً
+// v2.11.1: فتح قفل الصوت بإيماءة المستخدم — بدونه يبقى AudioContext متوقفاً
 // فيرسل المسجل صمتاً، وقد يرفض المتصفح تشغيل المقاطع الواردة.
 var audioUnlocked=false;
 function unlockAudio(){
@@ -545,7 +570,7 @@ async function purifiedStream(stream){
   try{
     audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
     if(audioCtx.state==="suspended"){ try{ await audioCtx.resume(); }catch(e){} }
-    // v2.10.1.1: التسجيل من سياق صوت متوقف ينتج صمتاً — ارجع للصوت الخام مباشرة.
+    // v2.11.1: التسجيل من سياق صوت متوقف ينتج صمتاً — ارجع للصوت الخام مباشرة.
     // إعدادات المتصفح (إلغاء صدى + قمع ضوضاء + تضخيم تلقائي) ما زالت شغالة عبر getUserMedia.
     if(!audioCtx || audioCtx.state!=="running") return stream;
     var src=audioCtx.createMediaStreamSource(stream);
@@ -598,7 +623,7 @@ function speakTranslated(text, lang){
 function showIncomingTrans(p, fromNode){
   // وصلت ترجمة مشفرة بعد فك التشفير عندي فقط.
   if(!p || !p.orig || !p.trans) return;
-  addTransEntry(p.orig, p.origLang||"ar", p.trans, p.transLang||"en", arLetter(fromNode));
+  addTransEntry(p.orig, p.origLang||"ar", p.trans, p.transLang||"en", towerName(fromNode));
   log("📝 وصلت ترجمة مشفرة 🔒 من <b>"+fromNode+"</b> — تُعرض وتُنطق محلياً.");
   speakTranslated(p.trans, p.transLang||"en");
 }
@@ -758,7 +783,7 @@ function updateDirStats(){
   if(callState!=="in-call") return;
   var ago = lastReceivedAt ? Math.max(0, Math.round((Date.now()-lastReceivedAt)/1000)) : "—";
   var el=$("dirStats");
-  if(el) el.innerHTML="📊 <b>أنا → "+callPartner+":</b> أُرسل <b>"+sentChunks+"</b> مقطع &nbsp;|&nbsp; <b>"+callPartner+" → أنا:</b> وُصل <b>"+receivedChunks+"</b> مقطع، آخر وصول قبل <b>"+ago+"</b> ثانية";
+  if(el) el.innerHTML="📊 <b>أنا → "+arLetter(callPartner)+":</b> أُرسل <b>"+sentChunks+"</b> مقطع &nbsp;|&nbsp; <b>"+arLetter(callPartner)+" → أنا:</b> وُصل <b>"+receivedChunks+"</b> مقطع، آخر وصول قبل <b>"+ago+"</b> ثانية";
   var lb=$("latencyBox");
   if(lb) lb.textContent="⏱️ تقدير التأخير أحادي الاتجاه: "+(lastLatencyMs===null?"—":lastLatencyMs+" ms");
   var rb=$("audioReadyBox");
@@ -813,7 +838,7 @@ function updateTopStatus(){
   if(!el) return;
   var n=0; NODES.forEach(function(nd){ if(nd===myNode) n++; else if(connStatus[nd]==="on") n++; });
   var on = !!(peer && myNode);
-  el.textContent = on ? ("متصل ✓ — "+n+" عقدة في الغرفة "+myRoom) : "غير متصل — ادخل الشبكة من تبويب المكالمات";
+  el.textContent = on ? ("متصل ✓ — "+n+" برج في الغرفة "+myRoom) : "غير متصل — ادخل الشبكة من تبويب المكالمات";
   if(dot) dot.className = "dot " + (on ? "on" : "off");
 }
 function updateCards(){
@@ -822,13 +847,13 @@ function updateCards(){
     var dot=$("dot-"+nd), st=$("st-"+nd), key=$("key-"+nd);
     if(!dot||!st||!key) return;
     if(nd===myNode){
-      dot.className="dot on"; st.textContent="دي عقدتك ✓"+(isSuperNode?" ⭐ نقطة ثابتة":"");
+      dot.className="dot on"; st.textContent="⭐ ده أنت"+(isSuperNode?" ⭐ نقطة ثابتة":"");
       key.textContent = myKeyPair ? "🔒 مفتاحي جاهز (ECDH)" : "⏳ بيولد المفتاح...";
     } else if(connStatus[nd]==="on"){
       dot.className="dot on"; st.textContent="متصل ✓"+(peerSuper[nd]?" ⭐ نقطة ثابتة":"");
       key.textContent = sharedKeys[nd] ? "🔒 مفتاح مشترك جاهز" : "⏳ بيتبادل المفاتيح...";
     } else if(connStatus[nd]==="try"){
-      dot.className="dot try"; st.textContent="بيحاول يتصل...";
+      dot.className="dot try"; st.textContent="⏳ بيحاول يتصل... (إعادة تلقائية كل 10 ثوانٍ)";
       key.textContent="⏳ ...";
     } else {
       dot.className="dot off"; st.textContent="غير متصل";
@@ -849,7 +874,7 @@ function refreshTargetOptions(){
 }
 function updateCallBtnLabel(){
   var t=$("targetSel").value;
-  if(t && t!==myNode) $("callBtn").textContent="📞 اتصل بـ "+(arLetter(t))+" ("+t+")";
+  if(t && t!==myNode) $("callBtn").textContent="📞 اتصل بـ "+towerName(t);
 }
 function setModeUI(){
   var m=document.querySelector('input[name="mode"]:checked').value;
@@ -879,28 +904,28 @@ function initPeer(attempt, isAuto){
   }
   peer.on("open", function(id){
     if(isAuto && autoJoinFresh){
-      $("joinMsg").innerHTML='<div class="ok">✅ دخلت تلقائياً — عقدة '+arLetter(myNode)+'، غرفة '+myRoom+' — أي حد يفتح اللينك يدخل هنا معاك.</div>';
-      log("✅ دخلت تلقائياً — عقدة <b>"+myNode+"</b>، غرفة <b>"+myRoom+"</b> — أي حد يفتح اللينك يدخل هنا معاك.");
+      $("joinMsg").innerHTML='<div class="ok">✅ دخلت تلقائياً — '+towerName(myNode)+', غرفة '+myRoom+' — أي حد يفتح اللينك يدخل هنا معاك.</div>';
+      log("✅ دخلت تلقائياً — <b>"+towerName(myNode)+"</b>, غرفة <b>"+myRoom+"</b> — أي حد يفتح اللينك يدخل هنا معاك.");
     } else if(isAuto){
-      var nodeAr = arLetter(myNode);
-      $("joinMsg").innerHTML='<div class="ok">✅ رجّعناك للشبكة تلقائياً — عقدة '+nodeAr+'، غرفة '+myRoom+' — المعرّف: <span dir="ltr">'+id+'</span></div>'
+      var nodeAr = towerName(myNode);
+      $("joinMsg").innerHTML='<div class="ok">✅ رجّعناك للشبكة تلقائياً — '+nodeAr+', غرفة '+myRoom+' — المعرّف: <span dir="ltr">'+id+'</span></div>'
         +(autoHadCall?'<div class="warn">⚠️ انقطعت المكالمة بسبب تحديث الصفحة — رجعت للشبكة، اتصل مرة أخرى.</div>':'');
-      log("✅ رجعت للشبكة تلقائياً بعد الريفريش — عقدة <b>"+myNode+"</b>، غرفة <b>"+myRoom+"</b>"+(autoHadCall?" — المكالمة السابقة انقطعت حتماً بتحديث الصفحة.":""));
+      log("✅ رجعت للشبكة تلقائياً بعد الريفريش — <b>"+towerName(myNode)+"</b>, غرفة <b>"+myRoom+"</b>"+(autoHadCall?" — المكالمة السابقة انقطعت حتماً بتحديث الصفحة.":""));
     } else {
-      $("joinMsg").innerHTML='<div class="ok">✅ دخلت الشبكة كعقدة <b>'+myNode+'</b> — المعرّف: <span dir="ltr">'+id+'</span></div>';
-      log("✅ انضميت للغرفة <b>"+myRoom+"</b> كعقدة <b>"+myNode+"</b>");
+      $("joinMsg").innerHTML='<div class="ok">✅ دخلت الشبكة كـ <b>'+towerName(myNode)+'</b> — المعرّف: <span dir="ltr">'+id+'</span></div>';
+      log("✅ انضميت للغرفة <b>"+myRoom+"</b> كـ <b>"+towerName(myNode)+"</b>");
     }
     saveSession();
     var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
     $("joinBtn").style.display="block"; $("leaveBtn").style.display="block";
     setExecuteBusy(false);
-    // v2.10.1: إن دخلت بمعرّف احتياطي (لاحقة عشوائية)، أظهر زر إعادة المحاولة بالمعرّف الحتمي.
+    // v2.11: إن دخلت بمعرّف احتياطي (لاحقة عشوائية)، أظهر زر إعادة المحاولة بالمعرّف الحتمي.
     var rd=$("retryDetBtn"), rh=$("retryDetHint");
     var suffixed = (myId!==makePeerId(myRoom, myNode));
     if(rd) rd.style.display=suffixed?"block":"none";
     if(rh) rh.style.display=suffixed?"block":"none";
-    if(suffixed) log("ℹ️ دخلت بمعرّف احتياطي بلاحقة عشوائية — أعلنت معرّفي الفعلي في hello حتى تكتشفني باقي العقد. إن تحرر المعرّف الحتمي، دوس «🔄 حاول المعرّف الحتمي مجدداً» من «تغيير الغرفة/العقدة».");
+    if(suffixed) log("ℹ️ دخلت بمعرّف احتياطي بلاحقة عشوائية — أعلنت معرّفي الفعلي في hello حتى تكتشفني باقي الأبراج. إن تحرر المعرّف الحتمي، دوس «🔄 حاول المعرّف الحتمي مجدداً» من «تغيير الغرفة/البرج».");
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
     NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
@@ -912,7 +937,7 @@ function initPeer(attempt, isAuto){
   peer.on("connection", function(conn){ setupConnection(conn); });
   peer.on("error", function(err){
     if(err && err.type==="unavailable-id"){
-      // v2.10.1: أعد المحاولة بالمعرّف الحتمي نفسه أولاً (3 مرات، كل 2 ثانية) —
+      // v2.11: أعد المحاولة بالمعرّف الحتمي نفسه أولاً (3 مرات، كل 2 ثانية) —
       // التسجيلات القديمة تنتهي عادةً خلال ثوانٍ. اللاحقة العشوائية آخر حل،
       // لأن العقدة ذات اللاحقة لا يكتشفها أحد يبحث عن المعرّف الحتمي.
       if(detIdRetries<3){
@@ -939,22 +964,37 @@ function initPeer(attempt, isAuto){
         initPeer(0, isAuto);
         return;
       }
-      var msg="❌ العقدة "+myNode+" مستخدمة في الغرفة دي — اختار عقدة تانية أو غيّر كود الغرفة.";
+      var msg="❌ البرج "+towerName(myNode)+" مستخدم في الغرفة دي — اختار برج تاني أو غيّر كود الغرفة.";
       log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
       setExecuteBusy(false);
       return;
     }
     var msg="❌ خطأ في PeerJS: "+(err && err.type ? err.type : (err && err.message ? err.message : err));
-    if(err && err.type==="peer-unavailable") { log("⏳ العقدة التانية لسه ما دخلتش — هنحاول تاني تلقائياً."); return; }
+    if(err && err.type==="peer-unavailable") {
+      // v2.11: حرّر العقدة المستهدفة من حالة "try" العالقة حتى تعيد المحاولة الدورية الاتصال بها.
+      var tgt=null;
+      try{ var mm=/Could not connect to peer (\S+)/.exec(err.message||""); if(mm && mm[1]) tgt=nodeFromPeerId(mm[1]); }catch(e){}
+      if(tgt && NODES.indexOf(tgt)>=0){
+        connStatus[tgt]="off";
+        try{ var c0=conns[peerIdFor(tgt)]; if(c0 && !c0.open){ try{ c0.close(); }catch(e){} delete conns[peerIdFor(tgt)]; } }catch(e){}
+        updateCards();
+        log("⏳ البرج "+towerName(tgt)+" غير متاح حالياً — سأعيد المحاولة تلقائياً.");
+      } else {
+        NODES.forEach(function(nd){ if(connStatus[nd]==="try") connStatus[nd]="off"; });
+        updateCards();
+        log("⏳ البرج التاني لسه ما دخلش — هنحاول تاني تلقائياً.");
+      }
+      return;
+    }
     log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
     setExecuteBusy(false);
   });
   peer.on("disconnected", function(){
-    // v2.10.1: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
+    // v2.11: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
     var now=Date.now();
     if(now-lastSigWarn>30000){
       lastSigWarn=now;
-      log("⚠️ اتقطع الاتصال بسيرفر الإشارة — اكتشاف العقد الجديدة قد يتأخر حتى يعود السيرفر؛ العقد المتصلة حالياً تظل شغالة والمكالمات الجارية لا تتأثر. بيحاول يرجع تلقائياً...");
+      log("⚠️ اتقطع الاتصال بسيرفر الإشارة — اكتشاف الأبراج الجديدة قد يتأخر حتى يعود السيرفر؛ الأبراج المتصلة حالياً تظل شغالة والمكالمات الجارية لا تتأثر. بيحاول يرجع تلقائياً...");
     }
     try{ peer.reconnect(); }catch(e){}
   });
@@ -971,12 +1011,12 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
   }
   myNode=nodeArg; myRoom=sanitizeRoom(roomArg); $("roomInp").value=myRoom; $("nodeSel").value=myNode;
   myId=savedPeerId || makePeerId(myRoom, myNode);
-  joinGen++; detIdRetries=0; usedSuffixFallback=false; // v2.10.1: دخول جديد — أعد عدّادات إعادة المحاولة
+  joinGen++; detIdRetries=0; usedSuffixFallback=false; // v2.11: دخول جديد — أعد عدّادات إعادة المحاولة
   $("joinBtn").disabled=true; $("joinMsg").innerHTML='<div class="warn">⏳ بيولد مفتاح التشفير ويدخل الشبكة...</div>';
   try{
     myKeyPair=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"}, true, ["deriveKey"]);
     myPubJwk=await crypto.subtle.exportKey("jwk", myKeyPair.publicKey);
-    log("🔒 اتولد مفتاح ECDH (P-256) للعقدة "+myNode+" — المفتاح الخاص عمره ما بيتبعت.");
+    log("🔒 اتولد مفتاح ECDH (P-256) للبرج "+towerName(myNode)+" — المفتاح الخاص عمره ما بيتبعت.");
   }catch(e){
     $("joinMsg").innerHTML='<div class="err">❌ فشل توليد مفتاح التشفير: '+e.message+'</div>';
     setExecuteBusy(false); return;
@@ -986,17 +1026,17 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
   initPeer(0, isAuto);
 }
 
-// v2.10.1: مؤشر تنفيذ — عند الضغط على زر التنفيذ يتعطّل الزر ويظهر "⏳ جارٍ التنفيذ..."
+// v2.11: مؤشر تنفيذ — عند الضغط على زر التنفيذ يتعطّل الزر ويظهر "⏳ جارٍ التنفيذ..."
 // حتى يكتمل الانتقال (open) أو يفشل برسالة واضحة — لأن التأخير ~8-10 ثوانٍ بلا مؤشر يوحي أن الزر لا يعمل.
 function setExecuteBusy(busy){
   var j=$("joinBtn"), n=$("nodeApplyBtn");
   if(j){
     j.disabled=busy;
-    j.textContent = busy ? "⏳ جارٍ التنفيذ..." : ((peer && myNode) ? "✅ نفّذ التغيير — العقدة والغرفة" : "ادخل الشبكة");
+    j.textContent = busy ? "⏳ جارٍ التنفيذ..." : ((peer && myNode) ? "✅ نفّذ التغيير — البرج والغرفة" : "ادخل الشبكة");
   }
   if(n){
     n.disabled=busy;
-    n.textContent = busy ? "⏳ جارٍ التنفيذ..." : "✅ نفّذ العقدة دي";
+    n.textContent = busy ? "⏳ جارٍ التنفيذ..." : "✅ نفّذ البرج ده";
   }
 }
 $("joinBtn").addEventListener("click", function(){
@@ -1015,7 +1055,7 @@ $("joinBtn").addEventListener("click", function(){
 });
 $("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
 $("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").disabled=false; $("joinBtn").click(); });
-// v2.10.1: إعادة المحاولة بالمعرّف الحتمي — مخرج يدوي إن كانت عقدتان كلتاهما بلاحقة عشوائية ولم تكتشف إحداهما الأخرى.
+// v2.11: إعادة المحاولة بالمعرّف الحتمي — مخرج يدوي إن كانت عقدتان كلتاهما بلاحقة عشوائية ولم تكتشف إحداهما الأخرى.
 $("retryDetBtn").addEventListener("click", function(){ log("🔄 إعادة المحاولة بالمعرّف الحتمي..."); $("joinBtn").click(); });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
@@ -1027,12 +1067,24 @@ $("leaveBtn").addEventListener("click", function(){
 
 function connectToPeer(node){
   if(!peer || peer.destroyed) return;
-  // v2.10.1: إن عرفنا المعرّف الفعلي للعقدة (لاحقة عشوائية)، اتصل به مباشرة — لا بالحتمي.
+  // v2.11: إن عرفنا المعرّف الفعلي للعقدة (لاحقة عشوائية)، اتصل به مباشرة — لا بالحتمي.
   var pid=actualPeerIds[node] || peerIdFor(node);
   if(conns[pid] && (conns[pid].open || connStatus[node]==="try")) return;
   connStatus[node]="try"; updateCards();
   try{
     var conn=peer.connect(pid, {reliable:true});
+    // v2.11: مهلة 10 ثوانٍ لكل محاولة — إن لم يُفتح الاتصال أغلقه وأعد الحالة off
+    // حتى تعمل إعادة المحاولة الدورية (كل 6 ثوانٍ) بدل أن تُرفض بحارس "try" العالق.
+    (function(conn0, pid0, node0){
+      connTryTimers[node0]=setTimeout(function(){
+        if(conns[pid0]===conn0 && !conn0.open && connStatus[node0]==="try"){
+          try{ conn0.close(); }catch(e){}
+          delete conns[pid0];
+          connStatus[node0]="off"; updateCards();
+          log("⏳ الاتصال بـ"+towerName(node0)+" تأخر — سأعيد المحاولة تلقائياً.");
+        }
+      }, 10000);
+    })(conn, pid, node);
     setupConnection(conn);
   }catch(e){ connStatus[node]="off"; updateCards(); }
 }
@@ -1042,24 +1094,26 @@ function setupConnection(conn){
   if(NODES.indexOf(node)<0){ return; }
   conns[pid]=conn;
   conn.on("open", function(){
+    if(connTryTimers[node]){ clearTimeout(connTryTimers[node]); delete connTryTimers[node]; }
     connStatus[node]="on"; updateCards();
-    // v2.10.1: اتصال من معرّف فعلي مختلف عن الحتمي (لاحقة عشوائية) — احفظه للاتصال المباشر لاحقاً.
-    if(pid!==peerIdFor(node)){ actualPeerIds[node]=pid; log("🔎 العقدة <b>"+node+"</b> مسجلة بمعرّف فعلي مختلف (<span dir='ltr'>"+pid+"</span>) — حفظته للاتصال المباشر بها."); }
-    log("✅ اتصلت بالعقدة <b>"+node+"</b> مباشرة");
+    // v2.11: اتصال من معرّف فعلي مختلف عن الحتمي (لاحقة عشوائية) — احفظه للاتصال المباشر لاحقاً.
+    if(pid!==peerIdFor(node)){ actualPeerIds[node]=pid; log("🔎 البرج <b>"+towerName(node)+"</b> مسجل بمعرّف فعلي مختلف (<span dir='ltr'>"+pid+"</span>) — حفظته للاتصال المباشر بها."); }
+    log("✅ اتصلت بالبرج <b>"+towerName(node)+"</b> مباشرة");
     sendHello(conn, node);
   });
   conn.on("data", function(data){ handleData(data, conn); });
   conn.on("close", function(){
+    if(connTryTimers[node]){ clearTimeout(connTryTimers[node]); delete connTryTimers[node]; }
     connStatus[node]="off"; delete sharedKeys[node]; delete conns[pid]; updateCards();
-    log("⚠️ اتقطع الاتصال بالعقدة <b>"+node+"</b>");
+    log("⚠️ اتقطع الاتصال بالبرج <b>"+towerName(node)+"</b>");
     handlePeerLost(node);
   });
-  conn.on("error", function(){ connStatus[node]="off"; updateCards(); });
+  conn.on("error", function(){ if(connTryTimers[node]){ clearTimeout(connTryTimers[node]); delete connTryTimers[node]; } connStatus[node]="off"; updateCards(); });
 }
 
 async function sendHello(conn, node){
   if(!myPubJwk) return;
-  // v2.10.1: أعلن معرّفي الفعلي (peer.id) في hello — حتى لو كان بلاحقة عشوائية، تكتشفني باقي العقد.
+  // v2.11: أعلن معرّفي الفعلي (peer.id) في hello — حتى لو كان بلاحقة عشوائية، تكتشفني باقي العقد.
   try{ conn.send({kind:"hello", from:myNode, to:node, pub:myPubJwk, pid:((peer && peer.id) || myId), super: isSuperNode, gateway: gwActive}); helloSent[node]=true; }catch(e){}
 }
 
@@ -1068,7 +1122,7 @@ async function deriveSharedKey(node, theirJwk){
     var theirPub=await crypto.subtle.importKey("jwk", theirJwk, {name:"ECDH",namedCurve:"P-256"}, true, []);
     var key=await crypto.subtle.deriveKey({name:"ECDH", public:theirPub}, myKeyPair.privateKey, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
     sharedKeys[node]=key; peerPub[node]=theirJwk; updateCards();
-    log("🔒 اتفقنا على مفتاح مشترك AES-GCM مع العقدة <b>"+node+"</b> — جاهز للتشفير.");
+    log("🔒 اتفقنا على مفتاح مشترك AES-GCM مع البرج <b>"+towerName(node)+"</b> — جاهز للتشفير.");
     return key;
   }catch(e){
     log("❌ فشل اشتقاق المفتاح المشترك مع "+node+": "+e.message);
@@ -1208,7 +1262,7 @@ async function sendEncrypted(encKind, targetNode, payload, opts){
     sent=sendEnvelopeToPeer(targetNode, pkt);
   }
   if(!sent){
-    if(!opts.silent){ log("❌ مفيش اتصال مفتوح — اتأكد إن العقد التانية دخلت الشبكة."); alert("مفيش اتصال مفتوح — اتأكد إن العقدة الهدف دخلت الشبكة."); }
+    if(!opts.silent){ log("❌ مفيش اتصال مفتوح — اتأكد إن الأبراج التانية دخلت الشبكة."); alert("مفيش اتصال مفتوح — اتأكد إن البرج الهدف دخل الشبكة."); }
     return null;
   }
   if(!opts.silent) log("🔒 طلب خاص أُرسل — لا أحد غير الهدف يعرف نوعه أو أنه بدأ. (هذا السجل على جهازك فقط.)");
@@ -1256,19 +1310,26 @@ async function handleData(data, conn){
     var fromNode=data.from;
     peerSuper[fromNode]=!!data.super;
     peerGateway[fromNode]=!!data.gateway;
-    // v2.10.1: المرسل أعلن معرّفاً فعلياً مختلفاً عن الحتمي (لاحقة عشوائية) — احفظه واتصل به مباشرة إن لم يكن هناك اتصال مفتوح.
+    // v2.11: المرسل أعلن معرّفاً فعلياً مختلفاً عن الحتمي (لاحقة عشوائية) — احفظه واتصل به مباشرة إن لم يكن هناك اتصال مفتوح.
     if(data.pid && typeof data.pid==="string" && data.pid.indexOf("sayegh-"+myRoom+"-")===0 && data.pid!==peerIdFor(fromNode)){
       if(actualPeerIds[fromNode]!==data.pid){
         actualPeerIds[fromNode]=data.pid;
-        log("🔎 العقدة <b>"+fromNode+"</b> أعلنت معرّفها الفعلي (<span dir='ltr'>"+data.pid+"</span>) — حفظته للاتصال المباشر.");
+        log("🔎 البرج <b>"+towerName(fromNode)+"</b> أعلن معرّفه الفعلي (<span dir='ltr'>"+data.pid+"</span>) — حفظته للاتصال المباشر.");
       }
+      // v2.11: إن كان الاتصال الصادر لهذا البرج عالقاً في "try"، أغلقه فوراً
+      // واتصل بالمعرّف الفعلي المعلن بدلاً من انتظار مهلة الـ 10 ثوانٍ.
+      [peerIdFor(fromNode), data.pid].forEach(function(p0){
+        var sc=conns[p0];
+        if(sc && !sc.open && sc!==conn){ try{ sc.close(); }catch(e){} delete conns[p0]; if(connTryTimers[fromNode]){ clearTimeout(connTryTimers[fromNode]); delete connTryTimers[fromNode]; } }
+      });
+      if(!connForNode(fromNode) && connStatus[fromNode]==="try") connStatus[fromNode]="off";
       if(!connForNode(fromNode)){
-        try{ var rc=peer.connect(data.pid, {reliable:true}); setupConnection(rc); log("🔄 اتصال عكسي بالعقدة <b>"+fromNode+"</b> عبر معرّفها الفعلي..."); }catch(e){}
+        try{ var rc=peer.connect(data.pid, {reliable:true}); setupConnection(rc); log("🔄 اتصال عكسي بالبرج <b>"+towerName(fromNode)+"</b> عبر معرّفه الفعلي..."); }catch(e){}
       }
     }
-    if(data.super) log("⭐ العقدة <b>"+fromNode+"</b> نقطة ثابتة (super-node) — ستُفضَّل كوسيط.");
+    if(data.super) log("⭐ البرج <b>"+towerName(fromNode)+"</b> نقطة ثابتة (super-node) — سيُفضَّل كوسيط.");
     updateCards(); updateBestPath();
-    log("👋 وصل مفتاح عام من العقدة <b>"+fromNode+"</b> — بيشتق المفتاح المشترك...");
+    log("👋 وصل مفتاح عام من البرج <b>"+towerName(fromNode)+"</b> — بيشتق المفتاح المشترك...");
     await deriveSharedKey(fromNode, data.pub);
     if(!helloSent[fromNode]) sendHello(conn, fromNode);
     return;
@@ -1344,18 +1405,18 @@ async function handlePkt(pkt, conn){
   }
   if(k==="kick"){
     // الطرد يصل مشفراً للهدف فقط — الوسيط لم يرَ محتواه.
-    log("🚫 <b>تم طردك من الغرفة</b> بواسطة العقدة "+fromNode+" — سيتم فصلك عن الشبكة.");
-    try{ alert("🚫 تم طردك من الغرفة بواسطة العقدة "+fromNode+" — سيتم فصلك عن الشبكة."); }catch(e){}
+    log("🚫 <b>تم طردك من الغرفة</b> بواسطة البرج "+towerName(fromNode)+" — سيتم فصلك عن الشبكة.");
+    try{ alert("🚫 تم طردك من الغرفة بواسطة البرج "+towerName(fromNode)+" — سيتم فصلك عن الشبكة."); }catch(e){}
     try{ clearSession(); }catch(e){}
     try{ if(peer) peer.destroy(); }catch(e){}
     setTimeout(function(){ location.reload(); }, 300);
     return;
   }
   if(k==="super-request"){
-    log("⭐ العقدة "+fromNode+" طلبت منك تبقى نقطة ثابتة (super-node).");
+    log("⭐ البرج "+towerName(fromNode)+" طلب منك تبقى نقطة ثابتة (super-node).");
     if(!isSuperNode){
       try{
-        if(confirm("⭐ العقدة "+fromNode+" طلبت منك تبقى نقطة ثابتة (super-node) — توافق؟")){
+        if(confirm("⭐ البرج "+towerName(fromNode)+" طلب منك تبقى نقطة ثابتة (super-node) — توافق؟")){
           var sb=$("superBtn"); if(sb) sb.click();
           log("⭐ وافقت — بقيت نقطة ثابتة بطلب من "+fromNode+".");
         } else {
@@ -1393,7 +1454,7 @@ async function handlePkt(pkt, conn){
 // ---------- test relay (v1) ----------
 $("testBtn").addEventListener("click", async function(){
   var target=$("targetSel").value;
-  if(!target || target===myNode){ alert("اختار عقدة هدف مختلفة عن عقدتك."); return; }
+  if(!target || target===myNode){ alert("اختار برج هدف مختلف عن برجك."); return; }
   if(!sharedKeys[target]){ alert("لسه مفتاح التشفير المشترك مع "+target+" ما اتبادلش — استنى ثواني لحد ما يظهر 🔒 مفتاح مشترك جاهز، وحاول تاني."); log("⏳ مفتاح التشفير مع "+target+" لسه مش جاهز — استنى ثواني."); return; }
   var payload={text:"اختبار ترحيل من "+myNode+" إلى "+target, sentAt:Date.now()};
   var env=await sendEncrypted("test", target, payload);
@@ -1413,7 +1474,7 @@ function refreshCallAvailability(){
     btn.disabled = !ready;
     var tv=$("testVoiceBtn"); if(tv) tv.disabled = !ready;
     var msg=$("callReadyMsg");
-    if(msg) msg.textContent = ready ? "✅ المفتاح المشترك جاهز في الاتجاهين مع "+t+" — تقدر تتصل وتختبر صوتك." : "⏳ زر الاتصال يشتغل بعد ما يظهر \"🔒 مفتاح مشترك جاهز\" مع العقدة الهدف في الاتجاهين.";
+    if(msg) msg.textContent = ready ? "✅ المفتاح المشترك جاهز في الاتجاهين مع "+towerName(t)+" — تقدر تتصل وتختبر صوتك." : "⏳ زر الاتصال يشتغل بعد ما يظهر \"🔒 مفتاح مشترك جاهز\" مع البرج الهدف في الاتجاهين.";
   }
   return ready;
 }
@@ -1435,8 +1496,8 @@ function showCallUI(){
 function callPathText(){
   if(!callPartner) return "";
   var gw = gwActive ? " 🌉 عبر بوابة بين المدن" : "";
-  if(callVia) return "عبر وسيط مشفر 🔒 ("+myNode+" → "+callVia+" → "+callPartner+")"+gw;
-  return "مباشر — مفيش وسيط ("+myNode+" → "+callPartner+")"+gw;
+  if(callVia) return "عبر وسيط مشفر 🔒 ("+arLetter(myNode)+" → "+arLetter(callVia)+" → "+arLetter(callPartner)+")"+gw;
+  return "مباشر — مفيش وسيط ("+arLetter(myNode)+" → "+arLetter(callPartner)+")"+gw;
 }
 // v2.8: مؤشر المسار في شاشة المكالمة
 function updatePathBadge(){
@@ -1469,13 +1530,13 @@ function clearCallTimeouts(){
 $("callBtn").addEventListener("click", async function(){
   if(callState!=="idle") return;
   var target=$("targetSel").value;
-  if(!target || target===myNode){ alert("اختار عقدة هدف مختلفة عن عقدتك الأول."); return; }
+  if(!target || target===myNode){ alert("اختار برج هدف مختلف عن برجك الأول."); return; }
   if(!sharedKeys[target]){ alert("لسه مفتاح التشفير المشترك مع "+target+" ما اتبادلش — استنى ثواني لحد ما يظهر 🔒 مفتاح مشترك جاهز، وحاول تاني."); log("⏳ مفتاح التشفير مع "+target+" لسه مش جاهز — استنى ثواني."); return; }
   // v2.8: الثنائية تفضل المباشر أولاً — الوسيط بديل فقط عند تعذر المباشر.
   if(connStatus[target]!=="on"){
     var _rn0=getRelayNode(myNode, target);
     var _relayOk=_rn0 && connForNode(_rn0) && connForNode(_rn0).open;
-    if(!_relayOk){ alert("العقدة "+target+" مش متصلة مباشرة دلوقتي ولا يوجد وسيط متصل — استنى لحد ما تظهر متصلة."); return; }
+    if(!_relayOk){ alert("البرج "+towerName(target)+" مش متصل مباشرة دلوقتي ولا يوجد وسيط متصل — استنى لحد ما يظهر متصل."); return; }
   }
   callTarget=target; callPartner=target;
   var _directConn=connForNode(target);
@@ -1495,7 +1556,7 @@ $("callBtn").addEventListener("click", async function(){
   var doRequest=async function(){
     if(callState!=="calling") return;
     callAttempts++;
-    $("callingText").textContent="⏳ بيتصل بـ "+target+(callVia?" عبر الوسيط "+callVia:" مباشرة")+" ... محاولة "+callAttempts+" من 3";
+    $("callingText").textContent="⏳ بيتصل بـ "+towerName(target)+(callVia?" عبر الوسيط "+towerName(callVia):" مباشرة")+" ... محاولة "+callAttempts+" من 3";
     var env=await sendEncrypted("call", target, {type:"request", from:myNode, to:target, via:callVia, sentAt:Date.now(), attempt:callAttempts}, {silent:true});
     if(!env && callVia===null){
       // v2.8: المباشر فشل أثناء الإرسال — حوّل للوسيط كبديل وحاول مرة واحدة.
@@ -1508,7 +1569,7 @@ $("callBtn").addEventListener("click", async function(){
         env=await sendEncrypted("call", target, {type:"request", from:myNode, to:target, via:callVia, sentAt:Date.now(), attempt:callAttempts}, {silent:true});
       }
     }
-    if(!env && callAttempts>=3){ callState="idle"; callTarget=""; callPartner=""; callVia=null; showCallUI(); log("❌ مفيش اتصال مفتوح إلى "+target+" ولا إلى الوسيط."); return; }
+    if(!env && callAttempts>=3){ callState="idle"; callTarget=""; callPartner=""; callVia=null; showCallUI(); log("❌ مفيش اتصال مفتوح إلى "+towerName(target)+" ولا إلى الوسيط."); return; }
     if(!env) return;
   };
   await doRequest();
@@ -1570,7 +1631,7 @@ $("muteRingBtn").addEventListener("click", function(){
 
 $("testVoiceBtn").addEventListener("click", async function(){
   var target=$("targetSel").value;
-  if(!target || target===myNode || !sharedKeys[target]){ alert("اختار عقدة هدف جاهزة (🔒 مفتاح مشترك جاهز) الأول."); return; }
+  if(!target || target===myNode || !sharedKeys[target]){ alert("اختار برج هدف جاهز (🔒 مفتاح مشترك جاهز) الأول."); return; }
   resumeAudio();
   var res=$("testVoiceResult"); res.textContent="⏳ بيسجل ثانية واحدة...";
   try{
@@ -1712,7 +1773,7 @@ async function handleCallMessage(payload, fromNode, via, hops, pathStr){
     callPartner=fromNode; callTarget=fromNode; callVia=via;
     callModeAtStart = via ? "relay" : "direct";
     callState="ringing"; showCallUI();
-    $("incomingText").textContent="📞 مكالمة واردة من "+fromNode+(via?" عبر "+via:" مباشرة")+" 🔒";
+    $("incomingText").textContent="📞 مكالمة واردة من "+towerName(fromNode)+(via?" عبر "+towerName(via):" مباشرة")+" 🔒";
     log("📞 مكالمة واردة مشفرة 🔒 من <b>"+fromNode+"</b>"+(via?" عبر الوسيط <b>"+via+"</b>":" مباشرة")+" — المسار: "+pathStr+" — رد أو ارفض.");
     resumeAudio(); startRingtone();
     ringTimeout=setTimeout(async function(){
@@ -1769,10 +1830,10 @@ async function beginInCall(partner){
   resumeAudio();
   sentChunks=0; receivedChunks=0; lastReceivedAt=0; lastLatencyMs=null; autoRetryDone=false; window._sentWarned=false;
   myAudioReady=false; peerAudioReady=false;
-  $("callStatus").textContent="📞 مكالمة مفتوحة مع "+partner+" 🔒 مشفرة";
+  $("callStatus").textContent="📞 مكالمة مفتوحة مع "+towerName(partner)+" 🔒 مشفرة";
   $("callPath").textContent=callPathText(); updatePathBadge();
   $("callMsg").innerHTML="";
-  log("📞 المكالمة المفتوحة بدأت مع <b>"+partner+"</b> — "+callPathText());
+  log("📞 المكالمة المفتوحة بدأت مع <b>"+towerName(partner)+"</b> — "+callPathText());
   startCallTimer(); startDirStats(); updateDirStats();
   var ok=await startStreaming();
   if(!ok){
@@ -1798,7 +1859,7 @@ function endCallLocal(reason, sendEnd){
   callState="idle"; callTarget=""; callPartner=""; callVia=null; callStartTime=0; saveSession();
   showCallUI();
   var msg="";
-  if(reason==="ended-by-me") msg="🔴 أنهيت المكالمة مع "+partner+" — المدة: "+dur+".";
+  if(reason==="ended-by-me") msg="🔴 أنهيت المكالمة مع "+towerName(partner)+" — المدة: "+dur+".";
   else if(reason==="ended-by-peer") msg="🔴 الطرف التاني أنهى المكالمة — المدة: "+dur+".";
   else if(reason==="rejected") msg="المكالمة اترفضت.";
   else if(reason==="no-answer") msg="مفيش رد — المكالمة اتلغت.";
@@ -1942,7 +2003,7 @@ function playAudioChunk(payload){
 function handlePeerLost(lostNode){
   if(typeof groupCall!=="undefined" && groupCall && groupCall.active && groupCall.members[lostNode]){
     delete groupCall.members[lostNode];
-    log("👥 العقدة "+lostNode+" انقطعت من المكالمة الجماعية.");
+    log("👥 البرج "+towerName(lostNode)+" انقطع من المكالمة الجماعية.");
     renderGroupMembers();
     if(!Object.keys(groupCall.members).length){ endGroupCall("partner-lost", false); }
     return;
@@ -1950,13 +2011,13 @@ function handlePeerLost(lostNode){
   if(callState!=="in-call" && callState!=="calling" && callState!=="ringing") return;
   if(callState==="calling" && lostNode===callTarget){
     clearCallTimeouts();
-    log("❌ الطرف اللي بتتصل بيه ("+lostNode+") انقطع قبل ما يرد — المكالمة اتلغت.");
+    log("❌ الطرف اللي بتتصل بيه ("+towerName(lostNode)+") انقطع قبل ما يرد — المكالمة اتلغت.");
     endCallLocal("partner-lost", false);
     return;
   }
   if(callState==="ringing" && lostNode===callPartner){
     clearCallTimeouts();
-    log("❌ الطرف اللي بيتصل بيك ("+lostNode+") انقطع قبل ما ترد.");
+    log("❌ الطرف اللي بيتصل بيك ("+towerName(lostNode)+") انقطع قبل ما يرد.");
     callState="idle"; callPartner=""; callVia=null; showCallUI();
     return;
   }
@@ -1975,12 +2036,12 @@ function handlePeerLost(lostNode){
     }
   }
   if(lostNode===callPartner){
-    log("🔴 الطرف التاني ("+lostNode+") انقطع أثناء المكالمة.");
+    log("🔴 الطرف التاني ("+towerName(lostNode)+") انقطع أثناء المكالمة.");
     endCallLocal("partner-lost", false);
     return;
   }
   if(lostNode===callVia){
-    log("⚠️ <b>انقطع الوسيط ("+lostNode+") أثناء المكالمة — المكالمة ستنتهي إذا لم يوجد طريق بديل.</b> بحاول التحويل المباشر...");
+    log("⚠️ <b>انقطع الوسيط ("+towerName(lostNode)+") أثناء المكالمة — المكالمة ستنتهي إذا لم يوجد طريق بديل.</b> بحاول التحويل المباشر...");
     $("callMsg").innerHTML='<div class="warn">⚠️ انقطع الوسيط ('+lostNode+') — بحاول التحويل المباشر...</div>';
     var directConn=connForNode(callPartner);
     if(directConn && directConn.open && sharedKeys[callPartner]){
@@ -2022,7 +2083,7 @@ function renderPrivateCallList(){
     div.innerHTML='<div style="font-size:18px;font-weight:800">'+nodeLabel(nd)+' — '+(ready?"متصل ✓ 🔒 مفتاح جاهز":"⏳ لسه مش جاهز")+'</div>';
     var b=document.createElement("button");
     b.className="btn-green";
-    b.textContent="📞 اتصل بـ "+(arLetter(nd))+" — طلب خاص 🔒";
+    b.textContent="📞 اتصل بـ "+towerName(nd)+" — طلب خاص 🔒";
     b.disabled=!ready || callState!=="idle";
     b.addEventListener("click", function(){
       $("targetSel").value=nd; updateCallBtnLabel(); refreshCallAvailability();
@@ -2077,11 +2138,11 @@ function updateBestPath(){
   if(!peer || !myNode){ box.textContent="⏳ أفضل مسار حالياً: — (ادخل الشبكة الأول)"; return; }
   var t=$("targetSel") ? $("targetSel").value : "";
   var target = (callState==="in-call" && callPartner) ? callPartner : t;
-  if(!target || target===myNode){ box.textContent="⏳ أفضل مسار حالياً: — اختار عقدة هدف من «اتصل بمين؟»"; return; }
-  // v2.10.1: لا ندّعي مساراً غير موجود — المسار يُعرض فقط إن كان الاتصال بالهدف مفتوحاً فعلاً ومفتاحه المشترك جاهزاً.
+  if(!target || target===myNode){ box.textContent="⏳ أفضل مسار حالياً: — اختار برج هدف من «اتصل بمين؟»"; return; }
+  // v2.11: لا ندّعي مساراً غير موجود — المسار يُعرض فقط إن كان الاتصال بالهدف مفتوحاً فعلاً ومفتاحه المشترك جاهزاً.
   var directOk = connStatus[target]==="on" && !!sharedKeys[target];
   if(!directOk){
-    box.innerHTML="⭐ <b>أفضل مسار حالياً: —</b><br><span style='font-size:15px;color:#bbb'>العقدة "+target+" غير متصلة بعد أو مفتاحها المشترك غير جاهز — لا يوجد مسار حقيقي بعد.</span>";
+    box.innerHTML="⭐ <b>أفضل مسار حالياً: —</b><br><span style='font-size:15px;color:#bbb'>البرج "+towerName(target)+" غير متصل بعد أو مفتاحه المشترك غير جاهز — لا يوجد مسار حقيقي بعد.</span>";
     var rs0=$("routeStatsBox");
     if(rs0) rs0.innerHTML="📊 <b>مباشر:</b> غير متصل &nbsp;|&nbsp; <b>عبر وسيط:</b> غير متصل";
     return;
@@ -2095,13 +2156,14 @@ function updateBestPath(){
   else if(d.lat!==null){ best="direct"; } else if(r.lat!==null){ best="relay"; }
   else { best="direct"; } // بلا قياسات: المباشر المتصل فعلاً هو الصادق — لا ندّعي وسيطاً لم يُقاس.
   if(best==="relay" && !(relayNode && connStatus[relayNode]==="on" && sharedKeys[relayNode])) best="direct";
-  if(best==="direct") bestTxt=myNode+" → "+target+" (مباشر، قفزة واحدة)";
-  else bestTxt=myNode+" → "+(relayNode||"؟")+(relayNode && peerSuper[relayNode]?" ⭐":"")+" → "+target+" (قفزتان، عبر نقطة ثابتة)";
+  if(best==="direct") bestTxt=arLetter(myNode)+" → "+arLetter(target)+" (مباشر، قفزة واحدة)";
+  else bestTxt=arLetter(myNode)+" → "+(relayNode?arLetter(relayNode):"؟")+(relayNode && peerSuper[relayNode]?" ⭐":"")+" → "+target+" (قفزتان، عبر نقطة ثابتة)";
   box.innerHTML="⭐ <b>أفضل مسار حالياً: "+bestTxt+"</b>"+(gwActive?" 🌉 عبر بوابة بين المدن":"")+"<br><span style='font-size:15px;color:#bbb'>مباشر: "+dTxt+" &nbsp;|&nbsp; عبر وسيط: "+rTxt+"</span>";
   var rs=$("routeStatsBox");
   if(rs) rs.innerHTML="📊 <b>مباشر:</b> "+dTxt+" &nbsp;|&nbsp; <b>عبر وسيط:</b> "+rTxt+" &nbsp;|&nbsp; <b>النقاط الثابتة المتصلة:</b> "+(NODES.filter(function(n){ return n!==myNode && peerSuper[n] && connStatus[n]==="on"; }).length+(isSuperNode?" (أنت نقطة ثابتة ⭐)":""));
 }
 setInterval(function(){ if(peer && myNode) updateBestPath(); }, 5000);
+setInterval(function(){ var b=$("bestPathBox"), n=$("netBestPath"); if(b && n) n.innerHTML=b.innerHTML; }, 2000);
 $("superBtn").addEventListener("click", function(){
   isSuperNode=!isSuperNode;
   var b=$("superBtn");
@@ -2149,7 +2211,7 @@ function setupGwConnection(conn){
   var pid=conn.peer;
   gwConns[pid]=conn;
   conn.on("open", function(){
-    log("🌉 اتصلت البوابة بعقدة الغرفة الثانية: <b>"+pid+"</b>");
+    log("🌉 اتصلت البوابة ببرج الغرفة الثانية: <b>"+pid+"</b>");
     // أرسل hello البوابة حتى تعرف عقد الغرفة الثانية أنك بوابة.
     try{ conn.send({kind:"hello", from:myNode, to:nodeFromPeerId(pid), pub:myPubJwk, super:isSuperNode, gateway:true}); }catch(e){}
   });
@@ -2222,12 +2284,12 @@ async function sendSOS(){
   }
   var payload={type:"sos", from:myNode, lat: loc?loc.lat:null, lng: loc?loc.lng:null, acc: loc?loc.acc:null, time:Date.now()};
   var targets=NODES.filter(function(n){ return n!==myNode && connStatus[n]==="on" && sharedKeys[n]; });
-  if(!targets.length){ alert("مفيش عقدة متصلة دلوقتي — الاستغاثة مش هتوصل لحد. اتصل بالنجدة 112 مباشرة."); log("🆘 الاستغاثة لم تُرسل — مفيش عقدة متصلة. (ليست بديلاً عن 112/النجدة)"); return; }
-  log("🆘 ببعت استغاثة مشفرة 🔒 إلى "+targets.length+" عقدة متصلة"+(loc?" مع موقعك":" (من غير موقع — لم يُسمح بالموقع)")+"...");
+  if(!targets.length){ alert("مفيش برج متصل دلوقتي — الاستغاثة مش هتوصل لحد. اتصل بالنجدة 112 مباشرة."); log("🆘 الاستغاثة لم تُرسل — مفيش برج متصل. (ليست بديلاً عن 112/النجدة)"); return; }
+  log("🆘 ببعت استغاثة مشفرة 🔒 إلى "+targets.length+" برج متصل"+(loc?" مع موقعك":" (من غير موقع — لم يُسمح بالموقع)")+"...");
   for(var i=0;i<targets.length;i++){
     try{ await sendEncrypted("sos", targets[i], payload, {silent:true}); }catch(e){}
   }
-  log("🆘 الاستغاثة اتبعتت مشفرة 🔒 — وصلت للعقد المتصلة. لو مفيش عقدة قريبة، اتصل بالنجدة 112.");
+  log("🆘 الاستغاثة اتبعتت مشفرة 🔒 — وصلت للأبراج المتصلة. لو مفيش برج قريب، اتصل بالنجدة 112.");
   alert("🆘 الاستغاثة اتبعتت للعقد المتصلة"+(loc?" مع موقعك.":" (من غير موقع).")+" لو مفيش رد، اتصل بالنجدة 112.");
 }
 $("sosBtnTop").addEventListener("click", sendSOS);
@@ -2262,8 +2324,8 @@ $("offlineCodePasteBtn").addEventListener("click", function(){
     var dec=decodeURIComponent(escape(atob(v)));
     var parts=dec.split("|");
     if(parts.length>=2){
-      if(msg) msg.textContent="✅ الرمز صحيح — الغرفة: "+parts[0]+"، العقدة: "+parts[1]+". لكن تذكير: الاتصال الأوفلاين الكامل بلا إنترنت وبلا سيرفر (WiFi Direct / بلوتوث) قادم لاحقاً في التطبيق الأصلي — المتصفح لا يصل لهما مباشرة.";
-      log("📴 استلمت رمز أوفلاين من عقدة "+parts[1]+" في غرفة "+parts[0]+" — تمهيدي فقط، الاتصال الكامل قادم في التطبيق الأصلي.");
+      if(msg) msg.textContent="✅ الرمز صحيح — الغرفة: "+parts[0]+"، البرج: "+towerName(parts[1])+". لكن تذكير: الاتصال الأوفلاين الكامل بلا إنترنت وبلا سيرفر (WiFi Direct / بلوتوث) قادم لاحقاً في التطبيق الأصلي — المتصفح لا يصل لهما مباشرة.";
+      log("📴 استلمت رمز أوفلاين من برج "+towerName(parts[1])+" في غرفة "+parts[0]+" — تمهيدي فقط، الاتصال الكامل قادم في التطبيق الأصلي.");
       return;
     }
   }catch(e){}
@@ -2379,7 +2441,7 @@ function renderDashboard(){
         var isMe=nd===myNode;
         var on=isMe ? !!peer : connStatus[nd]==="on";
         var keyOk=isMe ? !!myKeyPair : !!sharedKeys[nd];
-        b.textContent=(isMe?"⭐ أنت: ":"")+nodeLabel(nd)+" — "+(on?"متصل ✓":"غير متصل")+(keyOk?" 🔒 مفتاح جاهز":" ⏳")+(isMe?(isSuperNode?" ⭐ نقطة ثابتة":""):(peerSuper[nd]?" ⭐ نقطة ثابتة":""));
+        b.textContent=(isMe?"⭐ ده أنت: ":"")+nodeLabel(nd)+" — "+(on?"متصل ✓":"غير متصل")+(keyOk?" 🔒 مفتاح جاهز":" ⏳")+(isMe?(isSuperNode?" ⭐ نقطة ثابتة":""):(peerSuper[nd]?" ⭐ نقطة ثابتة":""));
         div.appendChild(b);
         if(isMe && peer){
           div.appendChild(dashBtn(isSuperNode?"⭐ إلغاء النقطة الثابتة":"⭐ اجعلني نقطة ثابتة", "btn-gold", function(){ var sb=$("superBtn"); if(sb) sb.click(); }));
@@ -2411,7 +2473,7 @@ function renderDashboard(){
           div2.appendChild(b2); gwEl.appendChild(div2);
         }
       });
-      if(!anyGw){ var em3=document.createElement("div"); em3.className="hint"; em3.textContent="لا بوابات نشطة — فعّل بوابة من هنا أو من قسم ٨."; gwEl.appendChild(em3); }
+      if(!anyGw){ var em3=document.createElement("div"); em3.className="hint"; em3.textContent="لا بوابات نشطة — فعّل بوابة من تبويب الإعدادات."; gwEl.appendChild(em3); }
     }
     var gwSel=$("gwCitySel");
     if(gwSel){
@@ -2468,9 +2530,9 @@ function joinRoomFromDash(code){
   setTimeout(function(){ doJoin(myNode||$("nodeSel").value, code, null, false); }, 200);
 }
 function kickNode(node){
-  if(!confirm("تطرد العقدة "+node+" من الغرفة؟ هيتقطع اتصالك بيها وهيوصلها إشعار طرد مشفر. (يسري على اتصالاتك أنت بها في هذا النموذج)")) return;
+  if(!confirm("تطرد البرج "+towerName(node)+" من الغرفة؟ هيتقطع اتصالك بيها وهيوصلها إشعار طرد مشفر. (يسري على اتصالاتك أنت بها في هذا النموذج)")) return;
   sendEncrypted("kick", node, {type:"kick", from:myNode, to:node, sentAt:Date.now()}, {silent:true}).then(function(){
-    log("🚫 طردت العقدة "+node+" من الغرفة — اتقطع اتصالك بيها.");
+    log("🚫 طردت البرج "+towerName(node)+" من الغرفة — اتقطع اتصالك بيها.");
   }).catch(function(e){ log("❌ فشل إرسال الطرد إلى "+node+": "+e.message); });
   try{ var c=connForNode(node); if(c) c.close(); }catch(e){}
   delete conns[peerIdFor(node)]; connStatus[node]="off"; delete sharedKeys[node];
@@ -2478,7 +2540,7 @@ function kickNode(node){
 }
 function requestSuperNode(node){
   sendEncrypted("super-request", node, {type:"super-request", from:myNode, to:node, sentAt:Date.now()}, {silent:true}).then(function(){
-    log("⭐ بعت طلب للعقدة "+node+" تبقى نقطة ثابتة — هيوصلها وتوافق أو ترفض من عندها.");
+    log("⭐ بعت طلب للبرج "+towerName(node)+" يبقى نقطة ثابتة — هيوصلها وتوافق أو ترفض من عندها.");
   }).catch(function(e){ log("❌ فشل إرسال طلب النقطة الثابتة إلى "+node+": "+e.message); });
 }
 $("addCityBtn").addEventListener("click", function(){
@@ -2586,7 +2648,7 @@ function renderGroupMembers(){
   box.innerHTML="";
   var me=document.createElement("div");
   me.className="dash-item";
-  me.innerHTML="<b>⭐ أنت ("+(arLetter(myNode))+")</b> — "+(groupCall.muted?"🔇 كتم صوتي":"🎙️ صوتي مفتوح")+' <span id="mySpeakTag"></span>';
+  me.innerHTML="<b>⭐ ده أنت — "+towerName(myNode)+"</b> — "+(groupCall.muted?"🔇 كتم صوتي":"🎙️ صوتي مفتوح")+' <span id="mySpeakTag"></span>';
   box.appendChild(me);
   Object.keys(groupCall.members).forEach(function(nd){
     var div=document.createElement("div");
@@ -2661,7 +2723,7 @@ function checkMySpeaking(){
 async function startGroupCall(){
   if(callState!=="idle"){ alert("أنهِ المكالمة الحالية الأول."); return; }
   var targets=NODES.filter(function(n){ return n!==myNode && connStatus[n]==="on" && sharedKeys[n]; });
-  if(!targets.length){ alert("مفيش عقدة متصلة وجاهزة دلوقتي — استنى لحد ما يظهر 🔒 مفتاح مشترك جاهز مع عقدة تانية."); return; }
+  if(!targets.length){ alert("مفيش برج متصل وجاهز دلوقتي — استنى لحد ما يظهر 🔒 مفتاح مشترك جاهز مع برج تاني."); return; }
   var gid="g"+Date.now().toString(36)+myNode;
   groupCall.active=true; groupCall.id=gid; groupCall.members={}; groupCall.muted=false; groupCall.lastAudioAt={};
   callState="in-call"; callPartner=""; callTarget=""; callVia=null; callModeAtStart="";
@@ -2812,7 +2874,7 @@ async function sendVideoFrame(){
   }catch(e){}
 }
 function clearVideoFrames(){
-  ["A","B","C"].forEach(function(n){
+  ["1","2","3"].forEach(function(n){
     var img=$("videoImg-"+n); if(img){ img.style.display="none"; try{ img.removeAttribute("src"); }catch(e){} }
     var w=$("videoWrap-"+n); if(w) w.classList.remove("live");
   });
@@ -2830,7 +2892,7 @@ function showVideoFrame(fromNode, p){
   img.style.opacity="1";
   videoLastFrameAt[fromNode]=Date.now();
   var lab=$("videoLab-"+fromNode);
-  if(lab) lab.textContent=(arLetter(fromNode))+" 📹";
+  if(lab) lab.textContent=towerName(fromNode)+" 📹";
 }
 async function switchCamera(){
   videoFacing = videoFacing==="user" ? "environment" : "user";
@@ -2862,16 +2924,16 @@ function showTab(name){
 })();
 
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.10.1 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
-log("📹 v2.10.1: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
-log("🔎 v2.10.1: اكتشاف العقد أُصلح — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل عقدة تعلن معرّفها الفعلي في hello حتى تُكتشف. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
-log("🔄 v2.5: جلستك محفوظة على جهازك (العقدة والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس العقدة. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
+log("👋 أهلاً بيك في شبكة الناس v2.11 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. دخول تلقائي: اختر برجاً متاحاً من خريطة الأبراج أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول برج متاح. تبويبات سفلية: المكالمات / الشبكة / المكالمة / التحكم / الإعدادات.");
+log("📹 v2.11: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
+log("🔎 v2.11: اكتشاف الأبراج — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل برج يعلن معرّفه الفعلي في hello حتى يُكتشف. محاولة الاتصال لها مهلة 10 ثوانٍ ثم تُعاد تلقائياً، فلا يعلق أي برج في «بيحاول يتصل...» إلى الأبد. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
+log("🔄 v2.5: جلستك محفوظة على جهازك (البرج والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس البرج. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
 log("🔒 الخصوصية من البداية: طلب المكالمة مغلف على طبقتين ومشفر للهدف بس، والوسيط يمرر حزمة مبهمة بلا نوع وبلا أسماء ولا يعرف أن مكالمة بدأت — والتغطية الوهمية شغالة كل ثانيتين. المكالمة مفتوحة بلا حد زمني وتنتهي عندما تقفل بإيدك.");
 log("🤖 الذكاء الاصطناعي v2.3: تنقية الصوت شغالة افتراضياً (عبر إعدادات المتصفح — ليست RNNoise). الترجمة صوت+نص عربي↔إنجليزي: تتكلم بلغتك، والطرف التاني يشوف النص المترجم ويسمعه بصوت — الترجمة تضيف تأخير 2-4 ثوانٍ. الترجمة تتم محلياً وتُبعت مشفرة، فالوسيط لا يرى النص ولا الترجمة.");
-log("⭐ الشبكة الأكبر v2.4: تقدر تخلي تليفونك نقطة ثابتة (super-node) من قسم ٨، والتوجيه الذكي يختار أسرع مسار تلقائياً ويعيد التوجيه لو سقط وسيط. والبوابة 🌉 تربط غرفتين (مدينتين) دون فك التشفير.");
-log("📹 v2.7: فيديو مشفر (إطارات 5/ثانية عبر قناة البيانات المشفرة — ليس فيديو WebRTC كاملاً) + مكالمة جماعية 👥 من قسم ٧ — كل مشارك يسمع الباقين معاً، والترجمة والتنقية شغالتان في الجماعية للصوت فقط.\n");
-log("🆘 زر الاستغاثة SOS: زر أحمر كبير فوق — يبعت موقعك مشفراً عبر الشبكة لكل المتصلين مع تنبيه عالٍ. يصل فقط إذا وُجد مسار عقد متصلة — ليس بديلاً عن 112/النجدة.");
-log("📴 الوضع الأوفلاين القريب (WiFi Direct / بلوتوث) قادم لاحقاً في التطبيق الأصلي — المتصفح لا يصل لهما مباشرة. قسم ٩ فيه رمز يدوي تمهيدي فقط.");
+log("⭐ الشبكة الأكبر v2.4: تقدر تخلي تليفونك نقطة ثابتة (super-node) من تبويب الإعدادات، والتوجيه الذكي يختار أسرع مسار تلقائياً ويعيد التوجيه لو سقط وسيط. والبوابة 🌉 تربط غرفتين (مدينتين) دون فك التشفير.");
+log("📹 v2.7: فيديو مشفر (إطارات 5/ثانية عبر قناة البيانات المشفرة — ليس فيديو WebRTC كاملاً) + مكالمة جماعية 👥 من تبويب المكالمة — كل مشارك يسمع الباقين معاً، والترجمة والتنقية شغالتان في الجماعية للصوت فقط.\n");
+log("🆘 زر الاستغاثة SOS: زر أحمر كبير فوق — يبعت موقعك مشفراً عبر الشبكة لكل المتصلين مع تنبيه عالٍ. يصل فقط إذا وُجد مسار أبراج متصلة — ليس بديلاً عن 112/النجدة.");
+log("📴 الوضع الأوفلاين القريب (WiFi Direct / بلوتوث) قادم لاحقاً في التطبيق الأصلي — المتصفح لا يصل لهما مباشرة. تبويب الإعدادات فيه رمز يدوي تمهيدي فقط.");
 updateNoiseUI();
 (function(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -2882,13 +2944,13 @@ updateNoiseUI();
 })();
 
 // ---------- v2.9: دخول تلقائي — اختيار يدوي أو تلقائي على أول مفتاح متاح ----------
-// عند فتح اللينك تظهر شاشة دخول: قائمة العقد (أ..ح) مع حالة كل عقدة (متاح/مشغول،
+// عند فتح اللينك تظهر شاشة دخول: قائمة الأبراج (١..٨) مع حالة كل برج (متاح/مشغول،
 // تُفحص قبل العرض عبر محاولة حجز المعرّف لدى PeerJS) + زر كبير "🚀 ادخل تلقائياً"
 // + عدّ تنازلي 3 ثوانٍ للدخول التلقائي إن لم يختر المستخدم.
 // الجلسة المحفوظة (v2.5) لها الأولوية كما قبل؛ و?room= يحدد الغرفة، و?node= يدخل بها مباشرة.
 // لا تُطلب أي أذونات (ميكروفون/كاميرا) عند الدخول — الأذونات فقط عند بدء مكالمة.
 // إن امتلأت الحروف كلها يُولَّد ضيف عشوائي (ضيف-nnnn).
-var AUTO_NODES=["A","B","C","D","E","F","G","H"];
+var AUTO_NODES=["1","2","3","4","5","6","7","8"];
 var autoRoom="sayegh-mesh-1";
 var autoAvail={};
 var autoProbed=false, autoJoined=false, autoJoinFresh=false, autoJoinRequested=false;
@@ -2914,7 +2976,7 @@ function renderAutoEntry(){
   AUTO_NODES.forEach(function(nd){
     var b=$("autoNodeBtn-"+nd);
     var st=autoAvail[nd]||"checking";
-    var html="<b style='font-size:26px'>"+arLetter(nd)+"</b><br><span style='font-size:13px'>"+autoNodeStatusText(st)+"</span>";
+    var html="<b style='font-size:26px'>"+arLetter(nd)+"</b><br><span style='font-size:13px'>"+towerName(nd)+"</span><br><span style='font-size:13px'>"+autoNodeStatusText(st)+"</span>";
     if(!b){
       b=document.createElement("button");
       b.className="btn-grey"; b.id="autoNodeBtn-"+nd;
@@ -2930,19 +2992,19 @@ function chooseAutoNode(nd){
   var st=autoAvail[nd];
   var m=$("autoJoinMsg");
   if(st==="busy"){
-    if(m) m.innerHTML='<div class="warn">🔴 العقدة '+arLetter(nd)+' مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.</div>';
-    log("🔴 العقدة "+nd+" مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.");
+    if(m) m.innerHTML='<div class="warn">🔴 البرج '+towerName(nd)+' مشغول — اختر برج متاح أو ادخل تلقائياً.</div>';
+    log("🔴 البرج "+towerName(nd)+" مشغول — اختر برج متاح أو ادخل تلقائياً.");
     return;
   }
   if(st==="checking"){
     autoPendingChoice=nd;
-    if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص العقدة '+arLetter(nd)+'…</div>';
+    if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص البرج '+towerName(nd)+'…</div>';
     return;
   }
   // "unknown": نحاول الدخول بها على أي حال — وإن كانت محجوزة فعلاً، بديل v2.5 يتصرف.
   cancelAutoCountdown();
   autoJoinFresh=true; autoJoined=true;
-  log("🚀 اخترت العقدة "+nd+" — بدخل بها...");
+  log("🚀 اخترت "+towerName(nd)+" — بدخل به...");
   doJoin(nd, autoEntryRoom(), null, true);
 }
 function cancelAutoCountdown(){ if(autoCountdownInt){ clearInterval(autoCountdownInt); autoCountdownInt=null; } var c=$("autoCountdown"); if(c) c.style.display="none"; }
@@ -2954,7 +3016,7 @@ function startAutoCountdown(){
   var tick=function(){
     if(autoJoined || (peer && myNode)){ cancelAutoCountdown(); return; }
     if(autoCountdownLeft<=0){ cancelAutoCountdown(); autoJoinFirstFree(); return; }
-    c.textContent="⏳ سيتم الدخول تلقائياً خلال "+autoCountdownLeft+" ثوانٍ — دوس على عقدة لاختيارها.";
+    c.textContent="⏳ سيتم الدخول تلقائياً خلال "+autoCountdownLeft+" ثوانٍ — دوس على برج لاختياره.";
     autoCountdownLeft--;
   };
   tick();
@@ -2964,7 +3026,7 @@ function autoJoinFirstFree(){
   if(autoJoined || (peer && myNode)) return;
   if(!autoProbed){
     autoJoinRequested=true;
-    var m=$("autoJoinMsg"); if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص العقد المتاحة…</div>';
+    var m=$("autoJoinMsg"); if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص الأبراج المتاحة…</div>';
     return;
   }
   var free=null, unk=null;
@@ -2972,7 +3034,7 @@ function autoJoinFirstFree(){
   var pick=free||unk;
   if(!pick){ joinAsGuest(); return; }
   autoJoinFresh=true; autoJoined=true;
-  log("🚀 دخول تلقائي — أول عقدة متاحة: "+pick);
+  log("🚀 دخول تلقائي — أول برج متاح: "+towerName(pick));
   doJoin(pick, autoEntryRoom(), null, true);
 }
 function joinAsGuest(){
@@ -2981,27 +3043,27 @@ function joinAsGuest(){
   if(NODES.indexOf(g)<0) NODES.push(g);
   ensureNodeCard(g);
   autoJoinFresh=true; autoJoined=true;
-  log("⚠️ كل العقد أ..ح مشغولة — بدخل كضيف "+g+" («ضيف-"+g.slice(1)+"»).");
+  log("⚠️ كل الأبراج ١..٨ مشغولة — بدخل كضيف "+g+" («ضيف-"+g.slice(1)+"»).");
   doJoin(g, autoEntryRoom(), null, true);
 }
 function startAutoEntry(){
   var card=$("autoEntryCard"); if(!card) return;
   if(typeof Peer==="undefined" || !cryptoOK){
     var m=$("autoJoinMsg");
-    if(m) m.innerHTML='<div class="err">❌ الدخول التلقائي غير متاح — PeerJS أو التشفير غير متاح. ادخل يدوياً من «تغيير الغرفة/العقدة».</div>';
+    if(m) m.innerHTML='<div class="err">❌ الدخول التلقائي غير متاح — PeerJS أو التشفير غير متاح. ادخل يدوياً من «تغيير الغرفة/البرج».</div>';
     return;
   }
   autoRoom=autoEntryRoom();
   AUTO_NODES.forEach(function(nd){ autoAvail[nd]="checking"; });
   renderAutoEntry();
-  log("🚀 فحص العقد المتاحة في غرفة "+autoRoom+"…");
+  log("🚀 فحص الأبراج المتاحة في غرفة "+autoRoom+"…");
   Promise.all(AUTO_NODES.map(function(nd){
     return probeNodeAvailability(nd, autoRoom).then(function(st){
       autoAvail[nd]=st;
       if(autoPendingChoice===nd){
         var pc=autoPendingChoice; autoPendingChoice=null;
         if(st==="free") chooseAutoNode(pc);
-        else if(st==="busy"){ var m2=$("autoJoinMsg"); if(m2) m2.innerHTML='<div class="warn">🔴 العقدة '+arLetter(pc)+' مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.</div>'; }
+        else if(st==="busy"){ var m2=$("autoJoinMsg"); if(m2) m2.innerHTML='<div class="warn">🔴 البرج '+towerName(pc)+' مشغول — اختر برج متاح أو ادخل تلقائياً.</div>'; }
       }
       renderAutoEntry();
     });
@@ -3049,7 +3111,7 @@ function startAutoEntry(){
   }catch(e){}
   updateNoiseUI(); updateRelayBox();
   if(typeof Peer!=="undefined" && cryptoOK){
-    log("🔄 لقيت جلسة محفوظة — عقدة "+s.node+"، غرفة "+s.room+" — برجعك للشبكة تلقائياً من غير ما تدوس...");
+    log("🔄 لقيت جلسة محفوظة — "+towerName(s.node)+"، غرفة "+s.room+" — برجعك للشبكة تلقائياً من غير ما تدوس...");
     setTimeout(function(){ doJoin(s.node, s.room, s.peerId||null, true); }, 300);
   } else {
     log("⚠️ لقيت جلسة محفوظة بس التشفير أو PeerJS مش متاح دلوقتي — ادخل يدوياً.");
