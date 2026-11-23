@@ -867,7 +867,7 @@ function initPeer(attempt, isAuto){
     saveSession();
     var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
-    $("joinBtn").style.display="block"; $("joinBtn").textContent="✅ نفّذ التغيير — العقدة والغرفة"; $("leaveBtn").style.display="block";
+    $("joinBtn").style.display="block"; $("joinBtn").disabled=false; $("joinBtn").textContent="✅ نفّذ التغيير — العقدة والغرفة"; $("leaveBtn").style.display="block";
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
     NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
@@ -937,7 +937,7 @@ $("joinBtn").addEventListener("click", function(){
   doJoin($("nodeSel").value, sanitizeRoom($("roomInp").value), null, false);
 });
 $("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
-$("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").click(); });
+$("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").disabled=false; $("joinBtn").click(); });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
   clearSession();
