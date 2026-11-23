@@ -128,7 +128,7 @@ body{padding-bottom:92px}
 <summary style="cursor:pointer;font-size:20px;font-weight:800">🔧 تغيير الغرفة/العقدة</summary>
 <div class="row" style="margin-top:10px">
 <div><label for="nodeSel">اسم العقدة بتاعتك</label>
-<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option><option value="D">د — D</option><option value="E">هـ — E</option><option value="F">و — F</option><option value="G">ز — G</option><option value="H">ح — H</option></select></div>
+<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option><option value="D">د — D</option><option value="E">هـ — E</option><option value="F">و — F</option><option value="G">ز — G</option><option value="H">ح — H</option></select><button id="nodeApplyBtn" class="btn-green" style="margin-top:8px">✅ نفّذ العقدة دي</button></div>
 <div><label for="roomInp">كود الغرفة</label>
 <input id="roomInp" value="sayegh-mesh-1" dir="ltr" autocomplete="off"></div>
 </div>
@@ -867,7 +867,7 @@ function initPeer(attempt, isAuto){
     saveSession();
     var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
-    $("joinBtn").style.display="block"; $("joinBtn").textContent="✅ نفّذ التغيير — انتقل للغرفة دي"; $("leaveBtn").style.display="block";
+    $("joinBtn").style.display="block"; $("joinBtn").textContent="✅ نفّذ التغيير — العقدة والغرفة"; $("leaveBtn").style.display="block";
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
     NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
@@ -937,6 +937,7 @@ $("joinBtn").addEventListener("click", function(){
   doJoin($("nodeSel").value, sanitizeRoom($("roomInp").value), null, false);
 });
 $("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
+$("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").click(); });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
   clearSession();
