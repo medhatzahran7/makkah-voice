@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.9 — دخول تلقائي</title>
+<title>شبكة الناس v2.10 — اكتشاف العقد أُصلح</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -106,7 +106,7 @@ body{padding-bottom:92px}
 <button id="sosBtnTop" class="btn-red sos-top">🆘 استغاثة</button>
 </header>
 <div class="wrap">
-<h1>📡 شبكة الناس v2.9</h1>
+<h1>📡 شبكة الناس v2.10</h1>
 <p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
 <div id="sosBanner" style="display:none;border:3px solid #ff5252;border-radius:16px;padding:16px;background:#4a0f0f;text-align:center;margin-top:10px"><h3 style="font-size:26px;margin:0 0 8px">🚨 استغاثة واردة!</h3><div id="sosBannerText" style="font-size:18px;font-weight:800"></div><div id="sosBannerMap" style="margin-top:8px"></div><button id="sosAckBtn" class="btn-green" style="margin-top:10px">✅ أنا سمعت الاستغاثة — أوقف التنبيه</button></div>
@@ -133,6 +133,8 @@ body{padding-bottom:92px}
 <input id="roomInp" value="sayegh-mesh-1" dir="ltr" autocomplete="off"></div>
 </div>
 <button id="joinBtn" class="btn-green">ادخل الشبكة</button>
+<button id="retryDetBtn" class="btn-grey" style="display:none;margin-top:8px">🔄 حاول المعرّف الحتمي مجدداً</button>
+<p class="hint" id="retryDetHint" style="display:none">دخلت بمعرّف احتياطي (لاحقة عشوائية) لأن المعرّف الحتمي كان محجوزاً — باقي العقد قد لا تكتشفك بسهولة. إن تحرر المعرّف الحتمي، دوس الزر لإعادة الدخول به.</p>
 <p class="hint">كل تليفون يختار عقدة مختلفة: واحد أ، واحد ب، واحد ج، د، هـ، و، ز، ح — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
 <p class="hint">🔒 تُحفظ جلستك على هذا الجهاز فقط (العقدة والغرفة والإعدادات) — لا تُحفظ مفاتيح التشفير ولا محتوى المكالمات أو الرسائل أبداً. عند تحديث الصفحة ترجع للشبكة تلقائياً بنفس العقدة، من غير ما تدخل من جديد. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.</p>
 <button id="copyBtn" class="btn-grey">📋 انسخ لينك الغرفة</button>
@@ -381,7 +383,7 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.9 — دخول تلقائي (اختيار أو تلقائي على أول مفتاح متاح) فوق صوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي v2.10 — اكتشاف العقد أُصلح (إعادة محاولة المعرّف الحتمي + إعلان المعرّف الفعلي) فوق دخول تلقائي وصوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
 </div>
@@ -487,6 +489,9 @@ var connStatus={};
 var sharedKeys={};
 var peerPub={};
 var helloSent={};
+// v2.10: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
+var actualPeerIds={};
+var detIdRetries=0, usedSuffixFallback=false, joinGen=0, lastSigWarn=0;
 var pendingTests={};
 var lastHops=null, lastMs=null;
 var cryptoOK = !!(window.crypto && window.crypto.subtle);
@@ -849,7 +854,7 @@ function initPeer(attempt, isAuto){
   try{ peer=new Peer(myId); }
   catch(e){
     $("joinMsg").innerHTML='<div class="err">❌ فشل إنشاء الاتصال: '+e.message+'</div>';
-    $("joinBtn").disabled=false; return;
+    setExecuteBusy(false); return;
   }
   peer.on("open", function(id){
     if(isAuto && autoJoinFresh){
@@ -867,7 +872,14 @@ function initPeer(attempt, isAuto){
     saveSession();
     var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
-    $("joinBtn").style.display="block"; $("joinBtn").disabled=false; $("joinBtn").textContent="✅ نفّذ التغيير — العقدة والغرفة"; $("leaveBtn").style.display="block";
+    $("joinBtn").style.display="block"; $("leaveBtn").style.display="block";
+    setExecuteBusy(false);
+    // v2.10: إن دخلت بمعرّف احتياطي (لاحقة عشوائية)، أظهر زر إعادة المحاولة بالمعرّف الحتمي.
+    var rd=$("retryDetBtn"), rh=$("retryDetHint");
+    var suffixed = (myId!==makePeerId(myRoom, myNode));
+    if(rd) rd.style.display=suffixed?"block":"none";
+    if(rh) rh.style.display=suffixed?"block":"none";
+    if(suffixed) log("ℹ️ دخلت بمعرّف احتياطي بلاحقة عشوائية — أعلنت معرّفي الفعلي في hello حتى تكتشفني باقي العقد. إن تحرر المعرّف الحتمي، دوس «🔄 حاول المعرّف الحتمي مجدداً» من «تغيير الغرفة/العقدة».");
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
     NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
@@ -878,24 +890,53 @@ function initPeer(attempt, isAuto){
   });
   peer.on("connection", function(conn){ setupConnection(conn); });
   peer.on("error", function(err){
-    if(err && err.type==="unavailable-id" && attempt<2){
-      // المعرّف محجوز (تسجيل قديم لم يُحرَّر أو عقدة حيّة بنفس المعرّف — مؤكد
-      // في الاختبار الافتراضي لـ sayegh-mesh-1-A): ولّد معرّفاً جديداً بلاحقة
-      // عشوائية تلقائياً، حدّث التخزين، وأكمل الدخول — ولا تعلّق أبداً.
-      myId=makePeerIdFallback(myRoom, myNode);
-      saveSession();
-      log("⚠️ المعرّف محجوز — بستخدم معرّفاً جديداً تلقائياً: "+myId+" (محاولة "+(attempt+2)+" من 3)");
-      try{ peer.destroy(); }catch(e){}
-      initPeer(attempt+1, isAuto);
+    if(err && err.type==="unavailable-id"){
+      // v2.10: أعد المحاولة بالمعرّف الحتمي نفسه أولاً (3 مرات، كل 2 ثانية) —
+      // التسجيلات القديمة تنتهي عادةً خلال ثوانٍ. اللاحقة العشوائية آخر حل،
+      // لأن العقدة ذات اللاحقة لا يكتشفها أحد يبحث عن المعرّف الحتمي.
+      if(detIdRetries<3){
+        detIdRetries++;
+        var g0=joinGen;
+        log("⚠️ المعرّف الحتمي محجوز — إعادة المحاولة به نفسه بعد ثانيتين (محاولة "+detIdRetries+" من 3) — التسجيلات القديمة تنتهي عادةً خلال ثوانٍ.");
+        $("joinMsg").innerHTML='<div class="warn">⏳ المعرّف محجوز — إعادة المحاولة بالمعرّف الحتمي بعد ثانيتين (محاولة '+detIdRetries+' من 3)...</div>';
+        setTimeout(function(){
+          if(joinGen!==g0) return; // المستخدم بدأ دخولاً جديداً أثناء الانتظار
+          try{ peer.destroy(); }catch(e){}
+          myId=makePeerId(myRoom, myNode);
+          saveSession();
+          initPeer(0, isAuto);
+        }, 2000);
+        return;
+      }
+      if(!usedSuffixFallback){
+        usedSuffixFallback=true;
+        myId=makePeerIdFallback(myRoom, myNode);
+        saveSession();
+        log("⚠️ المعرّف الحتمي ما زال محجوزاً بعد 3 محاولات — بستخدم معرّفاً بلاحقة عشوائية: "+myId+" — سأعلن معرّفي الفعلي في hello حتى تكتشفني باقي العقد.");
+        $("joinMsg").innerHTML='<div class="warn">⏳ المعرّف الحتمي محجوز — بدخل بمعرّف احتياطي...</div>';
+        try{ peer.destroy(); }catch(e){}
+        initPeer(0, isAuto);
+        return;
+      }
+      var msg="❌ العقدة "+myNode+" مستخدمة في الغرفة دي — اختار عقدة تانية أو غيّر كود الغرفة.";
+      log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
+      setExecuteBusy(false);
       return;
     }
     var msg="❌ خطأ في PeerJS: "+(err && err.type ? err.type : (err && err.message ? err.message : err));
-    if(err && err.type==="unavailable-id") msg="❌ العقدة "+myNode+" مستخدمة already في الغرفة دي — اختار عقدة تانية (أ / ب / ج) أو غيّر كود الغرفة.";
     if(err && err.type==="peer-unavailable") { log("⏳ العقدة التانية لسه ما دخلتش — هنحاول تاني تلقائياً."); return; }
     log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
-    $("joinBtn").disabled=false;
+    setExecuteBusy(false);
   });
-  peer.on("disconnected", function(){ log("⚠️ اتقطع الاتصال بسيرفر الإشارة — بيحاول يرجع..."); try{ peer.reconnect(); }catch(e){} });
+  peer.on("disconnected", function(){
+    // v2.10: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
+    var now=Date.now();
+    if(now-lastSigWarn>30000){
+      lastSigWarn=now;
+      log("⚠️ اتقطع الاتصال بسيرفر الإشارة — اكتشاف العقد الجديدة قد يتأخر حتى يعود السيرفر؛ العقد المتصلة حالياً تظل شغالة والمكالمات الجارية لا تتأثر. بيحاول يرجع تلقائياً...");
+    }
+    try{ peer.reconnect(); }catch(e){}
+  });
 }
 
 // ---------- join / leave ----------
@@ -909,6 +950,7 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
   }
   myNode=nodeArg; myRoom=sanitizeRoom(roomArg); $("roomInp").value=myRoom; $("nodeSel").value=myNode;
   myId=savedPeerId || makePeerId(myRoom, myNode);
+  joinGen++; detIdRetries=0; usedSuffixFallback=false; // v2.10: دخول جديد — أعد عدّادات إعادة المحاولة
   $("joinBtn").disabled=true; $("joinMsg").innerHTML='<div class="warn">⏳ بيولد مفتاح التشفير ويدخل الشبكة...</div>';
   try{
     myKeyPair=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"}, true, ["deriveKey"]);
@@ -916,14 +958,28 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
     log("🔒 اتولد مفتاح ECDH (P-256) للعقدة "+myNode+" — المفتاح الخاص عمره ما بيتبعت.");
   }catch(e){
     $("joinMsg").innerHTML='<div class="err">❌ فشل توليد مفتاح التشفير: '+e.message+'</div>';
-    $("joinBtn").disabled=false; return;
+    setExecuteBusy(false); return;
   }
   try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
   saveSession();
   initPeer(0, isAuto);
 }
 
+// v2.10: مؤشر تنفيذ — عند الضغط على زر التنفيذ يتعطّل الزر ويظهر "⏳ جارٍ التنفيذ..."
+// حتى يكتمل الانتقال (open) أو يفشل برسالة واضحة — لأن التأخير ~8-10 ثوانٍ بلا مؤشر يوحي أن الزر لا يعمل.
+function setExecuteBusy(busy){
+  var j=$("joinBtn"), n=$("nodeApplyBtn");
+  if(j){
+    j.disabled=busy;
+    j.textContent = busy ? "⏳ جارٍ التنفيذ..." : ((peer && myNode) ? "✅ نفّذ التغيير — العقدة والغرفة" : "ادخل الشبكة");
+  }
+  if(n){
+    n.disabled=busy;
+    n.textContent = busy ? "⏳ جارٍ التنفيذ..." : "✅ نفّذ العقدة دي";
+  }
+}
 $("joinBtn").addEventListener("click", function(){
+  setExecuteBusy(true);
   if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
   autoJoinFresh=false;
   if(peer && !peer.destroyed){
@@ -938,6 +994,8 @@ $("joinBtn").addEventListener("click", function(){
 });
 $("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
 $("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").disabled=false; $("joinBtn").click(); });
+// v2.10: إعادة المحاولة بالمعرّف الحتمي — مخرج يدوي إن كانت عقدتان كلتاهما بلاحقة عشوائية ولم تكتشف إحداهما الأخرى.
+$("retryDetBtn").addEventListener("click", function(){ log("🔄 إعادة المحاولة بالمعرّف الحتمي..."); $("joinBtn").click(); });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
   clearSession();
@@ -948,7 +1006,8 @@ $("leaveBtn").addEventListener("click", function(){
 
 function connectToPeer(node){
   if(!peer || peer.destroyed) return;
-  var pid=peerIdFor(node);
+  // v2.10: إن عرفنا المعرّف الفعلي للعقدة (لاحقة عشوائية)، اتصل به مباشرة — لا بالحتمي.
+  var pid=actualPeerIds[node] || peerIdFor(node);
   if(conns[pid] && (conns[pid].open || connStatus[node]==="try")) return;
   connStatus[node]="try"; updateCards();
   try{
@@ -963,6 +1022,8 @@ function setupConnection(conn){
   conns[pid]=conn;
   conn.on("open", function(){
     connStatus[node]="on"; updateCards();
+    // v2.10: اتصال من معرّف فعلي مختلف عن الحتمي (لاحقة عشوائية) — احفظه للاتصال المباشر لاحقاً.
+    if(pid!==peerIdFor(node)){ actualPeerIds[node]=pid; log("🔎 العقدة <b>"+node+"</b> مسجلة بمعرّف فعلي مختلف (<span dir='ltr'>"+pid+"</span>) — حفظته للاتصال المباشر بها."); }
     log("✅ اتصلت بالعقدة <b>"+node+"</b> مباشرة");
     sendHello(conn, node);
   });
@@ -977,7 +1038,8 @@ function setupConnection(conn){
 
 async function sendHello(conn, node){
   if(!myPubJwk) return;
-  try{ conn.send({kind:"hello", from:myNode, to:node, pub:myPubJwk, super: isSuperNode, gateway: gwActive}); helloSent[node]=true; }catch(e){}
+  // v2.10: أعلن معرّفي الفعلي (peer.id) في hello — حتى لو كان بلاحقة عشوائية، تكتشفني باقي العقد.
+  try{ conn.send({kind:"hello", from:myNode, to:node, pub:myPubJwk, pid:((peer && peer.id) || myId), super: isSuperNode, gateway: gwActive}); helloSent[node]=true; }catch(e){}
 }
 
 async function deriveSharedKey(node, theirJwk){
@@ -1173,6 +1235,16 @@ async function handleData(data, conn){
     var fromNode=data.from;
     peerSuper[fromNode]=!!data.super;
     peerGateway[fromNode]=!!data.gateway;
+    // v2.10: المرسل أعلن معرّفاً فعلياً مختلفاً عن الحتمي (لاحقة عشوائية) — احفظه واتصل به مباشرة إن لم يكن هناك اتصال مفتوح.
+    if(data.pid && typeof data.pid==="string" && data.pid.indexOf("sayegh-"+myRoom+"-")===0 && data.pid!==peerIdFor(fromNode)){
+      if(actualPeerIds[fromNode]!==data.pid){
+        actualPeerIds[fromNode]=data.pid;
+        log("🔎 العقدة <b>"+fromNode+"</b> أعلنت معرّفها الفعلي (<span dir='ltr'>"+data.pid+"</span>) — حفظته للاتصال المباشر.");
+      }
+      if(!connForNode(fromNode)){
+        try{ var rc=peer.connect(data.pid, {reliable:true}); setupConnection(rc); log("🔄 اتصال عكسي بالعقدة <b>"+fromNode+"</b> عبر معرّفها الفعلي..."); }catch(e){}
+      }
+    }
     if(data.super) log("⭐ العقدة <b>"+fromNode+"</b> نقطة ثابتة (super-node) — ستُفضَّل كوسيط.");
     updateCards(); updateBestPath();
     log("👋 وصل مفتاح عام من العقدة <b>"+fromNode+"</b> — بيشتق المفتاح المشترك...");
@@ -1981,14 +2053,23 @@ function updateBestPath(){
   var t=$("targetSel") ? $("targetSel").value : "";
   var target = (callState==="in-call" && callPartner) ? callPartner : t;
   if(!target || target===myNode){ box.textContent="⏳ أفضل مسار حالياً: — اختار عقدة هدف من «اتصل بمين؟»"; return; }
+  // v2.10: لا ندّعي مساراً غير موجود — المسار يُعرض فقط إن كان الاتصال بالهدف مفتوحاً فعلاً ومفتاحه المشترك جاهزاً.
+  var directOk = connStatus[target]==="on" && !!sharedKeys[target];
+  if(!directOk){
+    box.innerHTML="⭐ <b>أفضل مسار حالياً: —</b><br><span style='font-size:15px;color:#bbb'>العقدة "+target+" غير متصلة بعد أو مفتاحها المشترك غير جاهز — لا يوجد مسار حقيقي بعد.</span>";
+    var rs0=$("routeStatsBox");
+    if(rs0) rs0.innerHTML="📊 <b>مباشر:</b> غير متصل &nbsp;|&nbsp; <b>عبر وسيط:</b> غير متصل";
+    return;
+  }
   var relayNode=getRelayNode(myNode, target);
   var d=routeStats.direct, r=routeStats.relay;
-  var dTxt = d.lat===null ? "لم يُقاس بعد" : d.lat+"ms (ناجح "+d.ok+"×)";
+  var dTxt = d.lat===null ? "متصل ✓ — لم يُقاس الزمن بعد" : d.lat+"ms (ناجح "+d.ok+"×)";
   var rTxt = r.lat===null ? "لم يُقاس بعد" : r.lat+"ms (ناجح "+r.ok+"×)";
   var best, bestTxt;
   if(d.lat!==null && r.lat!==null){ best = d.lat<=r.lat ? "direct" : "relay"; }
   else if(d.lat!==null){ best="direct"; } else if(r.lat!==null){ best="relay"; }
-  else { best = (relayNode && peerSuper[relayNode]) ? "relay" : "direct"; }
+  else { best="direct"; } // بلا قياسات: المباشر المتصل فعلاً هو الصادق — لا ندّعي وسيطاً لم يُقاس.
+  if(best==="relay" && !(relayNode && connStatus[relayNode]==="on" && sharedKeys[relayNode])) best="direct";
   if(best==="direct") bestTxt=myNode+" → "+target+" (مباشر، قفزة واحدة)";
   else bestTxt=myNode+" → "+(relayNode||"؟")+(relayNode && peerSuper[relayNode]?" ⭐":"")+" → "+target+" (قفزتان، عبر نقطة ثابتة)";
   box.innerHTML="⭐ <b>أفضل مسار حالياً: "+bestTxt+"</b>"+(gwActive?" 🌉 عبر بوابة بين المدن":"")+"<br><span style='font-size:15px;color:#bbb'>مباشر: "+dTxt+" &nbsp;|&nbsp; عبر وسيط: "+rTxt+"</span>";
@@ -2334,7 +2415,7 @@ function renderDashboard(){
     if(bestEl){
       var bp=$("bestPathBox");
       var txt="—";
-      if(bp && bp.textContent){ txt=bp.textContent.replace("⏳ أفضل مسار حالياً: ","").split("مباشر:")[0].replace(/⭐\s*أفضل مسار حالياً:/,"").trim(); }
+      if(bp){ var raw=(bp.innerText||bp.textContent||"").split("\n")[0].replace("⏳ أفضل مسار حالياً: ","").replace(/⭐\s*أفضل مسار حالياً:/,"").trim(); txt=raw; }
       bestEl.textContent="⭐ أفضل مسار حالياً: "+(txt||"—");
     }
   }catch(e){ /* لوحة التحكم لا تكسر الصفحة أبداً */ }
@@ -2756,9 +2837,9 @@ function showTab(name){
 })();
 
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.9 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
-log("📹 v2.8: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
-log("🚀 v2.9: دخول تلقائي — اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. الجلسة المحفوظة لها الأولوية، والأذونات تُطلب فقط عند بدء مكالمة.");
+log("👋 أهلاً بيك في شبكة الناس v2.10 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
+log("📹 v2.10: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
+log("🔎 v2.10: اكتشاف العقد أُصلح — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل عقدة تعلن معرّفها الفعلي في hello حتى تُكتشف. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
 log("🔄 v2.5: جلستك محفوظة على جهازك (العقدة والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس العقدة. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
 log("🔒 الخصوصية من البداية: طلب المكالمة مغلف على طبقتين ومشفر للهدف بس، والوسيط يمرر حزمة مبهمة بلا نوع وبلا أسماء ولا يعرف أن مكالمة بدأت — والتغطية الوهمية شغالة كل ثانيتين. المكالمة مفتوحة بلا حد زمني وتنتهي عندما تقفل بإيدك.");
 log("🤖 الذكاء الاصطناعي v2.3: تنقية الصوت شغالة افتراضياً (عبر إعدادات المتصفح — ليست RNNoise). الترجمة صوت+نص عربي↔إنجليزي: تتكلم بلغتك، والطرف التاني يشوف النص المترجم ويسمعه بصوت — الترجمة تضيف تأخير 2-4 ثوانٍ. الترجمة تتم محلياً وتُبعت مشفرة، فالوسيط لا يرى النص ولا الترجمة.");
