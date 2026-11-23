@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.8 — مكالمات صوت+فيديو مشفرة</title>
+<title>شبكة الناس v2.9 — دخول تلقائي</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -106,8 +106,8 @@ body{padding-bottom:92px}
 <button id="sosBtnTop" class="btn-red sos-top">🆘 استغاثة</button>
 </header>
 <div class="wrap">
-<h1>📡 شبكة الناس v2.8</h1>
-<p class="sub">مكالمات صوت+فيديو مشفرة — مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
+<h1>📡 شبكة الناس v2.9</h1>
+<p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
 <div id="sosBanner" style="display:none;border:3px solid #ff5252;border-radius:16px;padding:16px;background:#4a0f0f;text-align:center;margin-top:10px"><h3 style="font-size:26px;margin:0 0 8px">🚨 استغاثة واردة!</h3><div id="sosBannerText" style="font-size:18px;font-weight:800"></div><div id="sosBannerMap" style="margin-top:8px"></div><button id="sosAckBtn" class="btn-green" style="margin-top:10px">✅ أنا سمعت الاستغاثة — أوقف التنبيه</button></div>
 <p class="hint" style="text-align:center">الاستغاثة تصل عبر الشبكة فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112 / النجدة عند عدم وجود أي عقدة قريبة.</p>
@@ -115,27 +115,40 @@ body{padding-bottom:92px}
 <div id="cryptoWarn" class="warn" style="display:none">⚠️ التشفير (WebCrypto) مش متاح في السياق ده — افتح الصفحة من <b>https</b> أو من <b>localhost</b> (سيرفر محلي) مش من ملف file:// مباشرة. التشفير شرط أساسي، فالرسايل والصوت مش هيتبعتوا لحد ما يشتغل.</div>
 
 <section class="tab-page active" id="tab-calls">
-<div class="card">
-<h2>ادخل الشبكة</h2>
-<div class="row">
+<div class="card" id="autoEntryCard">
+<h2>🚀 ادخل الشبكة</h2>
+<p class="hint">الدخول التلقائي يضع الجميع في غرفة واحدة عامة — الغرف الخاصة تبقى عبر تغيير الغرفة يدوياً.</p>
+<div id="autoCountdown" class="warn" style="display:none;text-align:center"></div>
+<div id="autoNodeGrid" class="nodes" style="margin-top:10px"></div>
+<button id="autoJoinBtn" class="btn-green" style="margin-top:12px">🚀 ادخل تلقائياً — أول عقدة متاحة</button>
+<div id="autoJoinMsg" style="margin-top:8px"></div>
+</div>
+<div id="joinMsg"></div>
+<details class="card" id="manualJoinBox">
+<summary style="cursor:pointer;font-size:20px;font-weight:800">🔧 تغيير الغرفة/العقدة</summary>
+<div class="row" style="margin-top:10px">
 <div><label for="nodeSel">اسم العقدة بتاعتك</label>
-<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option></select></div>
+<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option><option value="D">د — D</option><option value="E">هـ — E</option><option value="F">و — F</option><option value="G">ز — G</option><option value="H">ح — H</option></select></div>
 <div><label for="roomInp">كود الغرفة</label>
 <input id="roomInp" value="sayegh-mesh-1" dir="ltr" autocomplete="off"></div>
 </div>
 <button id="joinBtn" class="btn-green">ادخل الشبكة</button>
-<p class="hint">كل تليفون يختار عقدة مختلفة: واحد أ، واحد ب، واحد ج — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
+<p class="hint">كل تليفون يختار عقدة مختلفة: واحد أ، واحد ب، واحد ج، د، هـ، و، ز، ح — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
 <p class="hint">🔒 تُحفظ جلستك على هذا الجهاز فقط (العقدة والغرفة والإعدادات) — لا تُحفظ مفاتيح التشفير ولا محتوى المكالمات أو الرسائل أبداً. عند تحديث الصفحة ترجع للشبكة تلقائياً بنفس العقدة، من غير ما تدخل من جديد. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.</p>
-<div id="joinMsg"></div>
 <button id="copyBtn" class="btn-grey">📋 انسخ لينك الغرفة</button>
 <p class="hint">ابعت اللينك للتليفونين التانيين — هيفتحوا نفس الغرفة على طول. اللينك فيه <span dir="ltr">?room=...</span> بس، من غير أي بيانات شخصية.</p>
-</div>
+</details>
 <div class="card">
 <h2>حالة العقد — مين متصل؟</h2>
-<div class="nodes">
+<div class="nodes" id="nodeCards">
 <div class="node" id="card-A"><div class="letter">أ</div><span class="dot off" id="dot-A"></span><div class="st" id="st-A">غير متصل</div><div class="key" id="key-A">—</div></div>
 <div class="node" id="card-B"><div class="letter">ب</div><span class="dot off" id="dot-B"></span><div class="st" id="st-B">غير متصل</div><div class="key" id="key-B">—</div></div>
 <div class="node" id="card-C"><div class="letter">ج</div><span class="dot off" id="dot-C"></span><div class="st" id="st-C">غير متصل</div><div class="key" id="key-C">—</div></div>
+<div class="node" id="card-D"><div class="letter">د</div><span class="dot off" id="dot-D"></span><div class="st" id="st-D">غير متصل</div><div class="key" id="key-D">—</div></div>
+<div class="node" id="card-E"><div class="letter">هـ</div><span class="dot off" id="dot-E"></span><div class="st" id="st-E">غير متصل</div><div class="key" id="key-E">—</div></div>
+<div class="node" id="card-F"><div class="letter">و</div><span class="dot off" id="dot-F"></span><div class="st" id="st-F">غير متصل</div><div class="key" id="key-F">—</div></div>
+<div class="node" id="card-G"><div class="letter">ز</div><span class="dot off" id="dot-G"></span><div class="st" id="st-G">غير متصل</div><div class="key" id="key-G">—</div></div>
+<div class="node" id="card-H"><div class="letter">ح</div><span class="dot off" id="dot-H"></span><div class="st" id="st-H">غير متصل</div><div class="key" id="key-H">—</div></div>
 </div>
 <div class="stats" style="margin-top:12px">
 <div class="stat"><b id="statNodes">0</b><span>عقدة متصلة</span></div>
@@ -213,6 +226,11 @@ body{padding-bottom:92px}
 <div class="remote-wrap" id="videoWrap-A" style="text-align:center"><img id="videoImg-A" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-A" style="font-size:14px"></div></div>
 <div class="remote-wrap" id="videoWrap-B" style="text-align:center"><img id="videoImg-B" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-B" style="font-size:14px"></div></div>
 <div class="remote-wrap" id="videoWrap-C" style="text-align:center"><img id="videoImg-C" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-C" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-D" style="text-align:center"><img id="videoImg-D" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-D" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-E" style="text-align:center"><img id="videoImg-E" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-E" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-F" style="text-align:center"><img id="videoImg-F" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-F" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-G" style="text-align:center"><img id="videoImg-G" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-G" style="font-size:14px"></div></div>
+<div class="remote-wrap" id="videoWrap-H" style="text-align:center"><img id="videoImg-H" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-H" style="font-size:14px"></div></div>
 </div>
 <div class="card">
 <h2>👥 المكالمة الجماعية</h2>
@@ -363,7 +381,7 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.8 — صوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي v2.9 — دخول تلقائي (اختيار أو تلقائي على أول مفتاح متاح) فوق صوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
 </div>
@@ -400,7 +418,7 @@ function sanitizeRoom(v){
   v=(v||"").trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,"");
   return v||"sayegh-mesh-1";
 }
-function nodeLabel(n){ return n==="A"?"أ — A":n==="B"?"ب — B":"ج — C"; }
+function nodeLabel(n){ return arLetter(n)+" — "+n; }
 function fmtDuration(sec){
   var m=Math.floor(sec/60), s=sec%60;
   return (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
@@ -431,14 +449,38 @@ function loadSession(){
     if(!raw) return null;
     var s=JSON.parse(raw);
     if(!s || !s.node || !s.room) return null;
-    if(NODES.indexOf(s.node)<0) return null;
+    if(NODES.indexOf(s.node)<0 && !/^G\d{4}$/.test(s.node||"")) return null;
+    if(/^G\d{4}$/.test(s.node) && NODES.indexOf(s.node)<0) NODES.push(s.node);
     return s;
   }catch(e){ return null; }
 }
 function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
 
 // ---------- state (v1 preserved) ----------
-var NODES=["A","B","C"];
+var NODES=["A","B","C","D","E","F","G","H"];
+// v2.9: خريطة الحروف العربية للعقد (أ..ح) + عقد الضيف (Gnnnn -> ضيف-nnnn)
+var AR_LETTER={A:"أ",B:"ب",C:"ج",D:"د",E:"هـ",F:"و",G:"ز",H:"ح"};
+function arLetter(n){
+  if(AR_LETTER[n]) return AR_LETTER[n];
+  if(/^G\d{4}$/.test(n||"")) return "ضيف-"+n.slice(1);
+  return n;
+}
+function ensureNodeCard(nd){
+  if($("card-"+nd)) return;
+  var grid=$("nodeCards"); if(!grid) return;
+  var d=document.createElement("div");
+  d.className="node"; d.id="card-"+nd;
+  d.innerHTML='<div class="letter">'+arLetter(nd)+'</div><span class="dot off" id="dot-'+nd+'"></span><div class="st" id="st-'+nd+'">غير متصل</div><div class="key" id="key-'+nd+'">—</div>';
+  grid.appendChild(d);
+}
+function ensureVideoWrap(nd){
+  if($("videoImg-"+nd)) return;
+  var vg=$("videoGrid"); if(!vg) return;
+  var w=document.createElement("div");
+  w.className="remote-wrap"; w.id="videoWrap-"+nd; w.style.cssText="text-align:center";
+  w.innerHTML='<img id="videoImg-'+nd+'" style="display:none;width:160px;height:120px;border-radius:12px;border:2px solid #33402f;background:#000;object-fit:cover"><div id="videoLab-'+nd+'" style="font-size:14px"></div>';
+  vg.appendChild(w);
+}
 var myNode="", myRoom="", myId="", peer=null, myKeyPair=null, myPubJwk=null;
 var conns={};
 var connStatus={};
@@ -535,7 +577,7 @@ function speakTranslated(text, lang){
 function showIncomingTrans(p, fromNode){
   // وصلت ترجمة مشفرة بعد فك التشفير عندي فقط.
   if(!p || !p.orig || !p.trans) return;
-  addTransEntry(p.orig, p.origLang||"ar", p.trans, p.transLang||"en", fromNode==="A"?"أ":fromNode==="B"?"ب":"ج");
+  addTransEntry(p.orig, p.origLang||"ar", p.trans, p.transLang||"en", arLetter(fromNode));
   log("📝 وصلت ترجمة مشفرة 🔒 من <b>"+fromNode+"</b> — تُعرض وتُنطق محلياً.");
   speakTranslated(p.trans, p.transLang||"en");
 }
@@ -750,7 +792,9 @@ function updateTopStatus(){
 }
 function updateCards(){
   NODES.forEach(function(nd){
+    ensureNodeCard(nd);
     var dot=$("dot-"+nd), st=$("st-"+nd), key=$("key-"+nd);
+    if(!dot||!st||!key) return;
     if(nd===myNode){
       dot.className="dot on"; st.textContent="دي عقدتك ✓"+(isSuperNode?" ⭐ نقطة ثابتة":"");
       key.textContent = myKeyPair ? "🔒 مفتاحي جاهز (ECDH)" : "⏳ بيولد المفتاح...";
@@ -779,7 +823,7 @@ function refreshTargetOptions(){
 }
 function updateCallBtnLabel(){
   var t=$("targetSel").value;
-  if(t && t!==myNode) $("callBtn").textContent="📞 اتصل بـ "+(t==="A"?"أ":t==="B"?"ب":"ج")+" ("+t+")";
+  if(t && t!==myNode) $("callBtn").textContent="📞 اتصل بـ "+(arLetter(t))+" ("+t+")";
 }
 function setModeUI(){
   var m=document.querySelector('input[name="mode"]:checked').value;
@@ -794,7 +838,7 @@ $("targetSel").addEventListener("change", function(){ updateCallBtnLabel(); refr
   try{
     var q=new URLSearchParams(location.search);
     var r=q.get("room"); if(r) $("roomInp").value=sanitizeRoom(r);
-    var n=q.get("node"); if(n && NODES.indexOf(n.toUpperCase())>=0) $("nodeSel").value=n.toUpperCase();
+    var n=q.get("node"); if(n && NODES.indexOf(n.toUpperCase())>=0){ $("nodeSel").value=n.toUpperCase(); urlNodeParam=n.toUpperCase(); }
   }catch(e){}
 })();
 
@@ -808,8 +852,11 @@ function initPeer(attempt, isAuto){
     $("joinBtn").disabled=false; return;
   }
   peer.on("open", function(id){
-    if(isAuto){
-      var nodeAr = myNode==="A"?"أ":myNode==="B"?"ب":"ج";
+    if(isAuto && autoJoinFresh){
+      $("joinMsg").innerHTML='<div class="ok">✅ دخلت تلقائياً — عقدة '+arLetter(myNode)+'، غرفة '+myRoom+' — أي حد يفتح اللينك يدخل هنا معاك.</div>';
+      log("✅ دخلت تلقائياً — عقدة <b>"+myNode+"</b>، غرفة <b>"+myRoom+"</b> — أي حد يفتح اللينك يدخل هنا معاك.");
+    } else if(isAuto){
+      var nodeAr = arLetter(myNode);
       $("joinMsg").innerHTML='<div class="ok">✅ رجّعناك للشبكة تلقائياً — عقدة '+nodeAr+'، غرفة '+myRoom+' — المعرّف: <span dir="ltr">'+id+'</span></div>'
         +(autoHadCall?'<div class="warn">⚠️ انقطعت المكالمة بسبب تحديث الصفحة — رجعت للشبكة، اتصل مرة أخرى.</div>':'');
       log("✅ رجعت للشبكة تلقائياً بعد الريفريش — عقدة <b>"+myNode+"</b>، غرفة <b>"+myRoom+"</b>"+(autoHadCall?" — المكالمة السابقة انقطعت حتماً بتحديث الصفحة.":""));
@@ -818,6 +865,8 @@ function initPeer(attempt, isAuto){
       log("✅ انضميت للغرفة <b>"+myRoom+"</b> كعقدة <b>"+myNode+"</b>");
     }
     saveSession();
+    var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
+    if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
     $("joinBtn").style.display="none"; $("leaveBtn").style.display="block";
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
@@ -875,6 +924,8 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
 }
 
 $("joinBtn").addEventListener("click", function(){
+  if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
+  autoJoinFresh=false;
   doJoin($("nodeSel").value, sanitizeRoom($("roomInp").value), null, false);
 });
 $("leaveBtn").addEventListener("click", function(){
@@ -1864,7 +1915,7 @@ function renderPrivateCallList(){
     div.innerHTML='<div style="font-size:18px;font-weight:800">'+nodeLabel(nd)+' — '+(ready?"متصل ✓ 🔒 مفتاح جاهز":"⏳ لسه مش جاهز")+'</div>';
     var b=document.createElement("button");
     b.className="btn-green";
-    b.textContent="📞 اتصل بـ "+(nd==="A"?"أ":nd==="B"?"ب":"ج")+" — طلب خاص 🔒";
+    b.textContent="📞 اتصل بـ "+(arLetter(nd))+" — طلب خاص 🔒";
     b.disabled=!ready || callState!=="idle";
     b.addEventListener("click", function(){
       $("targetSel").value=nd; updateCallBtnLabel(); refreshCallAvailability();
@@ -2067,7 +2118,7 @@ $("sosBtnTop").addEventListener("click", sendSOS);
 var _sosCallBtn=$("sosBtnCall"); if(_sosCallBtn) _sosCallBtn.addEventListener("click", sendSOS);
 function showIncomingSOS(p, fromNode){
   var t=new Date(p.time||Date.now()).toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
-  var txt="🚨 استغاثة من "+(fromNode==="A"?"أ":fromNode==="B"?"ب":"ج")+" ("+fromNode+") — الوقت: "+t;
+  var txt="🚨 استغاثة من "+(arLetter(fromNode))+" ("+fromNode+") — الوقت: "+t;
   var mapEl=$("sosBannerMap");
   if(p.lat!==null && p.lat!==undefined && p.lng!==null && p.lng!==undefined){
     txt+=" — الموقع: "+p.lat.toFixed(5)+", "+p.lng.toFixed(5);
@@ -2419,7 +2470,7 @@ function renderGroupMembers(){
   box.innerHTML="";
   var me=document.createElement("div");
   me.className="dash-item";
-  me.innerHTML="<b>⭐ أنت ("+(myNode==="A"?"أ":myNode==="B"?"ب":"ج")+")</b> — "+(groupCall.muted?"🔇 كتم صوتي":"🎙️ صوتي مفتوح")+' <span id="mySpeakTag"></span>';
+  me.innerHTML="<b>⭐ أنت ("+(arLetter(myNode))+")</b> — "+(groupCall.muted?"🔇 كتم صوتي":"🎙️ صوتي مفتوح")+' <span id="mySpeakTag"></span>';
   box.appendChild(me);
   Object.keys(groupCall.members).forEach(function(nd){
     var div=document.createElement("div");
@@ -2653,6 +2704,7 @@ function clearVideoFrames(){
 }
 function showVideoFrame(fromNode, p){
   if(!p || !p.jpeg) return;
+  ensureVideoWrap(fromNode);
   var img=$("videoImg-"+fromNode);
   if(!img) return;
   var wrap=$("videoWrap-"+fromNode); if(wrap) wrap.classList.add("live");
@@ -2662,7 +2714,7 @@ function showVideoFrame(fromNode, p){
   img.style.opacity="1";
   videoLastFrameAt[fromNode]=Date.now();
   var lab=$("videoLab-"+fromNode);
-  if(lab) lab.textContent=(fromNode==="A"?"أ":fromNode==="B"?"ب":"ج")+" 📹";
+  if(lab) lab.textContent=(arLetter(fromNode))+" 📹";
 }
 async function switchCamera(){
   videoFacing = videoFacing==="user" ? "environment" : "user";
@@ -2694,8 +2746,9 @@ function showTab(name){
 })();
 
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.8 — تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات. اختار عقدتك وكود الغرفة ودوس «ادخل الشبكة»، وبعدين اختار مين من تبويب المكالمات.");
+log("👋 أهلاً بيك في شبكة الناس v2.9 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
 log("📹 v2.8: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
+log("🚀 v2.9: دخول تلقائي — اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. الجلسة المحفوظة لها الأولوية، والأذونات تُطلب فقط عند بدء مكالمة.");
 log("🔄 v2.5: جلستك محفوظة على جهازك (العقدة والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس العقدة. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
 log("🔒 الخصوصية من البداية: طلب المكالمة مغلف على طبقتين ومشفر للهدف بس، والوسيط يمرر حزمة مبهمة بلا نوع وبلا أسماء ولا يعرف أن مكالمة بدأت — والتغطية الوهمية شغالة كل ثانيتين. المكالمة مفتوحة بلا حد زمني وتنتهي عندما تقفل بإيدك.");
 log("🤖 الذكاء الاصطناعي v2.3: تنقية الصوت شغالة افتراضياً (عبر إعدادات المتصفح — ليست RNNoise). الترجمة صوت+نص عربي↔إنجليزي: تتكلم بلغتك، والطرف التاني يشوف النص المترجم ويسمعه بصوت — الترجمة تضيف تأخير 2-4 ثوانٍ. الترجمة تتم محلياً وتُبعت مشفرة، فالوسيط لا يرى النص ولا الترجمة.");
@@ -2711,10 +2764,157 @@ updateNoiseUI();
     if(w){ w.style.display="block"; w.textContent="⚠️ الترجمة الصوتية غير متاحة في هذا المتصفح — جرّب Chrome على أندرويد. المكالمة الأصلية المشفرة مستمرة."; }
   }
 })();
+
+// ---------- v2.9: دخول تلقائي — اختيار يدوي أو تلقائي على أول مفتاح متاح ----------
+// عند فتح اللينك تظهر شاشة دخول: قائمة العقد (أ..ح) مع حالة كل عقدة (متاح/مشغول،
+// تُفحص قبل العرض عبر محاولة حجز المعرّف لدى PeerJS) + زر كبير "🚀 ادخل تلقائياً"
+// + عدّ تنازلي 3 ثوانٍ للدخول التلقائي إن لم يختر المستخدم.
+// الجلسة المحفوظة (v2.5) لها الأولوية كما قبل؛ و?room= يحدد الغرفة، و?node= يدخل بها مباشرة.
+// لا تُطلب أي أذونات (ميكروفون/كاميرا) عند الدخول — الأذونات فقط عند بدء مكالمة.
+// إن امتلأت الحروف كلها يُولَّد ضيف عشوائي (ضيف-nnnn).
+var AUTO_NODES=["A","B","C","D","E","F","G","H"];
+var autoRoom="sayegh-mesh-1";
+var autoAvail={};
+var autoProbed=false, autoJoined=false, autoJoinFresh=false, autoJoinRequested=false;
+var autoCountdownInt=null, autoCountdownLeft=0, autoPendingChoice=null;
+var urlNodeParam=null;
+function autoEntryRoom(){ try{ return sanitizeRoom($("roomInp").value)||"sayegh-mesh-1"; }catch(e){ return "sayegh-mesh-1"; } }
+function probeNodeAvailability(node, room){
+  // محاولة حجز المعرّف: إن فُتح فهو متاح (نحرره فوراً)، وإن رُفض unavailable-id فهو مشغول.
+  return new Promise(function(resolve){
+    var pid=makePeerId(room, node), p=null;
+    try{ p=new Peer(pid); }catch(e){ resolve("unknown"); return; }
+    var done=false;
+    var to=setTimeout(function(){ if(done) return; done=true; try{p.destroy();}catch(e){} resolve("unknown"); }, 3000);
+    p.on("open", function(){ if(done) return; done=true; clearTimeout(to); try{p.destroy();}catch(e){} resolve("free"); });
+    p.on("error", function(err){ if(done) return; done=true; clearTimeout(to); try{p.destroy();}catch(e){} resolve(err && err.type==="unavailable-id" ? "busy" : "unknown"); });
+  });
+}
+function autoNodeStatusText(st){
+  return st==="free" ? "✅ متاح" : st==="busy" ? "🔴 مشغول" : st==="unknown" ? "❓ غير مؤكد" : "⏳ جارٍ الفحص…";
+}
+function renderAutoEntry(){
+  var grid=$("autoNodeGrid"); if(!grid) return;
+  AUTO_NODES.forEach(function(nd){
+    var b=$("autoNodeBtn-"+nd);
+    var st=autoAvail[nd]||"checking";
+    var html="<b style='font-size:26px'>"+arLetter(nd)+"</b><br><span style='font-size:13px'>"+autoNodeStatusText(st)+"</span>";
+    if(!b){
+      b=document.createElement("button");
+      b.className="btn-grey"; b.id="autoNodeBtn-"+nd;
+      b.style.cssText="padding:10px 4px;font-size:18px";
+      b.addEventListener("click", function(){ chooseAutoNode(nd); });
+      grid.appendChild(b);
+    }
+    b.innerHTML=html;
+  });
+}
+function chooseAutoNode(nd){
+  if(autoJoined || (peer && myNode)) return;
+  var st=autoAvail[nd];
+  var m=$("autoJoinMsg");
+  if(st==="busy"){
+    if(m) m.innerHTML='<div class="warn">🔴 العقدة '+arLetter(nd)+' مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.</div>';
+    log("🔴 العقدة "+nd+" مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.");
+    return;
+  }
+  if(st==="checking"){
+    autoPendingChoice=nd;
+    if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص العقدة '+arLetter(nd)+'…</div>';
+    return;
+  }
+  // "unknown": نحاول الدخول بها على أي حال — وإن كانت محجوزة فعلاً، بديل v2.5 يتصرف.
+  cancelAutoCountdown();
+  autoJoinFresh=true; autoJoined=true;
+  log("🚀 اخترت العقدة "+nd+" — بدخل بها...");
+  doJoin(nd, autoEntryRoom(), null, true);
+}
+function cancelAutoCountdown(){ if(autoCountdownInt){ clearInterval(autoCountdownInt); autoCountdownInt=null; } var c=$("autoCountdown"); if(c) c.style.display="none"; }
+function startAutoCountdown(){
+  cancelAutoCountdown();
+  autoCountdownLeft=3;
+  var c=$("autoCountdown"); if(!c) return;
+  c.style.display="block";
+  var tick=function(){
+    if(autoJoined || (peer && myNode)){ cancelAutoCountdown(); return; }
+    if(autoCountdownLeft<=0){ cancelAutoCountdown(); autoJoinFirstFree(); return; }
+    c.textContent="⏳ سيتم الدخول تلقائياً خلال "+autoCountdownLeft+" ثوانٍ — دوس على عقدة لاختيارها.";
+    autoCountdownLeft--;
+  };
+  tick();
+  autoCountdownInt=setInterval(tick, 1000);
+}
+function autoJoinFirstFree(){
+  if(autoJoined || (peer && myNode)) return;
+  if(!autoProbed){
+    autoJoinRequested=true;
+    var m=$("autoJoinMsg"); if(m) m.innerHTML='<div class="warn">⏳ جارٍ فحص العقد المتاحة…</div>';
+    return;
+  }
+  var free=null, unk=null;
+  AUTO_NODES.forEach(function(nd){ if(autoAvail[nd]==="free" && !free) free=nd; else if(autoAvail[nd]==="unknown" && !unk) unk=nd; });
+  var pick=free||unk;
+  if(!pick){ joinAsGuest(); return; }
+  autoJoinFresh=true; autoJoined=true;
+  log("🚀 دخول تلقائي — أول عقدة متاحة: "+pick);
+  doJoin(pick, autoEntryRoom(), null, true);
+}
+function joinAsGuest(){
+  if(autoJoined || (peer && myNode)) return;
+  var g="G"+Math.floor(1000+Math.random()*9000);
+  if(NODES.indexOf(g)<0) NODES.push(g);
+  ensureNodeCard(g);
+  autoJoinFresh=true; autoJoined=true;
+  log("⚠️ كل العقد أ..ح مشغولة — بدخل كضيف "+g+" («ضيف-"+g.slice(1)+"»).");
+  doJoin(g, autoEntryRoom(), null, true);
+}
+function startAutoEntry(){
+  var card=$("autoEntryCard"); if(!card) return;
+  if(typeof Peer==="undefined" || !cryptoOK){
+    var m=$("autoJoinMsg");
+    if(m) m.innerHTML='<div class="err">❌ الدخول التلقائي غير متاح — PeerJS أو التشفير غير متاح. ادخل يدوياً من «تغيير الغرفة/العقدة».</div>';
+    return;
+  }
+  autoRoom=autoEntryRoom();
+  AUTO_NODES.forEach(function(nd){ autoAvail[nd]="checking"; });
+  renderAutoEntry();
+  log("🚀 فحص العقد المتاحة في غرفة "+autoRoom+"…");
+  Promise.all(AUTO_NODES.map(function(nd){
+    return probeNodeAvailability(nd, autoRoom).then(function(st){
+      autoAvail[nd]=st;
+      if(autoPendingChoice===nd){
+        var pc=autoPendingChoice; autoPendingChoice=null;
+        if(st==="free") chooseAutoNode(pc);
+        else if(st==="busy"){ var m2=$("autoJoinMsg"); if(m2) m2.innerHTML='<div class="warn">🔴 العقدة '+arLetter(pc)+' مشغولة — اختر عقدة متاحة أو ادخل تلقائياً.</div>'; }
+      }
+      renderAutoEntry();
+    });
+  })).then(function(){
+    autoProbed=true;
+    renderAutoEntry();
+    if(autoJoined || (peer && myNode)) return;
+    if(autoJoinRequested){ autoJoinRequested=false; autoJoinFirstFree(); return; }
+    startAutoCountdown();
+  });
+  var aj=$("autoJoinBtn");
+  if(aj) aj.addEventListener("click", function(){
+    if(autoJoined || (peer && myNode)) return;
+    cancelAutoCountdown();
+    autoJoinFirstFree();
+  });
+}
+
 // ---------- v2.5: auto-rejoin from saved session ----------
 (function(){
   var s=loadSession();
-  if(!s) return;
+  if(!s){
+    // v2.9: لا جلسة محفوظة — شاشة دخول: اختيار يدوي أو تلقائي (مع عدّ تنازلي 3 ثوانٍ).
+    if(urlNodeParam){ setTimeout(function(){ autoJoinFresh=true; doJoin(urlNodeParam, autoEntryRoom(), null, true); }, 300); return; }
+    startAutoEntry();
+    return;
+  }
+  autoJoinFresh=false;
+  var aec0=$("autoEntryCard"); if(aec0) aec0.style.display="none";
   autoHadCall=!!s.inCall;
   isSuperNode=!!s.superNode;
   if(s.myLang) myLang=s.myLang;
