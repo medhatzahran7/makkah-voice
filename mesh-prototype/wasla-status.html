@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>وصلة — حالة البناء المباشرة</title>
+<style>
+  body { background:#14100a; color:#f5e9c8; font-family: system-ui, 'Segoe UI', Tahoma, sans-serif; margin:0; padding:20px; }
+  .card { max-width:640px; margin:0 auto; background:#1e1810; border:1px solid #b8860b; border-radius:16px; padding:22px; }
+  h1 { color:#d4a853; margin:0 0 4px; font-size:26px; }
+  .sub { color:#c9a86a; margin:0 0 18px; font-size:14px; }
+  .row { display:flex; justify-content:space-between; gap:10px; padding:12px 4px; border-top:1px solid #3a2f1a; font-size:17px; }
+  .row b { color:#ffd97a; }
+  .ok { color:#7be495; } .wait { color:#ffcf5c; } .bad { color:#ff8a7a; }
+  .log { background:#0d0a06; border:1px solid #3a2f1a; border-radius:10px; padding:12px; font-family: monospace; font-size:13px; direction:ltr; text-align:left; white-space:pre-wrap; color:#d8c690; margin-top:14px; }
+  .note { color:#bfa77a; font-size:13px; margin-top:16px; line-height:1.7; }
+  .screens { font-size:14px; color:#e8d5a0; line-height:2; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>📱 وصلة — حالة البناء المباشرة</h1>
+  <p class="sub">الصفحة دي بتتحدث لوحدها كل 30 ثانية — وأول ما ملف APK يطلع، رابط التنزيل هيظهر هنا.</p>
+
+  <div class="row"><span>🖥️ واجهة التطبيق (الشاشات)</span><b class="ok">✅ مبنية — 11 شاشة</b></div>
+  <div class="screens">الترحيب • الرئيسية • جهات الاتصال • لوحة المفاتيح • السجل • الدردشات • المحادثة • الشبكة • الإعدادات • شاشة المكالمة • المكالمة الجماعية</div>
+  <div class="row"><span>📦 ملف APK</span><b class="wait">⏳ قيد البناء — المحاولة رقم 8 شغالة الآن (بدأت 21:58)</b></div>
+  <div class="row"><span>🔧 خادم الإشارة الخاص</span><b class="ok">✅ جاهز + اختباراته شغالة</b></div>
+  <div class="row"><span>🔒 التشفير (Signal)</span><b class="ok">✅ الحزمة مبنية</b></div>
+
+  <div class="log">BUILD 7 (21:40 → 21:57): FAILED in 17m 27s
+  السبب: رخصة Android SDK Build-Tools 36 غير مقبولة
+  (License for package Android SDK Build-Tools 36 not accepted)
+  → تم قبول الرخصة وإعادة البناء فوراً.
+
+BUILD 8 (started 21:58): RUNNING NOW
+  flutter build apk --release — assembleRelease...</div>
+
+  <p class="note">ملحوظة بصراحة: شغل زهران بيتم في ملفات وأوامر على جهازه — مفيش شاشة مشاركة — لكن دي أقرب حاجة للمشاهدة الحية: حالة البناء وسجلها قدامك وبتتحدث لوحدها. آخر تحديث للصفحة: 21:58 بتوقيت القاهرة.</p>
+</div>
+</body>
+</html>
