@@ -25,7 +25,7 @@
 
   <div class="row"><span>🖥️ واجهة التطبيق (الشاشات)</span><b class="ok">✅ مبنية — 11 شاشة</b></div>
   <div class="screens">الترحيب • الرئيسية • جهات الاتصال • لوحة المفاتيح • السجل • الدردشات • المحادثة • الشبكة • الإعدادات • شاشة المكالمة • المكالمة الجماعية</div>
-  <div class="row"><span>📦 ملف APK</span><b class="wait">⏳ قيد البناء — المحاولة رقم 8 شغالة الآن (بدأت 21:58)</b></div>
+  <div class="row"><span>📦 ملف APK</span><b class="wait">⏳ قيد البناء — المحاولتان 8 و9 فشلتا بنفس خطأ الإعدادات؛ الإصلاح الدقيق أُرسل للبناء والمحاولة 10 قادمة</b></div>
   <div class="row"><span>🔧 خادم الإشارة الخاص</span><b class="ok">✅ جاهز + اختباراته شغالة</b></div>
   <div class="row"><span>🔒 التشفير (Signal)</span><b class="ok">✅ الحزمة مبنية</b></div>
 
@@ -34,10 +34,17 @@
   (License for package Android SDK Build-Tools 36 not accepted)
   → تم قبول الرخصة وإعادة البناء فوراً.
 
-BUILD 8 (started 21:58): RUNNING NOW
-  flutter build apk --release — assembleRelease...</div>
+BUILD 8 (21:58 → 22:10): FAILED in 12m 10s
+  السبب: file_picker مترجم ضد android-34 بينما
+  flutter_plugin_android_lifecycle يتطلب compileSdk 36.
 
-  <p class="note">ملحوظة بصراحة: شغل زهران بيتم في ملفات وأوامر على جهازه — مفيش شاشة مشاركة — لكن دي أقرب حاجة للمشاهدة الحية: حالة البناء وسجلها قدامك وبتتحدث لوحدها. آخر تحديث للصفحة: 21:58 بتوقيت القاهرة.</p>
+BUILD 9 (22:11): FAILED in 21s — نفس خطأ المحاولة 8 تماماً
+  (الإصلاح لم يدخل فعلياً قبل إعادة البناء).
+  → أُرسل الإصلاح الدقيق للبناء: compileSdk = 36 في
+  android/app/build.gradle.kts + تحديث file_picker +
+  اختبار دخان debug قبل أي بناء release كامل.</div>
+
+  <p class="note">ملحوظة بصراحة: شغل زهران بيتم في ملفات وأوامر على جهازه — مفيش شاشة مشاركة — لكن دي أقرب حاجة للمشاهدة الحية: حالة البناء وسجلها قدامك وبتتحدث لوحدها. آخر تحديث للصفحة: 22:12 بتوقيت القاهرة.</p>
 </div>
 </body>
 </html>
