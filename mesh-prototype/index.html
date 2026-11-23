@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.13 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v2.13.1 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -118,7 +118,7 @@ body{padding-bottom:92px}
 .call-mode-btns{display:flex;gap:8px;margin-top:8px}
 .call-mode-btns button{margin-top:0}
 
-/* ===== v2.13: واجهة تليفون ===== */
+/* ===== v2.13.1: واجهة تليفون ===== */
 #phoneStatusBar{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;background:#000;color:#e8f5e9;font-size:14px;font-weight:700;border-radius:0 0 14px 14px}
 #phoneStatusBar .ps-icons{letter-spacing:1px;direction:ltr}
 .contact-row{display:flex;align-items:center;gap:12px;margin:8px 0;padding:12px;border:1px solid #33402f;border-radius:16px;background:#111811;text-align:right}
@@ -165,7 +165,7 @@ body{padding-bottom:92px}
 <h1>شبكة الناس</h1>
 <div class="hero-tag">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="hero-badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
-<div class="hero-ver">الإصدار v2.13 — واجهة تليفون 📱</div>
+<div class="hero-ver">الإصدار v2.13.1 — واجهة تليفون 📱</div>
 <p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
 </div>
@@ -262,7 +262,7 @@ body{padding-bottom:92px}
 <div id="callIdle">
 <p class="hint" style="text-align:center">لا توجد مكالمة جارية — اختار هدفاً واتصل، أو استقبل مكالمة واردة.</p>
 <label for="targetSel">اختار البرج الهدف</label>
-<select id="targetSel"><option value="2">برج ٢</option><option value="3">برج ٣</option></select>
+<select id="targetSel"><option value="1">برج ١</option><option value="2">برج ٢</option><option value="3">برج ٣</option><option value="4">برج ٤</option><option value="5">برج ٥</option><option value="6">برج ٦</option><option value="7">برج ٧</option><option value="8">برج ٨</option></select>
 <button id="callBtn" class="btn-green" disabled>📞 اتصل</button>
 <div id="callReadyMsg" class="hint" style="text-align:center">⏳ زر الاتصال يشتغل بعد ما يظهر "🔒 مفتاح مشترك جاهز" مع البرج الهدف في الاتجاهين.</div>
 <p class="hint">هيتبعت طلب خاص مشفر للهدف اللي اخترته (مباشرة أو عبر الوسيط حسب الوضع) — لا أحد غير الهدف يعرف أنه طلب مكالمة. الطرف التاني يرد أو يرفض. لما يرد، المكالمة تفضل مفتوحة والطرفان يتكلمان بحرية في نفس الوقت — من غير حد ٥ ثواني.</p>
@@ -488,7 +488,7 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.13 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي v2.13.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p class="small" style="text-align:center">نموذج أولي — الفيديو إطارات منخفضة، الترجمة تحتاج إنترنت، الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 <details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار أبراج متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
@@ -606,6 +606,7 @@ var helloSent={};
 // v2.12: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
 var actualPeerIds={};
 var detIdRetries=0, usedSuffixFallback=false, joinGen=0, lastSigWarn=0;
+var serverConnected=false, serverRetryTimer=null, serverRetryCount=0, serverWasDown=false; // v2.13.1: حالة سيرفر الإشارة + حلقة إعادة الاتصال
 var pendingTests={};
 var lastHops=null, lastMs=null;
 var cryptoOK = !!(window.crypto && window.crypto.subtle);
@@ -941,9 +942,40 @@ function updateTopStatus(){
   var el=$("topStatus"), dot=$("topDot");
   if(!el) return;
   var n=0; NODES.forEach(function(nd){ if(nd===myNode) n++; else if(connStatus[nd]==="on") n++; });
-  var on = !!(peer && myNode);
+  // v2.13.1: لا "متصل ✓" كاذبة — وجود كائن الـ Peer وحده لا يعني أن السيرفر متصل.
+  if(peer && myNode && !serverConnected){
+    el.textContent="⚠️ غير متصل بسيرفر الإشارة — جارٍ إعادة الاتصال...";
+    if(dot) dot.className="dot off";
+    return;
+  }
+  var on = !!(peer && peer.open && myNode && serverConnected);
   el.textContent = on ? ("متصل ✓ — "+n+" برج في الغرفة "+myRoom) : "غير متصل — ادخل الشبكة من تبويب المكالمات";
   if(dot) dot.className = "dot " + (on ? "on" : "off");
+}
+// ---------- v2.13.1: استرداد سيرفر الإشارة + حالة صادقة ----------
+function updateServerStatusUI(){
+  updateTopStatus();
+  if(typeof updatePhoneNet==="function") updatePhoneNet();
+}
+function stopServerReconnectLoop(){
+  if(serverRetryTimer){ clearInterval(serverRetryTimer); serverRetryTimer=null; }
+}
+function startServerReconnectLoop(){
+  if(serverRetryTimer) return; // مؤقت واحد فقط
+  serverRetryCount=0;
+  serverRetryTimer=setInterval(function(){
+    if(!peer || peer.destroyed){ stopServerReconnectLoop(); return; }
+    if(peer.open){ stopServerReconnectLoop(); return; }
+    serverRetryCount++;
+    if(serverRetryCount>12){
+      stopServerReconnectLoop();
+      log("❌ تعذّر الوصول لسيرفر الإشارة — تحقق من الإنترنت وحدّث الصفحة.");
+      $("joinMsg").innerHTML='<div class="err">❌ تعذّر الوصول لسيرفر الإشارة بعد دقيقة من المحاولات — تحقق من الإنترنت وحدّث الصفحة.</div>';
+      return;
+    }
+    log("⚠️ إعادة الاتصال بسيرفر الإشارة... (محاولة "+serverRetryCount+" من 12)");
+    try{ peer.reconnect(); }catch(e){}
+  }, 5000);
 }
 function updateCards(){
   NODES.forEach(function(nd){
@@ -996,6 +1028,7 @@ $("targetSel").addEventListener("change", function(){ updateCallBtnLabel(); refr
     var n=q.get("node"); if(n && NODES.indexOf(n.toUpperCase())>=0){ $("nodeSel").value=n.toUpperCase(); urlNodeParam=n.toUpperCase(); }
   }catch(e){}
 })();
+refreshTargetOptions(); // v2.13.1: القائمة كاملة (١..٨ ما عدا برجك) من أول رسم — لا تعتمد على حدث open وحدها
 
 if(typeof Peer==="undefined"){ $("peerWarn").style.display="block"; $("joinBtn").disabled=true; log("❌ مكتبة PeerJS ما اتحملتش — اتأكد من النت وحدّث الصفحة."); }
 if(!cryptoOK){ $("cryptoWarn").style.display="block"; }
@@ -1007,6 +1040,12 @@ function initPeer(attempt, isAuto){
     setExecuteBusy(false); return;
   }
   peer.on("open", function(id){
+    // v2.13.1: سيرفر الإشارة عاد — حالة صادقة، أوقف حلقة إعادة الاتصال، والاكتشاف الفوري يتم أدناه (connectToPeer لكل برج).
+    var recovering = (serverRetryTimer!==null || serverRetryCount>0);
+    serverConnected=true; serverWasDown=false;
+    stopServerReconnectLoop(); serverRetryCount=0;
+    if(recovering) log("✅ رجع الاتصال بسيرفر الإشارة — بحاول اكتشاف الأبراج فوراً...");
+    updateServerStatusUI();
     if(isAuto && autoJoinFresh){
       $("joinMsg").innerHTML='<div class="ok">✅ دخلت تلقائياً — '+towerName(myNode)+', غرفة '+myRoom+' — أي حد يفتح اللينك يدخل هنا معاك.</div>';
       log("✅ دخلت تلقائياً — <b>"+towerName(myNode)+"</b>, غرفة <b>"+myRoom+"</b> — أي حد يفتح اللينك يدخل هنا معاك.");
@@ -1090,10 +1129,24 @@ function initPeer(attempt, isAuto){
       }
       return;
     }
+    if(err && ["network","server-error","socket-error","socket-closed"].indexOf(err.type)>=0){
+      // v2.13.1: خطأ شبكة كان يقتل الـ Peer بصمت بلا أي استرداد — أعد الاتصال تلقائياً.
+      serverConnected=false; serverWasDown=true;
+      updateServerStatusUI();
+      log("⚠️ انقطع الاتصال بسيرفر الإشارة — جارٍ إعادة الاتصال تلقائياً...");
+      $("joinMsg").innerHTML='<div class="warn">⚠️ انقطع الاتصال بسيرفر الإشارة — جارٍ إعادة الاتصال تلقائياً...</div>';
+      try{ peer.reconnect(); }catch(e){}
+      startServerReconnectLoop();
+      return;
+    }
     log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
     setExecuteBusy(false);
   });
   peer.on("disconnected", function(){
+    // v2.13.1: السيرفر مقطوع — حالة صادقة + حلقة إعادة اتصال (المحاولة الفورية أدناه كما كانت).
+    serverConnected=false; serverWasDown=true;
+    updateServerStatusUI();
+    startServerReconnectLoop();
     // v2.12: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
     var now=Date.now();
     if(now-lastSigWarn>30000){
@@ -3157,7 +3210,7 @@ function showTab(name){
 })();
 
 
-// ---------- v2.13: واجهة تليفون ----------
+// ---------- v2.13.1: واجهة تليفون ----------
 var callVolume=1, speakerLoud=true, micMuted=false, keypadTarget="";
 function updatePhoneClock(){
   var c=$("phoneClock"); if(!c) return;
@@ -3165,7 +3218,9 @@ function updatePhoneClock(){
 }
 function updatePhoneNet(){
   var n=$("phoneNet"); if(!n) return;
-  n.textContent=(peer&&myNode)?"📶 متصل":"📶 غير متصل";
+  // v2.13.1: لا "متصل" كاذبة — السيرفر نفسه يجب أن يكون متصلاً.
+  if(peer&&myNode&&!serverConnected){ n.textContent="⚠️ لا إشارة"; return; }
+  n.textContent=(peer&&peer.open&&myNode&&serverConnected)?"📶 متصل":"📶 غير متصل";
 }
 function updatePhoneBattery(){
   var b=$("phoneBatt"); if(!b) return;
@@ -3255,8 +3310,8 @@ function keypadPick(nd){
 })();
 
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.13 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. دخول تلقائي: اختر برجاً متاحاً من خريطة الأبراج أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول برج متاح. تبويبات سفلية: المكالمات / الشبكة / المكالمة / التحكم / الإعدادات.");
-log("📱 v2.13: واجهة تليفون — شريط حالة بالساعة والبطارية، الأبراج كجهات اتصال، لوحة مفاتيح ١..٨، وشاشة مكالمة زي التليفون الحقيقي بزر إنهاء أحمر دائري كبير.");
+log("👋 أهلاً بيك في شبكة الناس v2.13.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. دخول تلقائي: اختر برجاً متاحاً من خريطة الأبراج أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول برج متاح. تبويبات سفلية: المكالمات / الشبكة / المكالمة / التحكم / الإعدادات.");
+log("📱 v2.13.1: واجهة تليفون — شريط حالة بالساعة والبطارية، الأبراج كجهات اتصال، لوحة مفاتيح ١..٨، وشاشة مكالمة زي التليفون الحقيقي بزر إنهاء أحمر دائري كبير.");
 log("📹 v2.12: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
 log("🔎 v2.12: اكتشاف الأبراج — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل برج يعلن معرّفه الفعلي في hello حتى يُكتشف. محاولة الاتصال لها مهلة 10 ثوانٍ ثم تُعاد تلقائياً، فلا يعلق أي برج في «بيحاول يتصل...» إلى الأبد. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
 log("🔄 v2.5: جلستك محفوظة على جهازك (البرج والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس البرج. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
