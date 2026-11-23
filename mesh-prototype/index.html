@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="شبكة الناس">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
-<title>شبكة الناس v3.2 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v3.3 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -92,6 +92,7 @@ video{width:100%;border-radius:12px;background:#000}
 #sosBtn{position:fixed;top:84px;left:10px;z-index:65;background:#c62828;color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px}
 .small{font-size:12px;color:#9db89d}
 /* ===== v3.2 — احترافي ===== */
+/* ===== v3.3 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث ===== */
 .hero .logo{width:64px;height:64px;border-radius:50%;border:2px solid #d4a853}
 .sect{font-size:15px;font-weight:800;color:#d4a853;margin:18px 0 4px;border-bottom:1px solid #2a3d2e;padding-bottom:4px}
 #toast{position:fixed;top:56px;right:50%;transform:translateX(50%);z-index:200;background:#b8860b;color:#fff;font-weight:700;font-size:15px;padding:10px 18px;border-radius:24px;box-shadow:0 4px 18px rgba(0,0,0,.5);display:none;max-width:92%;text-align:center}
@@ -117,6 +118,25 @@ video{width:100%;border-radius:12px;background:#000}
 .nav-badge{display:inline-block;background:#c62828;color:#fff;border-radius:10px;font-size:11px;font-weight:800;min-width:18px;padding:1px 5px;margin-right:3px}
 .fav-star{background:none;border:none;font-size:22px;color:#9db89d;padding:4px}
 .fav-star.on{color:#d4a853}
+
+.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.gcard{position:relative;background:#111811;border:2px solid #2a3d2e;border-radius:14px;overflow:hidden;min-height:150px}
+.gcard video{width:100%;height:150px;object-fit:cover;display:block;background:#000}
+.gcard .gavatar{height:150px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.gcard .gname{position:absolute;bottom:0;right:0;left:0;background:rgba(0,0,0,.65);padding:6px 8px;font-size:14px;font-weight:800;text-align:right}
+.gcard .gspeak{position:absolute;top:6px;right:6px;background:#b8860b;color:#fff;font-size:12px;font-weight:800;padding:3px 8px;border-radius:12px;display:none}
+.gcard.speaking{border-color:#d4a853;box-shadow:0 0 14px rgba(212,168,83,.8)}
+.gcard.speaking .gspeak{display:block}
+.gcard .gvidbtn{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.6);border:1px solid #d4a853;color:#fff;border-radius:50%;width:34px;height:34px;font-size:16px;padding:0}
+.chat-file{border:1px dashed #b8860b;border-radius:10px;padding:8px;margin-top:4px}
+.chat-file .prog{height:8px;background:#2a3d2e;border-radius:4px;overflow:hidden;margin:6px 0}
+.chat-file .prog > div{height:100%;background:#d4a853;width:0%}
+.chat-file audio{width:100%;margin-top:6px}
+.rec-btn.recording{background:#c62828!important;animation:recpulse 1s infinite}
+@keyframes recpulse{0%{box-shadow:0 0 0 0 rgba(198,40,40,.6)}100%{box-shadow:0 0 0 12px rgba(198,40,40,0)}}
+#contactSearch{width:100%;margin:8px 0;padding:10px 12px;border-radius:12px;border:1px solid #2a3d2e;background:#111811;color:#fff;font-size:16px}
+#addPartPicker{display:none;background:#111811;border:1px solid #b8860b;border-radius:12px;padding:10px;margin:8px 0}
+#addPartPicker button{display:block;width:100%;margin:4px 0}
 </style>
 </head>
 <body>
@@ -142,7 +162,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <div class="hero">
 <div class="big"><img class="logo" src="icon.svg" alt="شبكة الناس"></div>
-<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.2</span></h1>
+<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.3</span></h1>
 <div style="font-size:15px">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
 <div class="hint" style="margin-top:8px">مكالمات صوت+فيديو حقيقية عبر WebRTC — دخول تلقائي، مباشر أولاً، مشفرة DTLS-SRTP</div>
@@ -182,6 +202,7 @@ video{width:100%;border-radius:12px;background:#000}
 <div class="card">
 <h2>اتصل بمين؟ 🔒</h2>
 <div class="hint">الأبراج المتصلة الآن — دوس 📞 صوت فقط أو 📹 صوت+فيديو. المكالمة مباشرة بينك وبين البرج — مفيش وسيط في الصوت والفيديو.</div>
+<input id="contactSearch" placeholder="🔍 ابحث بالاسم أو رقم البرج...">
 <div id="privateCallList"><div class="hint">⏳ ادخل الشبكة الأول عشان تشوف المتصلين.</div></div>
 </div>
 <div class="card">
@@ -259,6 +280,7 @@ video{width:100%;border-radius:12px;background:#000}
 <div><button class="cbtn" id="videoToggleBtn">📹</button><div class="lbl">فيديو</div></div>
 <div><button class="cbtn" id="cameraSwitchBtn">🎥</button><div class="lbl">كاميرا</div></div>
 </div>
+<button id="addPartBtn" class="btn-gold" style="margin-top:10px;display:none">➕ إضافة مشارك</button>
 <button id="sosBtnCall" class="btn-red" style="margin-top:10px">🆘 استغاثة SOS</button>
 <button id="endCallBig" title="إنهاء المكالمة">🔴</button>
 <div style="font-weight:800">إنهاء المكالمة</div>
@@ -273,10 +295,12 @@ video{width:100%;border-radius:12px;background:#000}
 </div>
 </div>
 <div id="groupBox" style="display:none">
-<h3>👥 المكالمة الجماعية</h3>
-<div id="groupMembers"></div>
+<h3>👥 المكالمة الجماعية <span id="groupCount"></span></h3>
+<div id="groupMembers" class="group-grid"></div>
+<button id="groupAddBtn" class="btn-gold" style="margin-top:8px">➕ إضافة مشارك</button>
 <button id="groupLeaveBtn" class="btn-red">🚪 مغادرة المكالمة الجماعية</button>
 </div>
+<div id="addPartPicker"><div style="font-weight:800;margin-bottom:6px">اختار برجاً لإضافته للمكالمة الجماعية:</div><div id="addPartList"></div><button id="addPartCancelBtn" class="btn-grey">إلغاء</button></div>
 <audio id="callAudio" autoplay playsinline style="display:none"></audio>
 <div id="remoteAudioWrap" style="display:none"></div>
 </div>
@@ -443,7 +467,7 @@ video{width:100%;border-radius:12px;background:#000}
 <h2>؟ حدود صادقة باختصار</h2>
 <div class="hint">الصوت والفيديو حقيقيان عبر WebRTC ومشفران بـ DTLS-SRTP. الإشارة تمر عبر وسيط MQTT عام (يرى بيانات الإشارة فقط — من يتصل بمن — ولا يسمع الصوت ولا يرى الفيديو). الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجدت أبراج متصلة — ليست بديلاً عن 112. الوسائط تمر عبر TURN مجاني (عدة مزودين: OpenRelay وAnyFirewall وViagenie، TCP أولاً) عند تعذّر الاتصال المباشر — قد يكون أبطأ قليلاً.</div>
 </div>
-<p style="text-align:center" class="small">نموذج أولي v3.2 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p style="text-align:center" class="small">نموذج أولي v3.3 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p style="text-align:center" class="small">نموذج أولي — الصوت والفيديو WebRTC حقيقيان الآن؛ الترجمة تحتاج إنترنت؛ الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 </div>
 </div>
@@ -458,8 +482,12 @@ video{width:100%;border-radius:12px;background:#000}
 <div id="chatMsgs"></div>
 <div class="row" style="padding:0 14px 16px">
 <input id="chatInput" placeholder="اكتب رسالة..." style="flex:1">
+<button id="chatFileBtn" class="btn-gold" title="إرسال ملف" style="padding:10px 12px">📎</button>
+<button id="chatVoiceBtn" class="btn-grey rec-btn" title="رسالة صوتية" style="padding:10px 12px">🎙️</button>
 <button id="chatSendBtn" class="btn-gold" style="padding:10px 16px">➤</button>
+<input type="file" id="chatFileInp" hidden>
 </div>
+<div class="hint" style="padding:0 14px 12px">📎 الملفات تُرسل مشفرة عبر قناة البيانات — حتى 10MB. 🎙️ الرسالة الصوتية حتى 60 ثانية.</div>
 </div>
 
 <div class="bottom-nav">
@@ -474,7 +502,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <script>
 "use strict";
-// ================= شبكة الناس v3.2 — معمارية جديدة + طبقات هندسية + نسخة احترافية =================
+// ================= شبكة الناس v3.3 — معمارية جديدة + طبقات هندسية + نسخة احترافية + مزايا اتصال =================
 // إشارة MQTT عام + صوت/فيديو WebRTC حقيقي + بيانات مشفرة ECDH/AES-GCM
 // لا سيرفر إشارة خاص، لا معرّفات حتمية، لا مقاطع مسجلة، لا إطارات صور.
 var NODES=["1","2","3","4","5","6","7","8"];
@@ -764,7 +792,7 @@ setInterval(function(){
     if(now-presenceMap[tid].ts>15000){
       // الطرف المتصل يبقى ظاهراً "في مكالمة" حتى تنتهي المكالمة فعلاً — لا يُحذف بانتهاء مدة الحضور
       if(tid===callPartner || (groupCall.active && groupCall.members[tid]) || mediaPCs[tid]){ presenceMap[tid].ts=now; return; }
-      delete presenceMap[tid]; changed=true; log("👋 البرج "+tid+" غادر (انتهت مدة حضوره)."); closeDataPC(tid);
+      toast("👋 غادر "+(presenceMap[tid]?displayNameOf(presenceMap[tid]):tid)+" الغرفة."); delete presenceMap[tid]; changed=true; log("👋 البرج "+tid+" غادر (انتهت مدة حضوره)."); closeDataPC(tid);
     }
   });
   if(changed){ renderContacts(); renderKeypad(); renderNetTab(); updateCallAvailability(); updateHeaderCount(); }
@@ -774,7 +802,7 @@ function handlePresence(topic, raw){
   var tid=parts[parts.length-1];
   if(tid===myTowerId) return;
   if(!raw){ // retained فارغة = last-will: البرج غادر
-    if(presenceMap[tid]){ delete presenceMap[tid]; closeDataPC(tid); checkClashResolved(); renderContacts(); renderKeypad(); renderNetTab(); updateCallAvailability(); updateHeaderCount(); }
+    if(presenceMap[tid]){ var _nm=displayNameOf(presenceMap[tid]); delete presenceMap[tid]; closeDataPC(tid); checkClashResolved(); toast("👋 غادر "+_nm+" الغرفة."); renderContacts(); renderKeypad(); renderNetTab(); updateCallAvailability(); updateHeaderCount(); }
     return;
   }
   try{
@@ -930,6 +958,9 @@ function handleDataInner(tid, inner){
   if(inner.k==="sos"){ receiveSOS(tid, inner.p); return; }
   if(inner.k==="trans"){ showTranslation(tid, inner.p); return; }
   if(inner.k==="group-member"){ onGroupMember(tid, inner.p); return; }
+  if(inner.k==="file-meta"){ onFileMeta(tid, inner.p); return; }
+  if(inner.k==="file-chunk"){ onFileChunk(tid, inner.p); return; }
+  if(inner.k==="file-ack"){ onFileAck(tid, inner.p); return; }
 }
 
 // ---------- معالجة إشارات WebRTC عبر MQTT ----------
@@ -967,6 +998,7 @@ async function handleSignal(msg){
   if(msg.type==="call-reject"){ if(callState==="calling" && callTarget===from){ clearCallTimeouts(); log("📞 المكالمة اترفضت."); endCallLocal("rejected", false); } return; }
   if(msg.type==="call-busy"){ if(callState==="calling" && callTarget===from){ clearCallTimeouts(); log("📞 الطرف التاني مشغول في مكالمة."); endCallLocal("busy", false); } return; }
   if(msg.type==="group-invite"){ onGroupInvite(from, msg); return; }
+  if(msg.type==="group-convert"){ onGroupConvert(from, msg); return; }
   if(msg.type==="group-offer"){ onGroupOffer(from, msg); return; }
   if(msg.type==="group-answer"){
     var gpc=mediaPCs[from];
@@ -1388,11 +1420,16 @@ function wireRemoteMedia(tid, pc){
         if(!a){ a=document.createElement("audio"); a.autoplay=true; a.playsInline=true; mpc0.audioEl=a; var w=$("remoteAudioWrap"); if(w) w.appendChild(a); }
       } else { a=$("callAudio"); }
       if(a){ a.srcObject=stream; a.volume=mutedPeers[tid]?0:callVolume; a.play().catch(function(){}); }
+      if(mpc0 && mpc0.group) registerSpeakerAnalyser(tid, stream);
       lastAudioChange=Date.now();
       log("🎧 وصل مسار صوت من "+(presenceMap[tid]?presenceMap[tid].name:tid)+" — الصوت شغال.");
     }
     if(ev.track.kind==="video"){
-      var v=$("remoteVideo"); if(v){ v.srcObject=stream; $("remoteVideoWrap").style.display="block"; }
+      if(mediaPCs[tid] && mediaPCs[tid].group){
+        if(!groupVideoOff[tid]) attachGroupVideo(tid, stream);
+      } else {
+        var v=$("remoteVideo"); if(v){ v.srcObject=stream; $("remoteVideoWrap").style.display="block"; }
+      }
       log("📹 وصل مسار فيديو من "+(presenceMap[tid]?presenceMap[tid].name:tid)+".");
     }
     updateAudioReady();
@@ -1699,6 +1736,7 @@ function onGroupMember(tid, p){
 function onGroupLeave(from, msg){
   if(!groupCall.active) return;
   delete groupCall.members[from];
+  delete speakerAnalysers[from]; delete speakerLastTalk[from];
   try{ if(mediaPCs[from]){ mediaPCs[from].pc.close(); delete mediaPCs[from]; } }catch(e){}
   log("👥 غادر <b>"+(presenceMap[from]?presenceMap[from].name:from)+"</b> المكالمة الجماعية.");
   if(groupCall.active && Object.keys(groupCall.members).length){
@@ -1710,12 +1748,52 @@ function onGroupLeave(from, msg){
 }
 function renderGroupMembers(){
   var box=$("groupMembers"); if(!box) return;
+  var gc=$("groupCount"); if(gc) gc.textContent="👥 "+(Object.keys(groupCall.members).length+1)+" مشاركين";
   var keys=Object.keys(groupCall.members);
-  box.innerHTML=keys.length?keys.map(function(tid){ return "<div>🎙️ "+groupCall.members[tid].name+"</div>"; }).join(""):"<div class='hint'>مستني باقي الأبراج تنضم...</div>";
+  box.innerHTML="";
+  // بطاقة نفسي أولاً
+  var self=document.createElement("div"); self.className="gcard"; self.id="gcard-me";
+  var myName=(identity&&identity.name)||towerName(myNode);
+  var myCol=(identity&&identity.color)||"#d4a853";
+  var myIc=(identity&&identity.icon)||"📡";
+  self.innerHTML='<div class="gavatar" style="background:'+myCol+'">'+escHtml(myIc)+'</div><div class="gname">أنا — '+escHtml(myName)+'</div>';
+  box.appendChild(self);
+  if(localStream && videoOn){
+    var sv=document.createElement("video"); sv.autoplay=true; sv.playsInline=true; sv.muted=true; sv.srcObject=localStream;
+    var sav=self.querySelector(".gavatar"); if(sav) sav.replaceWith(sv);
+  }
+  keys.forEach(function(tid){
+    var p=presenceMap[tid];
+    var card=document.createElement("div"); card.className="gcard"; card.id="gcard-"+tid;
+    var nm=p?displayNameOf(p):(groupCall.members[tid].name||tid);
+    var col=p?peerColorOf(p):"#d4a853";
+    var ic=p?peerIconOf(p):"";
+    card.innerHTML='<div class="gavatar" style="background:'+col+'">'+escHtml(ic||(p?arNum(p.node):"?"))+'</div><div class="gspeak">🎙️ يتكلم</div><button class="gvidbtn" title="إيقاف/تشغيل استقبال فيديو هذا المشارك">📹</button><div class="gname">'+escHtml(nm)+'</div>';
+    card.querySelector(".gvidbtn").addEventListener("click", function(){ toggleGroupVideo(tid); });
+    box.appendChild(card);
+    if(!groupVideoOff[tid] && mediaPCs[tid] && mediaPCs[tid].remoteStream){
+      var v=document.createElement("video"); v.autoplay=true; v.playsInline=true; v.muted=true; v.srcObject=mediaPCs[tid].remoteStream;
+      var av2=card.querySelector(".gavatar"); if(av2) av2.replaceWith(v);
+    }
+  });
+  if(!keys.length){ var h=document.createElement("div"); h.className="hint"; h.textContent="مستني باقي الأبراج تنضم..."; box.appendChild(h); }
+  updateSpeakingUI();
+}
+function attachGroupVideo(tid, stream){
+  var card=$("gcard-"+tid); if(!card) return;
+  if(card.querySelector("video")) return;
+  var av=card.querySelector(".gavatar");
+  var v=document.createElement("video"); v.autoplay=true; v.playsInline=true; v.muted=true; v.srcObject=stream;
+  if(av) av.replaceWith(v); else card.insertBefore(v, card.firstChild);
+}
+function toggleGroupVideo(tid){
+  if(groupVideoOff[tid]) delete groupVideoOff[tid]; else groupVideoOff[tid]=true;
+  renderGroupMembers();
+  toast(groupVideoOff[tid]?"📹 أوقفت استقبال فيديو "+(presenceMap[tid]?displayNameOf(presenceMap[tid]):tid):"📹 أعدت استقبال الفيديو.");
 }
 function endGroupCall(reason, notify){
   var members=Object.keys(groupCall.members);
-  try{ stopVideoTracks(); stopCallTimer(); clearCallTimeouts(); stopRingtone(); stopRecognition(); }catch(e){}
+  try{ stopVideoTracks(); stopCallTimer(); clearCallTimeouts(); stopRingtone(); stopRecognition(); clearSpeakerAnalysers(); }catch(e){}
   members.forEach(function(tid){
     try{ if(mediaPCs[tid]){ if(mediaPCs[tid].audioEl){ try{ mediaPCs[tid].audioEl.srcObject=null; mediaPCs[tid].audioEl.remove(); }catch(e){} } mediaPCs[tid].pc.close(); delete mediaPCs[tid]; } }catch(e){}
     if(notify){ try{ sendSignal(tid, {type:"group-leave", groupId:groupCall.groupId}); }catch(e){} }
@@ -1929,7 +2007,9 @@ function renderContacts(){
   var box=$("privateCallList"); if(!box) return;
   if(!myTowerId){ box.innerHTML="<div class='hint'>⏳ ادخل الشبكة الأول عشان تشوف المتصلين.</div>"; return; }
   var tids=Object.keys(presenceMap).sort(function(a,b){ var fa=isFav(presenceMap[a].node)?0:1, fb=isFav(presenceMap[b].node)?0:1; if(fa!==fb) return fa-fb; return (parseInt(presenceMap[a].node,10)||99)-(parseInt(presenceMap[b].node,10)||99); });
-  if(!tids.length){ box.innerHTML="<div class='hint'>لسه مفيش أبراج تانية في الغرفة — ابعت اللينك للتليفون التاني.</div>"; }
+  var _q=(contactQuery||"").trim();
+  if(_q){ tids=tids.filter(function(tid){ var p=presenceMap[tid]; var nm=displayNameOf(p); return nm.indexOf(_q)!==-1 || arNum(p.node).indexOf(_q)!==-1 || String(p.node).indexOf(_q)!==-1 || ("برج "+arNum(p.node)).indexOf(_q)!==-1; }); }
+  if(!tids.length){ box.innerHTML=_q?"<div class='hint'>🔍 لا توجد نتائج مطابقة لـ '"+escHtml(_q)+"'.</div>":"<div class='hint'>لسه مفيش أبراج تانية في الغرفة — ابعت اللينك للتليفون التاني.</div>"; }
   else box.innerHTML="";
   var fastestTid=null, fastestRtt=Infinity;
   tids.forEach(function(tid){ if(tid!==myTowerId && rttMap[tid]!=null && rttMap[tid]<fastestRtt){ fastestRtt=rttMap[tid]; fastestTid=tid; } });
@@ -2012,7 +2092,10 @@ function renderNetTab(){
     var tid=towerIdByNode(n);
     var d=document.createElement("div"); d.className="tower-card";
     var rttTxt=(tid && rttMap[tid]!=null)?" • RTT ‏"+rttMap[tid]+"ms":"";
-    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+towerName(n)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+(n===myNode?"⭐ ده أنت":(tid?"● متصل"+rttTxt:"○ غير متصل"))+'</div><div style="font-size:14px">📶</div>';
+    var pp=tid?presenceMap[tid]:null;
+    var nmTxt=n===myNode?((identity&&identity.name)||towerName(n)):(pp?displayNameOf(pp):towerName(n));
+    var stTxt=n===myNode?"⭐ ده أنت":(!tid?"○ غير متصل":(pp.call==="busy"?"📞 في مكالمة":"● متصل"));
+    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+escHtml(nmTxt)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+stTxt+rttTxt+'</div><div style="font-size:14px">📶</div>';
     grid.appendChild(d);
   });
   var n=Object.keys(presenceMap).length;
@@ -2043,6 +2126,9 @@ function showCallUI(){
   $("inCallBox").style.display=(callState==="in-call" && !inGroup)?"block":"none";
   $("groupBox").style.display=inGroup?"block":"none";
   if(callState!=="ringing" && !incomingGroup) stopRingtone();
+  var ap=$("addPartBtn"); if(ap) ap.style.display=(callState==="in-call"&&!inGroup)?"inline-block":"none";
+  var ga=$("groupAddBtn"); if(ga) ga.style.display=inGroup?"inline-block":"none";
+  if(callState==="idle"){ var pk=$("addPartPicker"); if(pk) pk.style.display="none"; }
   updateCallAvailability();
   updateCallBar();
   if(callState==="calling"||callState==="ringing"||callState==="in-call") showTab("call");
@@ -2327,7 +2413,7 @@ function leaveNetwork(switching){
 async function init(){
   initTabGuard(); // حارس التبويبات أولاً — قبل أي حضور أو اتصال
   updateClock();
-  wireUI(); wireV32UI(); renderKeypad(); renderNetTab(); renderDash(); renderHistory(); updateHistBadge(); updateChatBadge(); registerSW();
+  wireUI(); wireV32UI(); wireV33UI(); renderKeypad(); renderNetTab(); renderDash(); renderHistory(); updateHistBadge(); updateChatBadge(); registerSW();
   if(!cryptoOK){ $("cryptoWarn").style.display="block"; }
   await genECDH();
   identity=loadIdentity();
@@ -2361,7 +2447,7 @@ function continueInit(){
   $("roomInp").value=myRoom;
   connectBroker(0);
   startAutoEntry();
-  log("📡 شبكة الناس v3.2 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
+  log("📡 شبكة الناس v3.3 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
 }
 // ================= شبكة الناس v3.2 — إضافات احترافية =================
 // PWA + هوية + سجل مكالمات + مفضلة + دردشة مشفرة + TURN/وسيط مخصص + Toast
@@ -2378,6 +2464,14 @@ var callDirection="out";
 var mutedPeers={};
 var chatOpenTid=null;
 var chatUnread={};
+
+// ---------- v3.3 — متغيرات مشاركة الملفات + الرسائل الصوتية + تمييز المتحدث ----------
+var contactQuery="";
+var FILE_CHUNK=16384, FILE_MAX=10*1024*1024; // 16KB لكل جزء — 10MB حد الملف
+var fileRecv={}, fileBlobs={}, fileProgress={};
+var voiceRec=null, voiceStream=null, voiceTimer=null, voiceStart=0;
+var speakerCtx=null, speakerAnalysers={}, speakerLastTalk={}, speakerTimer=null;
+var groupVideoOff={};
 var CUSTOM_NET=loadCustomNet();
 var setColorIdx=0, setIconIdx=0;
 var welcomeColorIdx=0, welcomeIconIdx=0;
@@ -2515,7 +2609,20 @@ function renderChat(){
     var d=document.createElement("div");
     d.className="chat-msg "+(m.mine?"mine":"theirs");
     var tm=new Date(m.when).toLocaleTimeString("ar-EG",{hour:"numeric",minute:"2-digit"});
-    d.innerHTML="<div>"+escHtml(m.text)+"</div><div class='chat-meta'>"+tm+(m.mine?(m.delivered?" ✓✓ تم التسليم":" ✓ أُرسلت"):"")+"</div>";
+    if(m.kind==="file"){
+      var fb=fileBlobs[m.fileId];
+      var pct=(fileProgress[m.fileId] && fileProgress[m.fileId].total)?Math.round(fileProgress[m.fileId].sent/fileProgress[m.fileId].total*100):(m.progress||0);
+      var stTxt=m.status==="done"?"✓ مكتمل":(m.status==="sending"?"⬆️ جارٍ الإرسال":(m.status==="receiving"?"⬇️ جارٍ الاستلام":"…"));
+      var inner="<div>📎 "+escHtml(m.fileName||"ملف")+" ("+fmtSize(m.fileSize||0)+")</div>";
+      inner+='<div class="chat-file"><div class="prog"><div data-filebar="'+m.fileId+'" style="width:'+pct+'%"></div></div><div style="font-size:12px"><span data-filepct="'+m.fileId+'">'+pct+'%</span> — '+stTxt+'</div>';
+      if(m.isVoice && fb){ inner+='<audio controls src="'+fb.url+'"></audio><div style="font-size:12px">🎙️ رسالة صوتية • '+fmtDuration(m.dur||0)+'</div>'; }
+      else if(fb){ inner+='<a href="'+fb.url+'" download="'+escHtml(m.fileName||"file")+'" style="color:#fff;font-weight:800">⬇️ تنزيل الملف</a>'; }
+      else if(m.status==="done"){ inner+='<div style="font-size:12px">التنزيل متاح أثناء هذه الجلسة فقط — أعد إرسال الملف للتنزيل مجدداً.</div>'; }
+      inner+='</div>';
+      d.innerHTML=inner+"<div class='chat-meta'>"+tm+(m.mine?(m.delivered?" ✓✓ تم التسليم":" ✓ أُرسلت"):"")+"</div>";
+    } else {
+      d.innerHTML="<div>"+escHtml(m.text)+"</div><div class='chat-meta'>"+tm+(m.mine?(m.delivered?" ✓✓ تم التسليم":" ✓ أُرسلت"):"")+"</div>";
+    }
     box.appendChild(d);
   });
   box.scrollTop=box.scrollHeight;
@@ -2619,6 +2726,233 @@ function registerSW(){
   if(!("serviceWorker" in navigator)) return;
   if(location.protocol!=="https:" && location.hostname!=="localhost" && location.hostname!=="127.0.0.1") return;
   navigator.serviceWorker.register("sw.js").then(function(){ log("📲 التطبيق جاهز للتثبيت — Service Worker مسجّل."); }).catch(function(e){ log("⚠️ تعذّر تسجيل Service Worker: "+e.message); });
+}
+
+
+// ================= شبكة الناس v3.3 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث =================
+
+// ---------- مشاركة الملفات عبر قناة البيانات المشفرة (16KB/جزء، حتى 10MB) ----------
+function fmtSize(n){ if(n<1024) return n+" B"; if(n<1024*1024) return (n/1024).toFixed(1)+" KB"; return (n/1024/1024).toFixed(2)+" MB"; }
+function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function updateFileProgress(id, pct){
+  var bar=document.querySelector('[data-filebar="'+id+'"]');
+  if(bar){ bar.style.width=pct+"%"; var t=document.querySelector('[data-filepct="'+id+'"]'); if(t) t.textContent=pct+"%"; }
+}
+function markFileDone(id, mine){
+  var s=loadChatStore();
+  Object.keys(s).forEach(function(tid){ (s[tid]||[]).forEach(function(m){ if(m.fileId===id){ m.status="done"; m.progress=100; if(mine) m.delivered=true; } }); });
+  saveChatStore(s);
+  if(chatOpenTid) renderChat();
+}
+async function sendChatFile(tid, file, isVoice, durationSec){
+  if(file.size>FILE_MAX){ toast("⚠️ الملف أكبر من 10MB — اختار ملفاً أصغر."); return false; }
+  var id="f"+Date.now().toString(36)+rand4();
+  var chunks=Math.max(1, Math.ceil(file.size/FILE_CHUNK));
+  var ok=false;
+  try{ ok=await sendData(tid, "file-meta", {id:id, name:file.name, size:file.size, type:file.type||"application/octet-stream", isVoice:!!isVoice, dur:durationSec||0, chunks:chunks}); }catch(e){ ok=false; }
+  if(!ok){ toast("❌ قناة البيانات لسه مش جاهزة — استنى ثواني وحاول تاني."); return false; }
+  addChatMsg(tid, {mine:true, kind:"file", fileId:id, fileName:file.name, fileSize:file.size, fileType:file.type||"", isVoice:!!isVoice, dur:durationSec||0, when:Date.now(), status:"sending", progress:0});
+  fileProgress[id]={sent:0, total:chunks};
+  if(chatOpenTid===tid) renderChat();
+  var buf=null;
+  try{ buf=await file.arrayBuffer(); }catch(e){ toast("❌ مقدرتش أقرأ الملف."); return false; }
+  var ch=dataChans[tid];
+  for(var i=0;i<chunks;i++){
+    var slice=buf.slice(i*FILE_CHUNK, Math.min(buf.byteLength,(i+1)*FILE_CHUNK));
+    var b64=bufToB64(slice);
+    var waited=0;
+    while(ch && ch.bufferedAmount>256*1024 && waited<10000){ await sleep(50); waited+=50; }
+    var sent=false;
+    try{ sent=await sendData(tid, "file-chunk", {id:id, i:i, data:b64}); }catch(e){ sent=false; }
+    if(!sent){ toast("❌ انقطع الإرسال عند الجزء "+(i+1)+" — أعد المحاولة."); updateFileProgress(id, Math.round(i/chunks*100)); return false; }
+    fileProgress[id].sent=i+1;
+    updateFileProgress(id, Math.round((i+1)/chunks*100));
+    await sleep(5);
+  }
+  fileBlobs[id]={name:file.name, size:file.size, type:file.type||"application/octet-stream", url:URL.createObjectURL(file), isVoice:!!isVoice};
+  markFileDone(id, true);
+  return true;
+}
+function onFileMeta(tid, p){
+  if(!p || !p.id) return;
+  fileRecv[p.id]={meta:p, chunks:new Array(p.chunks), got:0};
+  fileProgress[p.id]={sent:0, total:p.chunks};
+  addChatMsg(tid, {mine:false, kind:"file", fileId:p.id, fileName:p.name, fileSize:p.size, fileType:p.type, isVoice:!!p.isVoice, dur:p.dur||0, when:Date.now(), status:"receiving", progress:0});
+  if(chatOpenTid===tid){ renderChat(); }
+  else { chatUnread[tid]=(chatUnread[tid]||0)+1; updateChatBadge(); toast("📎 ملف وارد من "+displayNameOf(presenceMap[tid])+": "+p.name); }
+}
+function onFileChunk(tid, p){
+  var r=fileRecv[p.id]; if(!r || p.i==null || !p.data) return;
+  var buf=null;
+  try{ buf=b64ToBuf(p.data); }catch(e){ return; }
+  if(!r.chunks[p.i]){ r.chunks[p.i]=buf; r.got++; }
+  var pct=Math.round(r.got/r.meta.chunks*100);
+  fileProgress[p.id]={sent:r.got, total:r.meta.chunks};
+  updateFileProgress(p.id, pct);
+  if(r.got>=r.meta.chunks){
+    var blob=new Blob(r.chunks, {type:r.meta.type||"application/octet-stream"});
+    fileBlobs[p.id]={name:r.meta.name, size:r.meta.size, type:r.meta.type||"", url:URL.createObjectURL(blob), isVoice:!!r.meta.isVoice};
+    delete fileRecv[p.id];
+    markFileDone(p.id, false);
+    try{ sendData(tid, "file-ack", {id:p.id}); }catch(e){}
+    toast("📎 اكتمل استلام الملف: "+r.meta.name);
+  }
+}
+function onFileAck(tid, p){ if(p && p.id) markFileDone(p.id, true); }
+async function onChatFilePicked(ev){
+  var f=ev.target.files && ev.target.files[0];
+  ev.target.value="";
+  if(!f) return;
+  if(!chatOpenTid){ toast("⚠️ افتح محادثة أولاً."); return; }
+  await sendChatFile(chatOpenTid, f, false, 0);
+}
+
+// ---------- الرسائل الصوتية (MediaRecorder — للدردشة فقط، لا للمكالمة) ----------
+async function toggleVoiceRecord(){
+  if(voiceRec){ stopVoiceRecord(); return; }
+  if(!chatOpenTid){ toast("⚠️ افتح محادثة أولاً."); return; }
+  try{ voiceStream=await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ toast("❌ الميكروفون مرفوض — اسمح بالميكروفون من إعدادات المتصفح."); return; }
+  var chunks=[];
+  try{ voiceRec=new MediaRecorder(voiceStream, {mimeType:"audio/webm;codecs=opus"}); }
+  catch(e){ try{ voiceRec=new MediaRecorder(voiceStream); }catch(e2){ toast("❌ التسجيل غير مدعوم على هذا المتصفح."); cleanupVoiceRec(); return; } }
+  voiceRec.ondataavailable=function(ev){ if(ev.data && ev.data.size) chunks.push(ev.data); };
+  voiceRec.onstop=function(){
+    var dur=Math.min(60, Math.round((Date.now()-voiceStart)/1000));
+    var blob=new Blob(chunks, {type:(voiceRec&&voiceRec.mimeType)||"audio/webm"});
+    var f=new File([blob], "voice-"+Date.now()+".webm", {type:blob.type||"audio/webm"});
+    var tid=chatOpenTid;
+    cleanupVoiceRec();
+    if(tid) sendChatFile(tid, f, true, dur);
+  };
+  try{ voiceRec.start(250); }catch(e){ toast("❌ تعذّر بدء التسجيل."); cleanupVoiceRec(); return; }
+  voiceStart=Date.now();
+  var btn=$("chatVoiceBtn"); if(btn){ btn.classList.add("recording"); btn.textContent="🔴 00:00"; }
+  voiceTimer=setInterval(function(){
+    var s=Math.floor((Date.now()-voiceStart)/1000);
+    var b=$("chatVoiceBtn"); if(b) b.textContent="🔴 "+fmtDuration(s);
+    if(s>=60) stopVoiceRecord();
+  }, 500);
+  toast("🎙️ بيسجّل... دوس تاني للإيقاف والإرسال (حتى 60 ثانية).");
+}
+function stopVoiceRecord(){
+  if(voiceRec && voiceRec.state!=="inactive"){ try{ voiceRec.stop(); }catch(e){ cleanupVoiceRec(); } }
+  else cleanupVoiceRec();
+}
+function cleanupVoiceRec(){
+  if(voiceTimer){ clearInterval(voiceTimer); voiceTimer=null; }
+  if(voiceStream){ voiceStream.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); voiceStream=null; }
+  voiceRec=null;
+  var b=$("chatVoiceBtn"); if(b){ b.classList.remove("recording"); b.textContent="🎙️"; }
+}
+
+// ---------- تمييز المتحدث في المكالمة الجماعية (AnalyserNode كل 200ms) ----------
+function registerSpeakerAnalyser(tid, stream){
+  try{
+    if(!speakerCtx) speakerCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(speakerCtx.state==="suspended") speakerCtx.resume();
+    if(speakerAnalysers[tid]) return;
+    var src=speakerCtx.createMediaStreamSource(stream);
+    var an=speakerCtx.createAnalyser(); an.fftSize=512;
+    src.connect(an);
+    speakerAnalysers[tid]={an:an, buf:new Uint8Array(an.frequencyBinCount)};
+    if(!speakerTimer) speakerTimer=setInterval(updateSpeaking, 200);
+  }catch(e){}
+}
+function updateSpeaking(){
+  if(!groupCall.active) return;
+  var now=Date.now();
+  Object.keys(speakerAnalysers).forEach(function(tid){
+    var s=speakerAnalysers[tid]; if(!s) return;
+    try{ s.an.getByteTimeDomainData(s.buf); }catch(e){ return; }
+    var sum=0; for(var i=0;i<s.buf.length;i++){ var v=(s.buf[i]-128)/128; sum+=v*v; }
+    var rms=Math.sqrt(sum/s.buf.length);
+    if(rms>0.02) speakerLastTalk[tid]=now;
+  });
+  updateSpeakingUI();
+}
+function updateSpeakingUI(){
+  Object.keys(speakerAnalysers).forEach(function(tid){
+    var card=$("gcard-"+tid); if(!card) return;
+    var talking=speakerLastTalk[tid] && (Date.now()-speakerLastTalk[tid]<1000);
+    card.classList.toggle("speaking", !!talking);
+  });
+}
+function clearSpeakerAnalysers(){
+  try{
+    Object.keys(speakerAnalysers).forEach(function(t){ delete speakerAnalysers[t]; });
+    speakerLastTalk={};
+    if(speakerTimer){ clearInterval(speakerTimer); speakerTimer=null; }
+  }catch(e){}
+}
+
+// ---------- إضافة مشارك أثناء مكالمة ثنائية (تحويلها لجماعية) ----------
+function toggleAddPartPicker(){
+  var pk=$("addPartPicker"); if(!pk) return;
+  if(pk.style.display==="block"){ pk.style.display="none"; return; }
+  var list=$("addPartList"); if(!list) return;
+  list.innerHTML="";
+  var peers=Object.keys(presenceMap).filter(function(tid){ return tid!==myTowerId && tid!==callPartner && !(groupCall.active && groupCall.members[tid]); });
+  if(!peers.length){ list.innerHTML="<div class='hint'>مفيش أبراج تانية متصلة للإضافة.</div>"; }
+  peers.forEach(function(tid){
+    var p=presenceMap[tid];
+    var b=document.createElement("button"); b.className="btn-gold"; b.textContent="➕ "+displayNameOf(p)+" — "+towerName(p.node);
+    b.addEventListener("click", function(){ pk.style.display="none"; inviteToGroup(tid); });
+    list.appendChild(b);
+  });
+  pk.style.display="block";
+}
+function convertPartnerMediaToGroup(tid){
+  var mpc=mediaPCs[tid]; if(!mpc) return;
+  try{ var ca=$("callAudio"); if(ca) ca.srcObject=null; }catch(e){}
+  try{ var rv=$("remoteVideo"); if(rv) rv.srcObject=null; var rvw=$("remoteVideoWrap"); if(rvw) rvw.style.display="none"; }catch(e){}
+  if(mpc.remoteStream){
+    var a=document.createElement("audio"); a.autoplay=true; a.playsInline=true;
+    a.srcObject=mpc.remoteStream; a.volume=mutedPeers[tid]?0:callVolume; a.play().catch(function(){});
+    mpc.audioEl=a; var w=$("remoteAudioWrap"); if(w) w.appendChild(a);
+    registerSpeakerAnalyser(tid, mpc.remoteStream);
+  }
+}
+function inviteToGroup(tid){
+  if(!presenceMap[tid]){ toast("⚠️ البرج مش متصل دلوقتي."); return; }
+  if(groupCall.active){
+    sendSignal(tid, {type:"group-invite", groupId:groupCall.groupId});
+    toast("📩 دعوت "+displayNameOf(presenceMap[tid])+" للمكالمة الجماعية.");
+    log("📩 دعوت "+displayNameOf(presenceMap[tid])+" للمكالمة الجماعية.");
+    return;
+  }
+  if(callState!=="in-call" || !callPartner) return;
+  var partner=callPartner;
+  groupCall={active:true, groupId:"g"+Date.now().toString(36), members:{}, inviteFrom:""};
+  groupCall.members[partner]={name:presenceMap[partner]?presenceMap[partner].name:partner};
+  if(mediaPCs[partner]) mediaPCs[partner].group=true;
+  convertPartnerMediaToGroup(partner);
+  try{ sendSignalReliable(partner, {type:"group-convert", groupId:groupCall.groupId}); }catch(e){}
+  sendSignal(tid, {type:"group-invite", groupId:groupCall.groupId});
+  showCallUI(); renderGroupMembers();
+  log("👥 حوّلت المكالمة لجماعية — دعوت "+displayNameOf(presenceMap[tid])+".");
+  toast("👥 المكالمة بقت جماعية — مستني "+displayNameOf(presenceMap[tid])+" ينضم.");
+}
+function onGroupConvert(from, msg){
+  if(callState!=="in-call" || callPartner!==from || groupCall.active) return;
+  groupCall={active:true, groupId:(msg&&msg.groupId)||("g"+Date.now().toString(36)), members:{}, inviteFrom:""};
+  groupCall.members[from]={name:presenceMap[from]?presenceMap[from].name:from};
+  if(mediaPCs[from]) mediaPCs[from].group=true;
+  convertPartnerMediaToGroup(from);
+  showCallUI(); renderGroupMembers();
+  log("👥 الطرف التاني حوّل المكالمة لجماعية — تقدر تضيف مشاركين من زر ➕.");
+  toast("👥 المكالمة بقت جماعية.");
+}
+
+// ---------- ربط أزرار v3.3 ----------
+function wireV33UI(){
+  var fb=$("chatFileBtn"); if(fb) fb.addEventListener("click", function(){ var i=$("chatFileInp"); if(i) i.click(); });
+  var fi=$("chatFileInp"); if(fi) fi.addEventListener("change", onChatFilePicked);
+  var vb=$("chatVoiceBtn"); if(vb) vb.addEventListener("click", toggleVoiceRecord);
+  var cs=$("contactSearch"); if(cs) cs.addEventListener("input", function(){ contactQuery=cs.value; renderContacts(); });
+  var ap=$("addPartBtn"); if(ap) ap.addEventListener("click", toggleAddPartPicker);
+  var ga=$("groupAddBtn"); if(ga) ga.addEventListener("click", toggleAddPartPicker);
+  var ac=$("addPartCancelBtn"); if(ac) ac.addEventListener("click", function(){ var pk=$("addPartPicker"); if(pk) pk.style.display="none"; });
 }
 
 // ---------- ربط أزرار v3.2 ----------
