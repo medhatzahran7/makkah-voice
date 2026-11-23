@@ -867,7 +867,7 @@ function initPeer(attempt, isAuto){
     saveSession();
     var aec=$("autoEntryCard"); if(aec) aec.style.display="none";
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
-    $("joinBtn").style.display="none"; $("leaveBtn").style.display="block";
+    $("joinBtn").style.display="block"; $("joinBtn").textContent="✅ نفّذ التغيير — انتقل للغرفة دي"; $("leaveBtn").style.display="block";
     $("testBtn").disabled=false; refreshCallAvailability(); renderPrivateCallList(); startCoverTraffic(); updateRelayBox();
     refreshTargetOptions(); updateCards();
     NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
@@ -926,8 +926,17 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
 $("joinBtn").addEventListener("click", function(){
   if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
   autoJoinFresh=false;
+  if(peer && !peer.destroyed){
+    try{ if(callState==="in-call" || callState==="calling" || callState==="ringing") endCallLocal("تغيير الغرفة", true); }catch(e){}
+    try{ if(typeof groupCall!=="undefined" && groupCall.active) endGroupCall("تغيير الغرفة", true); }catch(e){}
+    try{ peer.destroy(); }catch(e){}
+    try{ if(gwPeer) gwPeer.destroy(); }catch(e){}
+    peer=null; gwPeer=null;
+    log("🔄 بنخرج من الغرفة الحالية وندخل الغرفة الجديدة...");
+  }
   doJoin($("nodeSel").value, sanitizeRoom($("roomInp").value), null, false);
 });
+$("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
   clearSession();
