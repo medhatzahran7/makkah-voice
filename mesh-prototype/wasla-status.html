@@ -25,26 +25,31 @@
 
   <div class="row"><span>🖥️ واجهة التطبيق (الشاشات)</span><b class="ok">✅ مبنية — 11 شاشة</b></div>
   <div class="screens">الترحيب • الرئيسية • جهات الاتصال • لوحة المفاتيح • السجل • الدردشات • المحادثة • الشبكة • الإعدادات • شاشة المكالمة • المكالمة الجماعية</div>
-  <div class="row"><span>📦 ملف APK</span><b class="wait">⏳ قيد البناء — المحاولتان 8 و9 فشلتا بنفس خطأ الإعدادات؛ الإصلاح الدقيق أُرسل للبناء والمحاولة 10 قادمة</b></div>
+  <div class="row"><span>📦 ملف APK — نسخة تجريبية (debug)</span><b class="ok">✅ جاهزة — اتبنت 22:24 (218MB) واترفعت على Google Drive</b></div>
+  <div class="row"><span>⬇️ رابط التنزيل</span><b><a href="https://drive.google.com/file/d/1QpG1gDG6VQNVz9AWuhqbe6UqCd103dzv/view?usp=drivesdk" style="color:#ffd97a;">حمّل wasla-debug.apk من Google Drive</a></b></div>
+  <div class="row"><span>📦 ملف APK — نسخة نهائية (release)</span><b class="wait">⏳ لسه — واقفة على كلمة مرور الـ keystore (الإصلاح أُرسل للبناء)</b></div>
   <div class="row"><span>🔧 خادم الإشارة الخاص</span><b class="ok">✅ جاهز + اختباراته شغالة</b></div>
   <div class="row"><span>🔒 التشفير (Signal)</span><b class="ok">✅ الحزمة مبنية</b></div>
 
   <div class="log">BUILD 7 (21:40 → 21:57): FAILED in 17m 27s
-  السبب: رخصة Android SDK Build-Tools 36 غير مقبولة
-  (License for package Android SDK Build-Tools 36 not accepted)
-  → تم قبول الرخصة وإعادة البناء فوراً.
+  السبب: رخصة Android SDK Build-Tools 36 غير مقبولة.
 
 BUILD 8 (21:58 → 22:10): FAILED in 12m 10s
   السبب: file_picker مترجم ضد android-34 بينما
   flutter_plugin_android_lifecycle يتطلب compileSdk 36.
 
-BUILD 9 (22:11): FAILED in 21s — نفس خطأ المحاولة 8 تماماً
-  (الإصلاح لم يدخل فعلياً قبل إعادة البناء).
-  → أُرسل الإصلاح الدقيق للبناء: compileSdk = 36 في
-  android/app/build.gradle.kts + تحديث file_picker +
-  اختبار دخان debug قبل أي بناء release كامل.</div>
+BUILD 9 (22:11): FAILED in 21s — نفس خطأ المحاولة 8.
+  → الإصلاح دخل: compileSdk = 36.
 
-  <p class="note">ملحوظة بصراحة: شغل زهران بيتم في ملفات وأوامر على جهازه — مفيش شاشة مشاركة — لكن دي أقرب حاجة للمشاهدة الحية: حالة البناء وسجلها قدامك وبتتحدث لوحدها. آخر تحديث للصفحة: 22:12 بتوقيت القاهرة.</p>
+DEBUG BUILD (22:24): ✅ SUCCESS — app-debug.apk (218MB)
+  أول نسخة قابلة للتثبيت — اترفعت على Google Drive.
+
+BUILD 10–14: FAILED — الـ release واقف على:
+  KeytoolException: كلمة مرور الـ keystore لا تطابق
+  مفتاح wasla-release. الإصلاح: keystore جديد بكلمة
+  مرور معروفة + تحديث key.properties + تحقق بـ keytool.</div>
+
+  <p class="note">ملحوظة بصراحة: شغل زهران بيتم في ملفات وأوامر على جهازه — مفيش شاشة مشاركة — لكن دي أقرب حاجة للمشاهدة الحية: حالة البناء وسجلها قدامك وبتتحدث لوحدها. آخر تحديث للصفحة: 22:37 بتوقيت القاهرة.</p>
 </div>
 </body>
 </html>
