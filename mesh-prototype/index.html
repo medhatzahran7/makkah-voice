@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v3.0.1 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v3.1 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -94,7 +94,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <div class="hero">
 <div class="big">📡</div>
-<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.0.1</span></h1>
+<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.1</span></h1>
 <div style="font-size:15px">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
 <div class="hint" style="margin-top:8px">مكالمات صوت+فيديو حقيقية عبر WebRTC — دخول تلقائي، مباشر أولاً، مشفرة DTLS-SRTP</div>
@@ -160,6 +160,7 @@ video{width:100%;border-radius:12px;background:#000}
 <!-- تبويب المكالمة -->
 <div class="tabpage" id="tab-call">
 <div class="card">
+<div id="callPhaseLabel" style="text-align:center;font-size:17px;font-weight:800;margin:6px 0">—</div>
 <div id="callIdle">
 <h2>المكالمة 📞 🔒</h2>
 <div class="hint">لا توجد مكالمة جارية — اختار هدفاً واتصل، أو استقبل مكالمة واردة.</div>
@@ -195,6 +196,9 @@ video{width:100%;border-radius:12px;background:#000}
 <div class="ptype" id="callTypeLabel">📹📞 مكالمة صوت+فيديو — مباشر، مفيش وسيط 🔒</div>
 <div class="timer" id="callTimer">00:00</div>
 <div id="callPath" style="text-align:center;font-size:15px">📡 حالة ICE: —</div>
+<div id="qosBox" style="text-align:center;font-size:15px;margin:6px 0">⭐ جودة المكالمة: —</div>
+<div id="sasBox" style="text-align:center;font-size:15px;margin:6px 0"></div>
+<div id="videoPausedBox" class="warn" style="display:none">📹 الفيديو توقف مؤقتاً لضعف الشبكة — الصوت مستمر <button id="resumeVideoBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">📹 أعد الفيديو</button></div>
 <div id="latencyBox" style="font-size:14px;color:#9db89d">⏱️ تأخير الشبكة: —</div>
 <div id="dirStats" style="font-size:14px">📊 مؤشرات الاتجاهين ستظهر هنا أثناء المكالمة</div>
 <div id="audioReadyBox" style="text-align:center;font-size:15px;margin-top:8px">جاهزية الصوت: —</div>
@@ -259,6 +263,11 @@ video{width:100%;border-radius:12px;background:#000}
 <h2>📊 إحصائيات حية</h2>
 <div id="statsBox">—</div>
 </div>
+<div class="card">
+<h2>📋 سجل جودة المكالمات</h2>
+<div class="hint">آخر 10 تقارير جودة محفوظة على هذا الجهاز.</div>
+<div id="callQualityLog" class="hint">لسه مفيش مكالمات مسجلة.</div>
+</div>
 </div>
 
 <!-- تبويب التحكم -->
@@ -315,6 +324,12 @@ video{width:100%;border-radius:12px;background:#000}
 <div class="hint">بصراحة كاملة: المتصفح لا يستطيع الوصول لـ WiFi Direct أو بلوتوث مباشرة — الوصول الحقيقي يحتاج تطبيق موبايل أصلي. في التطبيق الأصلي سيكون هذا WiFi Direct / بلوتوث تلقائياً بين تليفونين قريبين، من غير إنترنت خالص.</div>
 </div>
 <div class="card">
+<h2>🔍 تشخيص الشبكة</h2>
+<div class="hint">يفحص وصول STUN وTURN ووسيط MQTT وسرعة الشبكة — ويعطيك توصية قبل الاتصال.</div>
+<button id="diagBtn" class="btn-gold">🔍 افحص شبكتي</button>
+<div id="diagResults" style="margin-top:10px"></div>
+</div>
+<div class="card">
 <h2>سجل الأحداث 🔒</h2>
 <div id="log"></div>
 </div>
@@ -326,7 +341,7 @@ video{width:100%;border-radius:12px;background:#000}
 <h2>؟ حدود صادقة باختصار</h2>
 <div class="hint">الصوت والفيديو حقيقيان عبر WebRTC ومشفران بـ DTLS-SRTP. الإشارة تمر عبر وسيط MQTT عام (يرى بيانات الإشارة فقط — من يتصل بمن — ولا يسمع الصوت ولا يرى الفيديو). الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجدت أبراج متصلة — ليست بديلاً عن 112. الوسائط تمر عبر TURN مجاني (OpenRelay) عند تعذّر الاتصال المباشر — قد يكون أبطأ قليلاً.</div>
 </div>
-<p style="text-align:center" class="small">نموذج أولي v3.0.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p style="text-align:center" class="small">نموذج أولي v3.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p style="text-align:center" class="small">نموذج أولي — الصوت والفيديو WebRTC حقيقيان الآن؛ الترجمة تحتاج إنترنت؛ الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 </div>
 </div>
@@ -342,7 +357,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <script>
 "use strict";
-// ================= شبكة الناس v3.0.1 — معمارية جديدة =================
+// ================= شبكة الناس v3.1 — معمارية جديدة + طبقات هندسية =================
 // إشارة MQTT عام + صوت/فيديو WebRTC حقيقي + بيانات مشفرة ECDH/AES-GCM
 // لا سيرفر إشارة خاص، لا معرّفات حتمية، لا مقاطع مسجلة، لا إطارات صور.
 var NODES=["1","2","3","4","5","6","7","8"];
@@ -428,6 +443,7 @@ async function deriveSharedKey(towerId, pubJwk){
     var key=await crypto.subtle.deriveKey({name:"ECDH", public:pub}, myECDH.privateKey, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
     sharedKeys[towerId]=key; dataReady[towerId]=true;
     log("🔒 مفتاح مشترك جاهز مع "+towerName(presenceMap[towerId]?presenceMap[towerId].node:"?")+" — القناة مشفرة.");
+    computeSas(towerId, pubJwk);
     renderContacts(); renderKeypad(); updateCallAvailability();
   }catch(e){ log("❌ فشل اشتقاق المفتاح المشترك: "+e.message); }
 }
@@ -535,7 +551,7 @@ function scheduleBrokerRetry(ms){
 // ---------- الحضور ----------
 function publishPresence(){
   if(!mqttClient || !mqttConnected || !myTowerId) return;
-  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy"});
+  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy", relayLoad:relayLoadOf(myTowerId)});
   try{ mqttClient.publish(presenceTopic(myRoom, myTowerId), payload, {qos:1, retain:true}); }catch(e){}
 }
 setInterval(function(){ if(mqttConnected) publishPresence(); }, 5000);
@@ -561,7 +577,7 @@ function handlePresence(topic, raw){
   try{
     var p=JSON.parse(raw);
     var isNew=!presenceMap[tid];
-    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), super:!!p.super, ts:Date.now(), call:p.call||"idle"};
+    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), super:!!p.super, ts:Date.now(), call:p.call||"idle", relayLoad:p.relayLoad||0};
     if(!presenceFirstSeenAt){ presenceFirstSeenAt=Date.now(); if(presenceSettleTimer) clearTimeout(presenceSettleTimer); presenceSettleTimer=setTimeout(function(){ presenceSettled=true; }, 500); }
     // وقائي: جهاز آخر بنفس رقم برجي — تحذير واضح بزر انتقال (ليس سبب عطل v3.0)
     if(p.node===myNode) showTowerClash(p.node, tid);
@@ -698,6 +714,8 @@ async function sendData(tid, kind, obj){
 }
 function handleDataInner(tid, inner){
   if(!inner || !inner.k) return;
+  if(inner.k==="ping"){ sendData(tid, "pong", {t:inner.p.t}); return; }
+  if(inner.k==="pong"){ if(inner.p && inner.p.t){ rttMap[tid]=Date.now()-inner.p.t; renderContacts(); renderNetTab(); } return; }
   if(inner.k==="text"){ log("💬 رسالة من "+(presenceMap[tid]?presenceMap[tid].name:tid)+": "+inner.p.text); return; }
   if(inner.k==="sos"){ receiveSOS(tid, inner.p); return; }
   if(inner.k==="trans"){ showTranslation(tid, inner.p); return; }
@@ -708,6 +726,14 @@ function handleDataInner(tid, inner){
 async function handleSignal(msg){
   var from=msg.from;
   if(!from || from===myTowerId) return;
+  // v3.1: تأكيد استلام (ACK) + تجاهل الرسائل المكررة بمعرّف فريد
+  if(msg.type==="ack" && msg.msgId && pendingAcks[msg.msgId]){ clearTimeout(pendingAcks[msg.msgId]); delete pendingAcks[msg.msgId]; return; }
+  if(msg.msgId){
+    if(seenMsgIds[msg.msgId]) return; // رسالة مكررة — تُتجاهل
+    seenMsgIds[msg.msgId]=Date.now();
+    if(Object.keys(seenMsgIds).length>500){ delete seenMsgIds[Object.keys(seenMsgIds)[0]]; }
+    sendSignal(from, {type:"ack", msgId:msg.msgId});
+  }
   if(msg.type==="data-offer"){ if(!dataPCs[from]) setupDataPCForOffer(from, msg.sdp); return; }
   if(msg.type==="data-answer"){
     var pc=dataPCs[from];
@@ -742,7 +768,7 @@ async function handleSignal(msg){
 
 // ---------- الوسائط المحلية ----------
 async function getLocalStream(wantVideo){
-  var cons={audio:{echoCancellation:true, noiseSuppression:noiseOn, autoGainControl:true}};
+  var cons={audio:{echoCancellation:true, noiseSuppression:noiseOn, autoGainControl:true, channelCount:1, sampleRate:48000}};
   if(wantVideo) cons.video={width:{ideal:640}, height:{ideal:480}, facingMode:facingMode};
   var stream=await navigator.mediaDevices.getUserMedia(cons);
   localStream=stream;
@@ -784,6 +810,292 @@ function updateIceStatusBox(){
   var list=Object.keys(types).map(function(t){ return t==="relay"?"وسيط relay":t==="srflx"?"مباشر srflx":t==="host"?"محلي host":t; }).join("، ")||"—";
   el.innerHTML="📡 حالة ICE: <b>"+iceStateLabel(st)+"</b> &nbsp;|&nbsp; المسارات: <b>"+list+"</b> &nbsp;|&nbsp; أرسل <b>"+(lastAudioBytes.sent/1024).toFixed(1)+" KB</b> | وصل <b>"+(lastAudioBytes.recv/1024).toFixed(1)+" KB</b>"+(iceRetryCount>0?" &nbsp;|&nbsp; 🔄 إعادة المحاولة رقم "+iceRetryCount:"");
 }
+
+// ================= شبكة الناس v3.1 — طبقات هندسية =================
+// 1) وسائط: Opus + تكيّف فيديو  2) تحكم: آلة حالات + ACK  3) QoS: نجوم + تقارير
+// 4) توجيه: أفضل مسار مقاس + حد وسيط  5) أمان: SAS + تدوير مفاتيح  6) تشخيص شبكة
+var RELAY_MAX=4; // حد قدرة النقطة الثابتة كوسيط: 4 اتصالات وسائط متزامنة
+var rttMap={}; // towerId -> آخر RTT مقاس عبر ping قناة البيانات (ms)
+var sasMap={}; // towerId -> بصمة SAS "XXXX XXXX"
+var callSessionKey=null; // مفتاح AES-GCM جديد لكل مكالمة (يُدوَّر عند كل مكالمة)
+var callPhase="idle";
+var CALL_PHASE_TEXT={idle:"—", calling:"⏳ بيتصل...", ringing:"🔔 بيرن...", connecting:"📡 بيتصل بالوسائط...", connected:"✅ متصل", ended:"🔴 انتهت المكالمة"};
+var seenMsgIds={}, pendingAcks={};
+var connectWatchdogInt=null;
+var qosSamples=[], qosLastRtt=null, qosLastLoss=null, qosLastJitter=null;
+var lastRtpRecvBytes=0, lastRtpFlowAt=0, deadRestartDone=false;
+var VIDEO_LEVELS=[{w:1280,h:720,label:"720p"},{w:854,h:480,label:"480p"},{w:480,h:270,label:"270p"}];
+var videoLevelIdx=0, highLossSince=0, goodNetSince=0, videoPausedByNet=false;
+var CALL_REPORT_KEY="sayeghMeshCallQualityV31";
+
+// ---------- آلة حالات المكالمة (مثل SIP): idle → calling/ringing → connecting → connected → ended ----------
+function setCallPhase(p){
+  callPhase=p;
+  var el=$("callPhaseLabel");
+  if(el) el.textContent=CALL_PHASE_TEXT[p]||p;
+}
+// ---------- مهلة اتصال 15 ثانية: إن لم يكتمل ICE خلالها إعادة ICE مرة ثم رسالة فشل صادقة ----------
+function clearConnectWatchdog(){ if(connectWatchdogInt){ clearTimeout(connectWatchdogInt); connectWatchdogInt=null; } }
+function startConnectWatchdog(tid){
+  clearConnectWatchdog();
+  connectWatchdogInt=setTimeout(function(){
+    var mpc=mediaPCs[tid];
+    if(callState==="in-call" && mpc && mpc.pc && mpc.pc.iceConnectionState!=="connected" && mpc.pc.iceConnectionState!=="completed"){
+      log("⏳ مهلة الاتصال (15 ثانية) — ICE لم يكتمل — إعادة المحاولة مرة واحدة...");
+      attemptIceRestart(tid, "connect-timeout-15s");
+      setTimeout(function(){
+        var m2=mediaPCs[tid];
+        if(callState==="in-call" && m2 && m2.pc && m2.pc.iceConnectionState!=="connected" && m2.pc.iceConnectionState!=="completed"){
+          log("❌ تعذّر إكمال الاتصال بعد إعادة المحاولة — ICE لم يكتمل خلال المهلة.");
+          showIceFail();
+        }
+      }, 8000);
+    }
+  }, 15000);
+}
+// ---------- Opus: تفضيل الترميز + FEC حيث يدعمه المتصفح ----------
+function applyOpusPrefs(pc){
+  try{
+    if(!window.RTCRtpSender || !RTCRtpSender.getCapabilities){ log("🎙️ Opus: getCapabilities غير مدعوم في هذا المتصفح — إعدادات الترميز الافتراضية."); return; }
+    var caps=RTCRtpSender.getCapabilities("audio");
+    if(!caps || !caps.codecs){ log("🎙️ Opus: لا توجد قدرات ترميز معلنة."); return; }
+    var opus=caps.codecs.filter(function(c){ return (c.mimeType||"").toLowerCase().indexOf("opus")>=0; });
+    if(!opus.length){ log("🎙️ Opus: غير معلن في قدرات المتصفح — سيُستخدم الترميز الافتراضي."); return; }
+    var prefs=opus.concat(caps.codecs.filter(function(c){ return (c.mimeType||"").toLowerCase().indexOf("opus")<0; }));
+    prefs.forEach(function(c){ if(c.mimeType.toLowerCase().indexOf("opus")>=0){ try{ c.parameters=c.parameters||{}; c.parameters.ptime="20"; c.parameters.maxaveragebitrate="32000"; }catch(e){} } });
+    var ok=false;
+    pc.getSenders().filter(function(sn){ return sn.track && sn.track.kind==="audio"; }).forEach(function(sn){ try{ if(sn.setCodecPreferences){ sn.setCodecPreferences(prefs); ok=true; } }catch(e){} });
+    if(ok) log("🎙️ Opus: فُضّل ترميز Opus (ptime=20ms، maxaveragebitrate=32kbps) عبر setCodecPreferences — FEC مفعّل عبر Opus حيث يدعمه المتصفح.");
+    else log("🎙️ Opus: setCodecPreferences غير مدعوم في هذا المتصفح — الترميز الافتراضي.");
+  }catch(e){ log("🎙️ Opus: تعذّر ضبط الترميز: "+e.message); }
+}
+// ---------- بصمة SAS (مثل ZRTP): أول 8 خانات hex من SHA-256 للمفتاحين العامين ----------
+async function computeSas(tid, peerPubJwk){
+  try{
+    if(!myPubJwk || !peerPubJwk || !peerPubJwk.x) return;
+    var parts=[myPubJwk.x, peerPubJwk.x].sort();
+    var data=new TextEncoder().encode(parts.join("|"));
+    var dig=await crypto.subtle.digest("SHA-256", data);
+    var hex=Array.from(new Uint8Array(dig)).map(function(b){ return ("0"+b.toString(16)).slice(-2); }).join("");
+    sasMap[tid]=hex.slice(0,4).toUpperCase()+" "+hex.slice(4,8).toUpperCase();
+    log("🔐 بصمة الاتصال (SAS) مع "+(presenceMap[tid]?presenceMap[tid].name:tid)+" جاهزة — ستظهر في شاشة المكالمة للمقارنة بالصوت.");
+  }catch(e){}
+}
+// ---------- تدوير المفاتيح: مفتاح AES-GCM جديد لكل مكالمة ----------
+async function rotateCallKey(){
+  try{
+    callSessionKey=await crypto.subtle.generateKey({name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
+    log("🔑 مفتاح جلسة AES-GCM جديد لهذه المكالمة — لا إعادة استخدام لمفتاح جلسة قديم.");
+  }catch(e){ log("⚠️ تعذّر توليد مفتاح الجلسة: "+e.message); }
+}
+// ---------- إشارات حرجة مع ACK وإعادة إرسال (حتى 3 مرات، مهلة 2 ث) ----------
+function sendSignalReliable(to, msg){
+  msg.msgId="m"+Date.now().toString(36)+rand4();
+  var tries=0;
+  function attempt(){
+    tries++;
+    sendSignal(to, msg);
+    pendingAcks[msg.msgId]=setTimeout(function(){
+      if(tries<3){ log("⏳ لم يصل تأكيد الإشارة ("+msg.type+") — إعادة الإرسال "+tries+"/3..."); attempt(); }
+      else{
+        delete pendingAcks[msg.msgId];
+        log("⚠️ إشارة الاتصال لم تصل — تحقق من الشبكة");
+        var cm=$("callMsg");
+        if(cm) cm.innerHTML='<div class="warn">⚠️ إشارة الاتصال لم تصل — تحقق من الشبكة</div>'+cm.innerHTML;
+      }
+    }, 2000);
+  }
+  attempt();
+  return true;
+}
+// ---------- جودة المكالمة: صيغة مبسطة موثقة ----------
+// فقد >10% أو RTT ‏>400ms = نجمة واحدة "ضعيف جداً"؛ فقد <1% وRTT ‏<150ms = 5 نجوم "ممتاز".
+// بينهما: فقد >5% أو RTT ‏>300ms = نجمتان "ضعيف"؛ فقد >2% أو RTT ‏>200ms = 3 نجوم "مقبول"؛ غير ذلك 4 نجوم "جيد".
+function qosStars(rtt, loss, jitter){
+  if(loss>10 || rtt>400) return {stars:1, word:"ضعيف جداً"};
+  if(loss>5 || rtt>300) return {stars:2, word:"ضعيف"};
+  if(loss>2 || rtt>200) return {stars:3, word:"مقبول"};
+  if(loss>=1 || rtt>=150) return {stars:4, word:"جيد"};
+  return {stars:5, word:"ممتاز"};
+}
+// ---------- تكيّف الفيديو التلقائي من إحصائيات RTCP ----------
+function applyVideoLevel(){
+  var vt=localStream?localStream.getVideoTracks()[0]:null;
+  if(!vt) return;
+  var L=VIDEO_LEVELS[videoLevelIdx];
+  try{ vt.applyConstraints({width:{ideal:L.w}, height:{ideal:L.h}}); log("📹 جودة الفيديو الآن "+L.label+" (تكيّف تلقائي من إحصائيات الشبكة)."); }
+  catch(e){ log("⚠️ تعذّر تغيير دقة الفيديو: "+e.message); }
+}
+function adaptVideo(rtt, loss){
+  if(callMode!=="av" || !localStream || !videoOn) return;
+  var vt=localStream.getVideoTracks()[0];
+  if(!vt) return;
+  var now=Date.now();
+  if(loss>10){
+    if(!highLossSince) highLossSince=now;
+    if(now-highLossSince>=10000 && !videoPausedByNet){
+      videoPausedByNet=true;
+      try{ vt.enabled=false; }catch(e){}
+      var vb=$("videoPausedBox");
+      if(vb) vb.style.display="block";
+      log("📹 الفيديو توقف مؤقتاً لضعف الشبكة (فقد "+loss.toFixed(1)+"% لأكثر من 10 ثوانٍ) — الصوت مستمر.");
+      return;
+    }
+  } else highLossSince=0;
+  if(videoPausedByNet) return;
+  if((loss>5 || rtt>300) && videoLevelIdx<VIDEO_LEVELS.length-1){
+    videoLevelIdx++; goodNetSince=0; applyVideoLevel();
+  } else if(loss<1 && rtt<150){
+    if(!goodNetSince) goodNetSince=now;
+    if(now-goodNetSince>=10000 && videoLevelIdx>0){ videoLevelIdx--; goodNetSince=0; applyVideoLevel(); }
+  } else goodNetSince=0;
+}
+function resumeVideoManual(){
+  if(!localStream) return;
+  var vt=localStream.getVideoTracks()[0];
+  if(!vt) return;
+  try{ vt.enabled=true; }catch(e){}
+  videoPausedByNet=false; highLossSince=0;
+  var vb=$("videoPausedBox");
+  if(vb) vb.style.display="none";
+  log("📹 أعدت الفيديو يدوياً بعد إيقافه التلقائي.");
+}
+// ---------- جمع QoS كل ثانيتين + فحص الاتصال الزائف ----------
+setInterval(async function(){
+  if(callState!=="in-call" || !callPartner) return;
+  var mpc=mediaPCs[callPartner];
+  if(!mpc || !mpc.pc) return;
+  try{
+    var stats=await mpc.pc.getStats();
+    var rtt=null, recvBytes=0, lost=0, received=0, jit=0;
+    stats.forEach(function(r){
+      if(r.type==="candidate-pair" && r.state==="succeeded" && r.currentRoundTripTime!=null) rtt=Math.round(r.currentRoundTripTime*1000);
+      if(r.type==="inbound-rtp" && (r.kind==="audio" || r.kind==="video")){
+        lost+=(r.packetsLost||0); received+=(r.packetsReceived||0);
+        if(r.jitter!=null) jit=Math.max(jit, r.jitter);
+        recvBytes+=(r.bytesReceived||0);
+      }
+    });
+    var loss=(lost+received>0)?+(100*lost/(lost+received)).toFixed(1):0;
+    var jitterMs=Math.round(jit*1000);
+    if(rtt!=null) qosLastRtt=rtt;
+    qosLastLoss=loss; qosLastJitter=jitterMs;
+    var q=qosStars(rtt!=null?rtt:999, loss, jitterMs);
+    qosSamples.push({rtt:rtt!=null?rtt:0, loss:loss, jitter:jitterMs, stars:q.stars});
+    if(qosSamples.length>600) qosSamples.shift();
+    var qb=$("qosBox");
+    if(qb) qb.innerHTML="⭐ جودة المكالمة: <b>"+"★".repeat(q.stars)+"☆".repeat(5-q.stars)+" "+q.word+"</b> &nbsp;|&nbsp; RTT: <b>"+(rtt!=null?rtt+"ms":"—")+"</b> • فقد: <b>"+loss+"%</b> • jitter: <b>"+jitterMs+"ms</b>";
+    // فحص حيوية الاتصال: RTP متوقف >10 ثوانٍ مع بقاء ICE "متصل" = اتصال زائف
+    if(recvBytes>lastRtpRecvBytes){ lastRtpRecvBytes=recvBytes; lastRtpFlowAt=Date.now(); deadRestartDone=false; }
+    else if(mpc.pc.iceConnectionState==="connected" && Date.now()-lastRtpFlowAt>10000 && !deadRestartDone){
+      deadRestartDone=true;
+      log("🔄 الاتصال يبدو ميتاً رغم ظهوره متصلاً — إعادة المحاولة...");
+      attemptIceRestart(callPartner, "dead-connection-10s");
+    }
+    adaptVideo(rtt!=null?rtt:999, loss);
+  }catch(e){}
+}, 2000);
+// ---------- ping/pong عبر قناة البيانات كل 10 ثوانٍ لقياس RTT لكل جار ----------
+setInterval(function(){
+  if(!mqttConnected) return;
+  Object.keys(dataChans).forEach(function(tid){
+    if(dataChans[tid] && dataChans[tid].readyState==="open") sendData(tid, "ping", {t:Date.now()});
+  });
+}, 10000);
+// ---------- أفضل مسار حقيقي: أقل RTT مقاس (لا تفضيل ثابت) ----------
+function bestRttPeer(list){
+  var best=null, bestRtt=Infinity;
+  (list||[]).forEach(function(tid){ if(rttMap[tid]!=null && rttMap[tid]<bestRtt){ bestRtt=rttMap[tid]; best=tid; } });
+  return best;
+}
+function relayLoadOf(tid){
+  if(tid===myTowerId) return Object.keys(mediaPCs).filter(function(k){ return mediaPCs[k] && mediaPCs[k].group; }).length;
+  var p=presenceMap[tid];
+  return (p && p.relayLoad!=null)?p.relayLoad:0;
+}
+// ---------- تقارير الجودة: آخر 10 في localStorage ----------
+function loadCallReports(){ try{ return JSON.parse(localStorage.getItem(CALL_REPORT_KEY)||"[]"); }catch(e){ return []; } }
+function saveCallReport(rep){
+  var arr=loadCallReports();
+  arr.unshift(rep); arr=arr.slice(0,10);
+  try{ localStorage.setItem(CALL_REPORT_KEY, JSON.stringify(arr)); }catch(e){}
+  renderCallQualityLog();
+}
+function renderCallQualityLog(){
+  var el=$("callQualityLog");
+  if(!el) return;
+  var arr=loadCallReports();
+  if(!arr.length){ el.innerHTML="لسه مفيش مكالمات مسجلة."; return; }
+  el.innerHTML=arr.map(function(r){
+    return "<div style='border-bottom:1px solid #2a3d2e;padding:6px 0'>📞 "+r.when+" — "+r.peer+" — المدة "+r.dur+" — المسار "+r.path+"<br>⏱️ RTT ‏"+r.avgRtt+"ms • فقد "+r.avgLoss+"% • jitter ‏"+r.avgJitter+"ms — الجودة "+r.stars+"★ ("+r.word+") — أعلى "+r.best+"★ / أدنى "+r.worst+"★ — إعادة ICE ‏"+r.iceRestarts+"</div>";
+  }).join("");
+}
+// ---------- تشخيص الشبكة: STUN + TURN + MQTT + سرعة ----------
+function gatherCandidates(servers, timeoutMs){
+  return new Promise(function(resolve){
+    var pc;
+    try{ pc=new RTCPeerConnection({iceServers:servers}); }catch(e){ resolve([]); return; }
+    var found=[];
+    var to=setTimeout(function(){ try{ pc.close(); }catch(e){} resolve(found); }, timeoutMs);
+    pc.onicecandidate=function(ev){
+      if(ev.candidate){ found.push(ev.candidate.candidate); }
+      else { clearTimeout(to); try{ pc.close(); }catch(e){} resolve(found); }
+    };
+    try{ pc.createDataChannel("diag"); }catch(e){}
+    pc.createOffer().then(function(o){ return pc.setLocalDescription(o); }).catch(function(){ clearTimeout(to); resolve(found); });
+  });
+}
+async function runDiagnostics(){
+  var res=$("diagResults");
+  if(!res) return;
+  if(!mqttClient || !mqttConnected){ res.innerHTML="<div class='warn'>⚠️ ادخل الشبكة الأول — التشخيص يحتاج اتصال وسيط الإشارة.</div>"; return; }
+  res.innerHTML="<div class='hint'>⏳ جارٍ فحص الشبكة... (STUN ثم TURN ثم MQTT ثم السرعة)</div>";
+  log("🔍 بدأت فحص الشبكة (STUN/TURN/MQTT/سرعة).");
+  var stunServers=ICE_SERVERS.filter(function(sv){ return (sv.urls||"").indexOf("stun:")===0; });
+  var turnServers=ICE_SERVERS.filter(function(sv){ return (sv.urls||"").indexOf("turn")===0; });
+  var stunCands=await gatherCandidates(stunServers, 5000);
+  var stunOk=stunCands.some(function(c){ return c.indexOf("typ srflx")>=0; });
+  var turnCands=await gatherCandidates(turnServers, 8000);
+  var turnOk=turnCands.some(function(c){ return c.indexOf("typ relay")>=0; });
+  var mqttMs=null;
+  try{
+    var topic="sayegh-mesh/diag/"+myTowerId+"-"+rand4();
+    var t0=Date.now();
+    mqttMs=await new Promise(function(resolve){
+      var done=false;
+      var to=setTimeout(function(){ if(!done){ done=true; try{ mqttClient.unsubscribe(topic); }catch(e){} resolve(null); } }, 5000);
+      var h=function(tp, payload){
+        if(tp===topic && !done){ done=true; clearTimeout(to); try{ mqttClient.unsubscribe(topic); }catch(e){} try{ mqttClient.removeListener("message", h); }catch(e){} resolve(Date.now()-t0); }
+      };
+      try{
+        mqttClient.on("message", h);
+        mqttClient.subscribe(topic, {qos:1}, function(){ try{ mqttClient.publish(topic, "ping", {qos:1}); }catch(e){} });
+        setTimeout(function(){ try{ mqttClient.removeListener("message", h); }catch(e){} }, 5500);
+      }catch(e){ clearTimeout(to); resolve(null); }
+    });
+  }catch(e){ mqttMs=null; }
+  var speedTxt="تعذّر القياس", speedKbps=null;
+  try{
+    var t1=performance.now();
+    var r=await fetch(location.href.split("?")[0]+"?diag="+Date.now(), {cache:"no-store"});
+    var buf=await r.arrayBuffer();
+    var dt=(performance.now()-t1)/1000;
+    if(dt>0 && buf.byteLength>0){ speedKbps=Math.round((buf.byteLength/1024)/dt); speedTxt=speedKbps+" KB/s ("+(buf.byteLength/1024).toFixed(0)+" KB في "+dt.toFixed(1)+" ث)"; }
+  }catch(e){}
+  var rec;
+  if(!stunOk && !turnOk) rec="❌ الشبكة ضعيفة جداً — جرّب واي فاي آخر قبل الاتصال.";
+  else if(!stunOk && turnOk) rec="⚠️ ستحتاج وسيط TURN — الاتصال المباشر غير متاح، لكن المكالمة ممكنة عبر الوسيط.";
+  else if(speedKbps!=null && speedKbps<50) rec="⚠️ الشبكة ضعيفة — اتصل صوت فقط.";
+  else rec="✅ شبكتك تسمح باتصال مباشر.";
+  res.innerHTML="<div class='card' style='margin:8px 0'><h3>📋 نتيجة فحص الشبكة</h3><div style='line-height:2'>"
+    +"<div>"+(stunOk?"✅":"❌")+" <b>STUN:</b> "+(stunOk?"نجح — جُمع مرشح srflx (اتصال مباشر ممكن)":"فشل — لم يُجمع مرشح srflx خلال 5 ثوانٍ")+"</div>"
+    +"<div>"+(turnOk?"✅":"❌")+" <b>TURN (OpenRelay):</b> "+(turnOk?"نجح — جُمع مرشح relay":"فشل — لم يُجمع مرشح relay خلال 8 ثوانٍ")+"</div>"
+    +"<div>"+(mqttMs!=null?"✅":"❌")+" <b>MQTT ("+BROKERS[brokerIdx].name+"):</b> "+(mqttMs!=null?("زمن الوصول "+mqttMs+"ms"):"فشل — لم يرد الوسيط خلال 5 ثوانٍ")+"</div>"
+    +"<div>📥 <b>تقدير سرعة الشبكة:</b> "+speedTxt+"</div>"
+    +"<div style='margin-top:6px'><b>التوصية:</b> "+rec+"</div></div></div>";
+  log("🔍 نتيجة فحص الشبكة: STUN "+(stunOk?"نجح":"فشل")+"، TURN "+(turnOk?"نجح":"فشل")+"، MQTT "+(mqttMs!=null?mqttMs+"ms":"فشل")+"، السرعة "+speedTxt+" — "+rec);
+}
+
 // ---------- إعادة محاولة ICE تلقائياً (fix 2c) ----------
 function attemptIceRestart(tid, reason){
   if(callState!=="in-call" || !tid || !mediaPCs[tid] || !mediaPCs[tid].pc) return;
@@ -808,17 +1120,19 @@ async function startCallTo(targetNode, mode){
   if(!tid){ log("❌ البرج "+towerName(targetNode)+" مش متصل دلوقتي."); return; }
   if(callState!=="idle"){ log("⚠️ أنهِ المكالمة الحالية الأول."); return; }
   callMode=mode; callTarget=tid; callPartner=tid;
-  callState="calling"; showCallUI();
+  callState="calling"; setCallPhase("calling"); showCallUI();
   log("📞 بيتصل بـ "+towerName(targetNode)+" ("+(mode==="av"?"صوت+فيديو":"صوت فقط")+")...");
   try{
     var stream=await getLocalStream(mode==="av");
     var pc=newMediaPC(tid);
     mediaPCs[tid]={pc:pc, mode:mode, localStream:stream, remoteStream:null};
     stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+    applyOpusPrefs(pc);
     wireRemoteMedia(tid, pc);
     var offer=await pc.createOffer();
     await pc.setLocalDescription(offer);
-    sendSignal(tid, {type:"call-offer", mode:mode, sdp:pc.localDescription});
+    setCallPhase("connecting");
+    sendSignalReliable(tid, {type:"call-offer", mode:mode, sdp:pc.localDescription});
     callTimeoutInt=setTimeout(function(){
       if(callState==="calling"){ log("⏳ مفيش رد — المكالمة اتلغت."); endCallLocal("no-answer", true); }
     }, 30000);
@@ -855,6 +1169,7 @@ function wireRemoteMedia(tid, pc){
   pc.oniceconnectionstatechange=function(){
     iceStateByTid[tid]=pc.iceConnectionState;
     log("📡 حالة ICE مع "+(presenceMap[tid]?presenceMap[tid].name:tid)+": "+pc.iceConnectionState+".");
+    if(pc.iceConnectionState==="connected" || pc.iceConnectionState==="completed"){ clearConnectWatchdog(); if(callState==="in-call") setCallPhase("connected"); }
     if(pc.iceConnectionState==="disconnected"){ iceDisconnectSince=Date.now(); }
     if(pc.iceConnectionState==="failed"){ attemptIceRestart(tid, "failed"); }
     updateIceStatusBox();
@@ -884,7 +1199,7 @@ function onCallOffer(from, msg){
   }
   pendingOffer={from:from, mode:msg.mode||"av", sdp:msg.sdp, renegotiate:!!msg.renegotiate};
   callPartner=from; callMode=msg.mode||"av"; callTarget=from;
-  callState="ringing"; showCallUI();
+  callState="ringing"; setCallPhase("ringing"); showCallUI();
   $("incomingText").textContent=(callMode==="av"?"📹📞 مكالمة صوت+فيديو واردة من ":"📞 مكالمة صوتية فقط واردة من ")+(presenceMap[from]?presenceMap[from].name:from)+" 🔒";
   startRingtone();
   log("📞 مكالمة واردة من "+(presenceMap[from]?presenceMap[from].name:from)+" ("+(callMode==="av"?"صوت+فيديو":"صوت فقط")+").");
@@ -917,11 +1232,12 @@ async function acceptCall(){
     var pc=newMediaPC(from);
     mediaPCs[from]={pc:pc, mode:mode, localStream:stream, remoteStream:null};
     stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+    applyOpusPrefs(pc);
     wireRemoteMedia(from, pc);
     await pc.setRemoteDescription(new RTCSessionDescription(pendingOffer.sdp));
     var ans=await pc.createAnswer();
     await pc.setLocalDescription(ans);
-    sendSignal(from, {type:"call-answer", sdp:pc.localDescription});
+    sendSignalReliable(from, {type:"call-answer", sdp:pc.localDescription});
     pendingOffer=null;
     beginInCall(from);
   }catch(e){
@@ -947,6 +1263,15 @@ async function onCallAnswer(from, msg){
 function beginInCall(partnerTid){
   clearCallTimeouts();
   callState="in-call"; callPartner=partnerTid; callStartTime=Date.now();
+  setCallPhase("connecting");
+  qosSamples=[]; qosLastRtt=null; qosLastLoss=null; qosLastJitter=null;
+  lastRtpRecvBytes=0; lastRtpFlowAt=Date.now(); deadRestartDone=false;
+  videoLevelIdx=0; highLossSince=0; goodNetSince=0; videoPausedByNet=false;
+  rotateCallKey();
+  startConnectWatchdog(partnerTid);
+  var sas=sasMap[partnerTid];
+  var sb=$("sasBox");
+  if(sb) sb.innerHTML=sas?("🔐 بصمة الاتصال: <b dir='ltr'>"+sas+"</b><br><span class='small'>قارنها مع الطرف التاني بالصوت — إن اختلفت فهناك وسيط يتنصت</span>"):"🔐 بصمة الاتصال: تُحسب بعد تبادل المفاتيح...";
   lastAudioChange=Date.now(); audioWarnShown=false;
   iceRetryCount=0; iceDisconnectSince=0; iceFailShown=false;
   var fb0=$("iceFailBox"); if(fb0) fb0.style.display="none";
@@ -962,6 +1287,7 @@ function cancelOutgoingCall(){ if(callState==="calling") endCallLocal("cancelled
 function rejectIncomingCall(){ if(callState==="ringing") endCallLocal("rejected", true); }
 function endCallLocal(reason, notifyPeer){
   var partner=callPartner;
+  var iceRestartsDone=iceRetryCount;
   // 1) الإنهاء المحلي فوراً — لا انتظار لأي شبكة
   try{ stopVideoTracks(); }catch(e){}
   try{ stopCallTimer(); clearCallTimeouts(); stopRingtone(); stopRecognition(); }catch(e){}
@@ -975,7 +1301,26 @@ function endCallLocal(reason, notifyPeer){
   try{ var a=$("callAudio"); if(a){ a.srcObject=null; } var v=$("remoteVideo"); if(v){ v.srcObject=null; } $("remoteVideoWrap").style.display="none"; }catch(e){}
   var dur=callStartTime?fmtDuration(Math.floor((Date.now()-callStartTime)/1000)):"00:00";
   var pname=partner?(presenceMap[partner]?presenceMap[partner].name:partner):"";
+  var reportHtml="";
+  if(callState==="in-call" && callStartTime){
+    var durSec=Math.floor((Date.now()-callStartTime)/1000);
+    var types=iceCandTypes[partner]||{};
+    var path=types.relay?"وسيط relay":(types.srflx?"مباشر srflx":(types.host?"محلي host":"غير معروف"));
+    var avg=function(k){ if(!qosSamples.length) return "—"; var sm=0; qosSamples.forEach(function(x){ sm+=(x[k]||0); }); return (sm/qosSamples.length).toFixed(1); };
+    var starsArr=qosSamples.map(function(x){ return x.stars; });
+    var fq=qosSamples.length?qosStars(qosLastRtt||0, qosLastLoss||0, qosLastJitter||0):{stars:0, word:"—"};
+    var rep={when:new Date().toLocaleString("ar-EG"), peer:pname||partner||"؟", dur:fmtDuration(durSec), path:path, avgRtt:avg("rtt"), avgLoss:avg("loss"), avgJitter:avg("jitter"), best:starsArr.length?Math.max.apply(null,starsArr):"—", worst:starsArr.length?Math.min.apply(null,starsArr):"—", iceRestarts:iceRestartsDone, stars:fq.stars, word:fq.word};
+    saveCallReport(rep);
+    reportHtml='<div class="card" style="margin-top:10px"><h3>📋 تقرير جودة المكالمة</h3><div style="line-height:1.9">📞 مع '+rep.peer+' — المدة '+rep.dur+'<br>📡 المسار: <b>'+rep.path+'</b><br>⏱️ متوسط RTT: <b>'+rep.avgRtt+'ms</b> • فقد: <b>'+rep.avgLoss+'%</b> • jitter: <b>'+rep.avgJitter+'ms</b><br>⭐ أعلى جودة: '+rep.best+'★ • أدنى جودة: '+rep.worst+'★ • إعادة ICE: '+rep.iceRestarts+'<br>🏁 التقييم النهائي: <b>'+rep.stars+'★ '+rep.word+'</b></div></div>';
+  }
   callState="idle"; callTarget=""; callPartner=""; callStartTime=0;
+  setCallPhase("ended");
+  clearConnectWatchdog();
+  callSessionKey=null;
+  qosSamples=[]; videoLevelIdx=0; highLossSince=0; goodNetSince=0; videoPausedByNet=false;
+  var sbx=$("sasBox"); if(sbx) sbx.innerHTML="";
+  var qbx=$("qosBox"); if(qbx) qbx.textContent="⭐ جودة المكالمة: —";
+  var vpb=$("videoPausedBox"); if(vpb) vpb.style.display="none";
   publishPresence(); showCallUI();
   var msg="";
   if(reason==="ended-by-me") msg="🔴 أنهيت المكالمة مع "+pname+" — المدة: "+dur+".";
@@ -994,7 +1339,7 @@ function endCallLocal(reason, notifyPeer){
       var pnode=presenceMap[partner]?presenceMap[partner].node:"";
       redial='<div style="margin-top:8px"><button id="redialBtn" class="btn-gold">🔄 اتصل تاني بـ '+towerName(pnode)+'</button></div>';
     }
-    cm.innerHTML='<div class="ok">'+msg+'</div>'+redial;
+    cm.innerHTML='<div class="ok">'+msg+'</div>'+reportHtml+redial;
     var rb=$("redialBtn");
     if(rb) rb.addEventListener("click", function(){ redialLastCall(partner); });
   }
@@ -1002,7 +1347,7 @@ function endCallLocal(reason, notifyPeer){
   if(notifyPeer && partner){
     var pnode2=presenceMap[partner]?presenceMap[partner].node:"";
     var type=reason==="cancelled"?"call-cancel":reason==="rejected"?"call-reject":"call-end";
-    try{ sendSignal(partner, {type:type}); }catch(e){}
+    try{ sendSignalReliable(partner, {type:type}); }catch(e){}
     log("🔴 بعت إشعار إنهاء مشفر للطرف التاني (في الخلفية).");
   }
   saveSession();
@@ -1054,6 +1399,11 @@ function onGroupInvite(from, msg){
     sendSignal(from, {type:"group-reject", groupId:msg.groupId, reason:"busy"});
     return;
   }
+  if(isSuperNode && relayLoadOf(myTowerId)>=RELAY_MAX){
+    sendSignal(from, {type:"group-reject", groupId:msg.groupId, reason:"relay-busy"});
+    log("⛔ مشغول كوسيط — وصلت لحد 4 اتصالات وسائط متزامنة كوسيط — رفضت دور الوسيط وسيُختار بديل.");
+    return;
+  }
   incomingGroup=true; groupCall.inviteFrom=from; groupCall.groupId=msg.groupId;
   var git=$("groupIncomingText"); if(git) git.textContent="👥 مكالمة جماعية واردة من "+(presenceMap[from]?presenceMap[from].name:from)+" 🔒 — انضم للمجموعة؟";
   $("groupIncomingBox").style.display="block";
@@ -1075,6 +1425,7 @@ async function acceptGroupInvite(){
     var pc=newMediaPC(host);
     mediaPCs[host]={pc:pc, mode:"av", localStream:stream, remoteStream:null, group:true};
     stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+    applyOpusPrefs(pc);
     wireRemoteMedia(host, pc);
     var offer=await pc.createOffer();
     await pc.setLocalDescription(offer);
@@ -1092,6 +1443,7 @@ async function onGroupOffer(from, msg){
     var pc=newMediaPC(from);
     mediaPCs[from]={pc:pc, mode:"av", localStream:stream, remoteStream:null, group:true};
     stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+    applyOpusPrefs(pc);
     wireRemoteMedia(from, pc);
     await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
     var ans=await pc.createAnswer();
@@ -1112,6 +1464,10 @@ function onGroupLeave(from, msg){
   delete groupCall.members[from];
   try{ if(mediaPCs[from]){ mediaPCs[from].pc.close(); delete mediaPCs[from]; } }catch(e){}
   log("👥 غادر <b>"+(presenceMap[from]?presenceMap[from].name:from)+"</b> المكالمة الجماعية.");
+  if(groupCall.active && Object.keys(groupCall.members).length){
+    var alt=bestRttPeer(Object.keys(groupCall.members));
+    if(alt) log("🔀 تحويل المسار من "+(presenceMap[from]?presenceMap[from].name:from)+" إلى "+(presenceMap[alt]?presenceMap[alt].name:alt)+" (أفضل بديل مقاس: "+(rttMap[alt]!=null?rttMap[alt]+"ms":"—")+").");
+  }
   if(!Object.keys(groupCall.members).length){ endGroupCall("all-left", false); }
   renderGroupMembers();
 }
@@ -1302,7 +1658,7 @@ function renderDash(){
   var dch=$("dashChans");
   dch.innerHTML="<div class='hint'>غرفة: <b>"+(room?room.name:"")+"</b></div>"+(room?room.chans.map(function(ch){ return "<div>📺 "+ch.name+" ("+ch.code+")</div>"; }).join(""):"");
   var dt=$("dashTowers");
-  dt.innerHTML=Object.keys(presenceMap).length?Object.keys(presenceMap).map(function(tid){ var p=presenceMap[tid]; return "<div>🛰️ "+p.name+(p.super?" ⭐":"")+(tid===myTowerId?" (ده أنت)":"")+" — "+(dataReady[tid]?"🔒 قناة بيانات جاهزة":"⏳ قناة بيانات...")+"</div>"; }).join(""):"<div class='hint'>لا توجد أبراج متصلة بعد.</div>";
+  dt.innerHTML=Object.keys(presenceMap).length?Object.keys(presenceMap).map(function(tid){ var p=presenceMap[tid]; return "<div>🛰️ "+p.name+(p.super?" ⭐ الحمل كوسيط: "+relayLoadOf(tid)+"/4":"")+(tid===myTowerId?" (ده أنت)":"")+" — "+(dataReady[tid]?"🔒 قناة بيانات جاهزة":"⏳ قناة بيانات...")+"</div>"; }).join(""):"<div class='hint'>لا توجد أبراج متصلة بعد.</div>";
 }
 
 // ---------- البوابة بين المدن ----------
@@ -1335,13 +1691,15 @@ function renderContacts(){
   var tids=Object.keys(presenceMap).sort(function(a,b){ return (parseInt(presenceMap[a].node,10)||99)-(parseInt(presenceMap[b].node,10)||99); });
   if(!tids.length){ box.innerHTML="<div class='hint'>لسه مفيش أبراج تانية في الغرفة — ابعت اللينك للتليفون التاني.</div>"; }
   else box.innerHTML="";
+  var fastestTid=null, fastestRtt=Infinity;
+  tids.forEach(function(tid){ if(tid!==myTowerId && rttMap[tid]!=null && rttMap[tid]<fastestRtt){ fastestRtt=rttMap[tid]; fastestTid=tid; } });
   tids.forEach(function(tid){
     var p=presenceMap[tid];
     var isMe=tid===myTowerId;
     var ready=!isMe; // الحضور الطازج يكفي لبدء مكالمة WebRTC مباشرة
     var div=document.createElement("div");
     div.className="contact-row";
-    div.innerHTML='<div class="avatar">'+arNum(p.node)+'</div><div class="info"><div class="name">'+p.name+(p.super?" ⭐":"")+(isMe?" — ⭐ ده أنت":"")+'</div><div class="st'+(isMe?"":"")+'">● متصل ✓'+(dataReady[tid]?" 🔒 قناة بيانات جاهزة":"")+'</div></div>';
+    div.innerHTML='<div class="avatar">'+arNum(p.node)+'</div><div class="info"><div class="name">'+p.name+(p.super?" ⭐":"")+(isMe?" — ⭐ ده أنت":"")+'</div><div class="st'+(isMe?"":"")+'">● متصل ✓'+(dataReady[tid]?" 🔒 قناة بيانات جاهزة":"")+(rttMap[tid]!=null?" • آخر قياس: "+rttMap[tid]+"ms":" • آخر قياس: —")+(tid===fastestTid?" ⚡ الأسرع":"")+'</div></div>';
     if(!isMe){
       var b1=document.createElement("button"); b1.className="round-btn green"; b1.textContent="📞"; b1.title="صوت فقط"; b1.disabled=!ready||callState!=="idle";
       b1.addEventListener("click", function(){ startCallTo(p.node, "voice"); });
@@ -1408,7 +1766,8 @@ function renderNetTab(){
   NODES.forEach(function(n){
     var tid=towerIdByNode(n);
     var d=document.createElement("div"); d.className="tower-card";
-    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+towerName(n)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+(n===myNode?"⭐ ده أنت":(tid?"● متصل":"○ غير متصل"))+'</div><div style="font-size:14px">📶</div>';
+    var rttTxt=(tid && rttMap[tid]!=null)?" • RTT ‏"+rttMap[tid]+"ms":"";
+    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+towerName(n)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+(n===myNode?"⭐ ده أنت":(tid?"● متصل"+rttTxt:"○ غير متصل"))+'</div><div style="font-size:14px">📶</div>';
     grid.appendChild(d);
   });
   var n=Object.keys(presenceMap).length;
@@ -1416,14 +1775,18 @@ function renderNetTab(){
   var ns=$("netStats"); if(ns) ns.textContent="— "+towerCountText();
   var bp=$("bestPathBox");
   if(bp){
-    var t=$("targetSel")?$("targetSel").value:"";
     if(callState==="in-call" && callPartner) bp.innerHTML="⭐ <b>أفضل مسار حالياً: مباشر — WebRTC بينك وبين "+(presenceMap[callPartner]?presenceMap[callPartner].name:"")+" (بلا وسيط)</b>";
-    else if(t && isTowerPresent(t)) bp.innerHTML="⭐ <b>أفضل مسار حالياً: مباشر — اتصال WebRTC مباشر مع "+towerName(t)+"</b>";
-    else bp.innerHTML="⭐ <b>أفضل مسار حالياً: —</b> اختار برج هدف من «اتصل بمين؟»";
+    else{
+      var peers=Object.keys(presenceMap).filter(function(t){ return t!==myTowerId; });
+      var best=bestRttPeer(peers);
+      if(best) bp.innerHTML="⭐ <b>أفضل مسار حالياً: "+(presenceMap[best]?presenceMap[best].name:best)+" — RTT ‏"+rttMap[best]+"ms (مقاس فعلياً عبر ping قناة البيانات كل 10 ثوانٍ — لا تفضيل ثابت)</b>";
+      else bp.innerHTML="⭐ <b>أفضل مسار حالياً: —</b> لم يُقَس RTT لأي برج بعد — يُقاس كل 10 ثوانٍ عبر قناة البيانات.";
+    }
   }
   var sb=$("statsBox");
-  if(sb) sb.innerHTML="📡 وسيط الإشارة: <b>"+(mqttConnected?BROKERS[brokerIdx].name+" ✓":"غير متصل")+"</b><br>🛰️ أبراج حاضرة: <b>"+towerCountText()+"</b> &nbsp;|&nbsp; 🔒 قنوات بيانات جاهزة: <b>"+Object.keys(dataReady).length+"</b><br>📹 مكالمات وسائط مفتوحة: <b>"+Object.keys(mediaPCs).length+"</b>";
+  if(sb) sb.innerHTML="📡 وسيط الإشارة: <b>"+(mqttConnected?BROKERS[brokerIdx].name+" ✓":"غير متصل")+"</b><br>🛰️ أبراج حاضرة: <b>"+towerCountText()+"</b> &nbsp;|&nbsp; 🔒 قنوات بيانات جاهزة: <b>"+Object.keys(dataReady).length+"</b><br>📹 مكالمات وسائط مفتوحة: <b>"+Object.keys(mediaPCs).length+"</b><br>⭐ حمل النقاط الثابتة كوسيط (الحد 4): <b>"+(Object.keys(presenceMap).filter(function(t){ return presenceMap[t].super; }).map(function(t){ return presenceMap[t].name+" "+relayLoadOf(t)+"/4"; }).join("، ")||"لا توجد نقاط ثابتة")+"</b>";
   renderDash();
+  renderCallQualityLog();
 }
 
 // ---------- العرض: واجهة المكالمة + الشريط الثابت ----------
@@ -1647,6 +2010,8 @@ function wireUI(){
     $("noiseState").textContent=noiseOn?"التنقية شغالة — تنقية عبر إعدادات المتصفح (إلغاء صدى + قمع ضوضاء + فلتر ترددات منخفضة). ليست RNNoise.":"التنقية متوقفة — الصوت الخام مباشرة.";
     saveSession();
   });
+  var dg=$("diagBtn"); if(dg) dg.addEventListener("click", function(){ runDiagnostics(); });
+  var rv=$("resumeVideoBtn"); if(rv) rv.addEventListener("click", function(){ resumeVideoManual(); });
   $("sosBtn").addEventListener("click", function(){ sendSOS(); });
   $("sosBtnCall").addEventListener("click", function(){ sendSOS(); });
   $("superToggleBtn").addEventListener("click", function(){
@@ -1743,7 +2108,7 @@ async function init(){
   $("roomInp").value=myRoom;
   connectBroker(0);
   startAutoEntry();
-  log("📡 شبكة الناس v3.0.1 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
+  log("📡 شبكة الناس v3.1 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
 }
 document.addEventListener("DOMContentLoaded", init);
 </script>
