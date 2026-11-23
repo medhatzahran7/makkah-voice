@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.10 — اكتشاف العقد أُصلح</title>
+<title>شبكة الناس v2.10.1 — اكتشاف العقد أُصلح</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -106,7 +106,7 @@ body{padding-bottom:92px}
 <button id="sosBtnTop" class="btn-red sos-top">🆘 استغاثة</button>
 </header>
 <div class="wrap">
-<h1>📡 شبكة الناس v2.10</h1>
+<h1>📡 شبكة الناس v2.10.1</h1>
 <p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
 <div id="sosBanner" style="display:none;border:3px solid #ff5252;border-radius:16px;padding:16px;background:#4a0f0f;text-align:center;margin-top:10px"><h3 style="font-size:26px;margin:0 0 8px">🚨 استغاثة واردة!</h3><div id="sosBannerText" style="font-size:18px;font-weight:800"></div><div id="sosBannerMap" style="margin-top:8px"></div><button id="sosAckBtn" class="btn-green" style="margin-top:10px">✅ أنا سمعت الاستغاثة — أوقف التنبيه</button></div>
@@ -383,7 +383,7 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.10 — اكتشاف العقد أُصلح (إعادة محاولة المعرّف الحتمي + إعلان المعرّف الفعلي) فوق دخول تلقائي وصوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي v2.10.1 — اكتشاف العقد أُصلح (إعادة محاولة المعرّف الحتمي + إعلان المعرّف الفعلي) فوق دخول تلقائي وصوت+فيديو معاً من بداية المكالمة، مباشر أولاً. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار عقد متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
 </div>
@@ -489,7 +489,7 @@ var connStatus={};
 var sharedKeys={};
 var peerPub={};
 var helloSent={};
-// v2.10: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
+// v2.10.1: اكتشاف العقد — المعرّف الفعلي لكل عقدة + إعادة المحاولة بالمعرّف الحتمي.
 var actualPeerIds={};
 var detIdRetries=0, usedSuffixFallback=false, joinGen=0, lastSigWarn=0;
 var pendingTests={};
@@ -514,6 +514,19 @@ function resumeAudio(){
   try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
 }
 
+// v2.10.1.1: فتح قفل الصوت بإيماءة المستخدم — بدونه يبقى AudioContext متوقفاً
+// فيرسل المسجل صمتاً، وقد يرفض المتصفح تشغيل المقاطع الواردة.
+var audioUnlocked=false;
+function unlockAudio(){
+  try{ if(audioCtx && audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
+  if(audioUnlocked) return; audioUnlocked=true;
+  try{
+    var a=$("callAudio");
+    if(a){ a.src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="; a.volume=0; var pr=a.play(); if(pr && pr.catch) pr.catch(function(){}); }
+  }catch(e){}
+}
+document.addEventListener("pointerdown", unlockAudio);
+
 // ---------- v2.3: AI — noise purification + live translation ----------
 // التنقية: إعدادات المتصفح (echoCancellation + noiseSuppression + autoGainControl)
 // + فلتر Web Audio high-pass بسيط. ليست RNNoise — مكتوب بصراحة في الواجهة.
@@ -527,11 +540,14 @@ var transInFlight=false;
 function micConstraints(){
   return {audio:{echoCancellation:true, noiseSuppression:noiseOn, autoGainControl:true}};
 }
-function purifiedStream(stream){
+async function purifiedStream(stream){
   if(!noiseOn) return stream;
   try{
-    resumeAudio();
-    if(!audioCtx) return stream;
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended"){ try{ await audioCtx.resume(); }catch(e){} }
+    // v2.10.1.1: التسجيل من سياق صوت متوقف ينتج صمتاً — ارجع للصوت الخام مباشرة.
+    // إعدادات المتصفح (إلغاء صدى + قمع ضوضاء + تضخيم تلقائي) ما زالت شغالة عبر getUserMedia.
+    if(!audioCtx || audioCtx.state!=="running") return stream;
     var src=audioCtx.createMediaStreamSource(stream);
     var hp=audioCtx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=80; hp.Q.value=0.7;
     var dest=audioCtx.createMediaStreamDestination();
@@ -752,6 +768,11 @@ function startDirStats(){
   stopDirStats();
   dirStatsInt=setInterval(function(){
     updateDirStats();
+    if(callState==="in-call" && sentChunks===0 && callStartTime && (Date.now()-callStartTime>5000) && !window._sentWarned){
+      window._sentWarned=true;
+      var w3=$("noAudioWarn"); if(w3){ w3.style.display="block"; w3.textContent="⚠️ لم يُرسل أي مقطع صوت من جهازك — الميكروفون قد يكون مكتوماً أو مرفوضاً. جرّب إيقاف التنقية من الإعدادات."; }
+      log("⚠️ لم يُرسل أي مقطع صوت منذ بدء المكالمة — تحقق من الميكروفون.");
+    }
     if(callState==="in-call" && lastReceivedAt && (Date.now()-lastReceivedAt>3000)){
       var w=$("noAudioWarn"); if(w) w.style.display="block";
       log("⚠️ لا يصل صوت من الطرف التاني منذ أكثر من 3 ثوانٍ — جاري إعادة المحاولة...");
@@ -874,7 +895,7 @@ function initPeer(attempt, isAuto){
     if(typeof cancelAutoCountdown==="function") cancelAutoCountdown();
     $("joinBtn").style.display="block"; $("leaveBtn").style.display="block";
     setExecuteBusy(false);
-    // v2.10: إن دخلت بمعرّف احتياطي (لاحقة عشوائية)، أظهر زر إعادة المحاولة بالمعرّف الحتمي.
+    // v2.10.1: إن دخلت بمعرّف احتياطي (لاحقة عشوائية)، أظهر زر إعادة المحاولة بالمعرّف الحتمي.
     var rd=$("retryDetBtn"), rh=$("retryDetHint");
     var suffixed = (myId!==makePeerId(myRoom, myNode));
     if(rd) rd.style.display=suffixed?"block":"none";
@@ -891,7 +912,7 @@ function initPeer(attempt, isAuto){
   peer.on("connection", function(conn){ setupConnection(conn); });
   peer.on("error", function(err){
     if(err && err.type==="unavailable-id"){
-      // v2.10: أعد المحاولة بالمعرّف الحتمي نفسه أولاً (3 مرات، كل 2 ثانية) —
+      // v2.10.1: أعد المحاولة بالمعرّف الحتمي نفسه أولاً (3 مرات، كل 2 ثانية) —
       // التسجيلات القديمة تنتهي عادةً خلال ثوانٍ. اللاحقة العشوائية آخر حل،
       // لأن العقدة ذات اللاحقة لا يكتشفها أحد يبحث عن المعرّف الحتمي.
       if(detIdRetries<3){
@@ -929,7 +950,7 @@ function initPeer(attempt, isAuto){
     setExecuteBusy(false);
   });
   peer.on("disconnected", function(){
-    // v2.10: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
+    // v2.10.1: تحذير واحد واضح كل 30 ثانية كحد أقصى — لا رسائل متكررة مزعجة.
     var now=Date.now();
     if(now-lastSigWarn>30000){
       lastSigWarn=now;
@@ -950,7 +971,7 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
   }
   myNode=nodeArg; myRoom=sanitizeRoom(roomArg); $("roomInp").value=myRoom; $("nodeSel").value=myNode;
   myId=savedPeerId || makePeerId(myRoom, myNode);
-  joinGen++; detIdRetries=0; usedSuffixFallback=false; // v2.10: دخول جديد — أعد عدّادات إعادة المحاولة
+  joinGen++; detIdRetries=0; usedSuffixFallback=false; // v2.10.1: دخول جديد — أعد عدّادات إعادة المحاولة
   $("joinBtn").disabled=true; $("joinMsg").innerHTML='<div class="warn">⏳ بيولد مفتاح التشفير ويدخل الشبكة...</div>';
   try{
     myKeyPair=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"}, true, ["deriveKey"]);
@@ -965,7 +986,7 @@ async function doJoin(nodeArg, roomArg, savedPeerId, isAuto){
   initPeer(0, isAuto);
 }
 
-// v2.10: مؤشر تنفيذ — عند الضغط على زر التنفيذ يتعطّل الزر ويظهر "⏳ جارٍ التنفيذ..."
+// v2.10.1: مؤشر تنفيذ — عند الضغط على زر التنفيذ يتعطّل الزر ويظهر "⏳ جارٍ التنفيذ..."
 // حتى يكتمل الانتقال (open) أو يفشل برسالة واضحة — لأن التأخير ~8-10 ثوانٍ بلا مؤشر يوحي أن الزر لا يعمل.
 function setExecuteBusy(busy){
   var j=$("joinBtn"), n=$("nodeApplyBtn");
@@ -994,7 +1015,7 @@ $("joinBtn").addEventListener("click", function(){
 });
 $("roomInp").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("joinBtn").click(); } });
 $("nodeApplyBtn").addEventListener("click", function(){ $("joinBtn").disabled=false; $("joinBtn").click(); });
-// v2.10: إعادة المحاولة بالمعرّف الحتمي — مخرج يدوي إن كانت عقدتان كلتاهما بلاحقة عشوائية ولم تكتشف إحداهما الأخرى.
+// v2.10.1: إعادة المحاولة بالمعرّف الحتمي — مخرج يدوي إن كانت عقدتان كلتاهما بلاحقة عشوائية ولم تكتشف إحداهما الأخرى.
 $("retryDetBtn").addEventListener("click", function(){ log("🔄 إعادة المحاولة بالمعرّف الحتمي..."); $("joinBtn").click(); });
 $("leaveBtn").addEventListener("click", function(){
   // خروج نهائي: امسح الجلسة المحفوظة حتى لا يرجع الريفريش للشبكة تلقائياً.
@@ -1006,7 +1027,7 @@ $("leaveBtn").addEventListener("click", function(){
 
 function connectToPeer(node){
   if(!peer || peer.destroyed) return;
-  // v2.10: إن عرفنا المعرّف الفعلي للعقدة (لاحقة عشوائية)، اتصل به مباشرة — لا بالحتمي.
+  // v2.10.1: إن عرفنا المعرّف الفعلي للعقدة (لاحقة عشوائية)، اتصل به مباشرة — لا بالحتمي.
   var pid=actualPeerIds[node] || peerIdFor(node);
   if(conns[pid] && (conns[pid].open || connStatus[node]==="try")) return;
   connStatus[node]="try"; updateCards();
@@ -1022,7 +1043,7 @@ function setupConnection(conn){
   conns[pid]=conn;
   conn.on("open", function(){
     connStatus[node]="on"; updateCards();
-    // v2.10: اتصال من معرّف فعلي مختلف عن الحتمي (لاحقة عشوائية) — احفظه للاتصال المباشر لاحقاً.
+    // v2.10.1: اتصال من معرّف فعلي مختلف عن الحتمي (لاحقة عشوائية) — احفظه للاتصال المباشر لاحقاً.
     if(pid!==peerIdFor(node)){ actualPeerIds[node]=pid; log("🔎 العقدة <b>"+node+"</b> مسجلة بمعرّف فعلي مختلف (<span dir='ltr'>"+pid+"</span>) — حفظته للاتصال المباشر بها."); }
     log("✅ اتصلت بالعقدة <b>"+node+"</b> مباشرة");
     sendHello(conn, node);
@@ -1038,7 +1059,7 @@ function setupConnection(conn){
 
 async function sendHello(conn, node){
   if(!myPubJwk) return;
-  // v2.10: أعلن معرّفي الفعلي (peer.id) في hello — حتى لو كان بلاحقة عشوائية، تكتشفني باقي العقد.
+  // v2.10.1: أعلن معرّفي الفعلي (peer.id) في hello — حتى لو كان بلاحقة عشوائية، تكتشفني باقي العقد.
   try{ conn.send({kind:"hello", from:myNode, to:node, pub:myPubJwk, pid:((peer && peer.id) || myId), super: isSuperNode, gateway: gwActive}); helloSent[node]=true; }catch(e){}
 }
 
@@ -1235,7 +1256,7 @@ async function handleData(data, conn){
     var fromNode=data.from;
     peerSuper[fromNode]=!!data.super;
     peerGateway[fromNode]=!!data.gateway;
-    // v2.10: المرسل أعلن معرّفاً فعلياً مختلفاً عن الحتمي (لاحقة عشوائية) — احفظه واتصل به مباشرة إن لم يكن هناك اتصال مفتوح.
+    // v2.10.1: المرسل أعلن معرّفاً فعلياً مختلفاً عن الحتمي (لاحقة عشوائية) — احفظه واتصل به مباشرة إن لم يكن هناك اتصال مفتوح.
     if(data.pid && typeof data.pid==="string" && data.pid.indexOf("sayegh-"+myRoom+"-")===0 && data.pid!==peerIdFor(fromNode)){
       if(actualPeerIds[fromNode]!==data.pid){
         actualPeerIds[fromNode]=data.pid;
@@ -1746,7 +1767,7 @@ async function beginInCall(partner){
   callPartner=partner; callTarget=partner;
   callState="in-call"; showCallUI(); saveSession(); callsCount++;
   resumeAudio();
-  sentChunks=0; receivedChunks=0; lastReceivedAt=0; lastLatencyMs=null; autoRetryDone=false;
+  sentChunks=0; receivedChunks=0; lastReceivedAt=0; lastLatencyMs=null; autoRetryDone=false; window._sentWarned=false;
   myAudioReady=false; peerAudioReady=false;
   $("callStatus").textContent="📞 مكالمة مفتوحة مع "+partner+" 🔒 مشفرة";
   $("callPath").textContent=callPathText(); updatePathBadge();
@@ -1807,8 +1828,12 @@ async function startStreaming(){
   try{
     var rawMicStream=await navigator.mediaDevices.getUserMedia(micConstraints());
     callRawStream=rawMicStream;
-    callStream=purifiedStream(rawMicStream);
-    log("🎧 التنقية: "+(noiseOn?"شغالة — تنقية عبر إعدادات المتصفح (إلغاء صدى + قمع ضوضاء + فلتر ترددات منخفضة).":"متوقفة — الصوت كما هو من الميكروفون."));
+    callStream=await purifiedStream(rawMicStream);
+    if(callStream===rawMicStream){
+      log("🎧 التنقية: الصوت الخام مباشرة (سياق الصوت لم يشتغل — التسجيل من فلتر متوقف كان سيُرسل صمتاً). إعدادات المتصفح (إلغاء صدى + قمع ضوضاء) ما زالت شغالة.");
+    } else {
+      log("🎧 التنقية: شغالة — تنقية عبر إعدادات المتصفح (إلغاء صدى + قمع ضوضاء + فلتر ترددات منخفضة).");
+    }
   }catch(e){
     log("❌ الميكروفون مرفوض أو مش متاح: "+e.message+" — اسمح بالميكروفون من إعدادات المتصفح وحاول تاني.");
     return false;
@@ -2053,7 +2078,7 @@ function updateBestPath(){
   var t=$("targetSel") ? $("targetSel").value : "";
   var target = (callState==="in-call" && callPartner) ? callPartner : t;
   if(!target || target===myNode){ box.textContent="⏳ أفضل مسار حالياً: — اختار عقدة هدف من «اتصل بمين؟»"; return; }
-  // v2.10: لا ندّعي مساراً غير موجود — المسار يُعرض فقط إن كان الاتصال بالهدف مفتوحاً فعلاً ومفتاحه المشترك جاهزاً.
+  // v2.10.1: لا ندّعي مساراً غير موجود — المسار يُعرض فقط إن كان الاتصال بالهدف مفتوحاً فعلاً ومفتاحه المشترك جاهزاً.
   var directOk = connStatus[target]==="on" && !!sharedKeys[target];
   if(!directOk){
     box.innerHTML="⭐ <b>أفضل مسار حالياً: —</b><br><span style='font-size:15px;color:#bbb'>العقدة "+target+" غير متصلة بعد أو مفتاحها المشترك غير جاهز — لا يوجد مسار حقيقي بعد.</span>";
@@ -2837,9 +2862,9 @@ function showTab(name){
 })();
 
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.10 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
-log("📹 v2.10: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
-log("🔎 v2.10: اكتشاف العقد أُصلح — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل عقدة تعلن معرّفها الفعلي في hello حتى تُكتشف. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
+log("👋 أهلاً بيك في شبكة الناس v2.10.1 — دخول تلقائي: اختر عقدة متاحة من القائمة أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول مفتاح متاح. تبويبات سفلية: المكالمات / المكالمة / اللوحة / الإعدادات.");
+log("📹 v2.10.1: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
+log("🔎 v2.10.1: اكتشاف العقد أُصلح — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل عقدة تعلن معرّفها الفعلي في hello حتى تُكتشف. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
 log("🔄 v2.5: جلستك محفوظة على جهازك (العقدة والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس العقدة. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
 log("🔒 الخصوصية من البداية: طلب المكالمة مغلف على طبقتين ومشفر للهدف بس، والوسيط يمرر حزمة مبهمة بلا نوع وبلا أسماء ولا يعرف أن مكالمة بدأت — والتغطية الوهمية شغالة كل ثانيتين. المكالمة مفتوحة بلا حد زمني وتنتهي عندما تقفل بإيدك.");
 log("🤖 الذكاء الاصطناعي v2.3: تنقية الصوت شغالة افتراضياً (عبر إعدادات المتصفح — ليست RNNoise). الترجمة صوت+نص عربي↔إنجليزي: تتكلم بلغتك، والطرف التاني يشوف النص المترجم ويسمعه بصوت — الترجمة تضيف تأخير 2-4 ثوانٍ. الترجمة تتم محلياً وتُبعت مشفرة، فالوسيط لا يرى النص ولا الترجمة.");
