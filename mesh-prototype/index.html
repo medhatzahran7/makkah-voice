@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v3.1 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v3.1.1 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -94,12 +94,13 @@ video{width:100%;border-radius:12px;background:#000}
 
 <div class="hero">
 <div class="big">📡</div>
-<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.1</span></h1>
+<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.1.1</span></h1>
 <div style="font-size:15px">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
 <div class="hint" style="margin-top:8px">مكالمات صوت+فيديو حقيقية عبر WebRTC — دخول تلقائي، مباشر أولاً، مشفرة DTLS-SRTP</div>
 <div id="headerStatus" style="margin-top:8px;font-weight:700">⏳ جارٍ الاتصال بوسيط الإشارة...</div>
 <div id="towerClashWarn" class="warn" style="display:none;margin-top:8px"></div>
+<div id="tabGuardWarn" class="warn" style="display:none;margin-top:8px"></div>
 </div>
 
 <div id="cryptoWarn" class="err" style="display:none">❌ التشفير غير متاح — افتح الصفحة من https أو localhost.</div>
@@ -195,7 +196,7 @@ video{width:100%;border-radius:12px;background:#000}
 <div class="pname" id="callPartnerName">برج ٢</div>
 <div class="ptype" id="callTypeLabel">📹📞 مكالمة صوت+فيديو — مباشر، مفيش وسيط 🔒</div>
 <div class="timer" id="callTimer">00:00</div>
-<div id="callPath" style="text-align:center;font-size:15px">📡 حالة ICE: —</div>
+<div id="callPath" style="text-align:center;font-size:15px">📡 حالة ICE: بانتظار مكالمة</div>
 <div id="qosBox" style="text-align:center;font-size:15px;margin:6px 0">⭐ جودة المكالمة: —</div>
 <div id="sasBox" style="text-align:center;font-size:15px;margin:6px 0"></div>
 <div id="videoPausedBox" class="warn" style="display:none">📹 الفيديو توقف مؤقتاً لضعف الشبكة — الصوت مستمر <button id="resumeVideoBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">📹 أعد الفيديو</button></div>
@@ -325,7 +326,7 @@ video{width:100%;border-radius:12px;background:#000}
 </div>
 <div class="card">
 <h2>🔍 تشخيص الشبكة</h2>
-<div class="hint">يفحص وصول STUN وTURN ووسيط MQTT وسرعة الشبكة — ويعطيك توصية قبل الاتصال.</div>
+<div class="hint">يفحص وصول STUN وكل مزودي TURN (OpenRelay وAnyFirewall وViagenie) ووسيط MQTT وسرعة الشبكة — ويعطيك توصية قبل الاتصال.</div>
 <button id="diagBtn" class="btn-gold">🔍 افحص شبكتي</button>
 <div id="diagResults" style="margin-top:10px"></div>
 </div>
@@ -339,9 +340,9 @@ video{width:100%;border-radius:12px;background:#000}
 </div>
 <div class="card">
 <h2>؟ حدود صادقة باختصار</h2>
-<div class="hint">الصوت والفيديو حقيقيان عبر WebRTC ومشفران بـ DTLS-SRTP. الإشارة تمر عبر وسيط MQTT عام (يرى بيانات الإشارة فقط — من يتصل بمن — ولا يسمع الصوت ولا يرى الفيديو). الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجدت أبراج متصلة — ليست بديلاً عن 112. الوسائط تمر عبر TURN مجاني (OpenRelay) عند تعذّر الاتصال المباشر — قد يكون أبطأ قليلاً.</div>
+<div class="hint">الصوت والفيديو حقيقيان عبر WebRTC ومشفران بـ DTLS-SRTP. الإشارة تمر عبر وسيط MQTT عام (يرى بيانات الإشارة فقط — من يتصل بمن — ولا يسمع الصوت ولا يرى الفيديو). الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجدت أبراج متصلة — ليست بديلاً عن 112. الوسائط تمر عبر TURN مجاني (عدة مزودين: OpenRelay وAnyFirewall وViagenie، TCP أولاً) عند تعذّر الاتصال المباشر — قد يكون أبطأ قليلاً.</div>
 </div>
-<p style="text-align:center" class="small">نموذج أولي v3.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p style="text-align:center" class="small">نموذج أولي v3.1.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p style="text-align:center" class="small">نموذج أولي — الصوت والفيديو WebRTC حقيقيان الآن؛ الترجمة تحتاج إنترنت؛ الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 </div>
 </div>
@@ -357,7 +358,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <script>
 "use strict";
-// ================= شبكة الناس v3.1 — معمارية جديدة + طبقات هندسية =================
+// ================= شبكة الناس v3.1.1 — معمارية جديدة + طبقات هندسية =================
 // إشارة MQTT عام + صوت/فيديو WebRTC حقيقي + بيانات مشفرة ECDH/AES-GCM
 // لا سيرفر إشارة خاص، لا معرّفات حتمية، لا مقاطع مسجلة، لا إطارات صور.
 var NODES=["1","2","3","4","5","6","7","8"];
@@ -373,9 +374,28 @@ var ICE_SERVERS=[
   {urls:"stun:stun2.l.google.com:19302"},
   {urls:"stun:stun.stunprotocol.org:3478"},
   {urls:"stun:stun.cloudflare.com:3478"},
+  // TURN-TCP أولاً — شبكات الموبايل تحجب UDP غالباً وتمرّر TCP 443 (v3.1.1: في اختبار v3.0.1 لم يُجمع أي مرشح relay أبداً)
+  {urls:"turn:openrelay.metered.ca:80?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:turn.anyfirewall.com:443?transport=tcp", username:"webrtc", credential:"webrtc"},
+  {urls:"turn:relay.metered.ca:80?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  // TURN-UDP
   {urls:"turn:openrelay.metered.ca:80", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:openrelay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:numb.viagenie.ca:3478", username:"webrtc@live.com", credential:"muazkh"},
+  {urls:"turn:relay.metered.ca:80", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:relay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"},
+  // TURNS
   {urls:"turns:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}
+];
+// مزودو TURN لفحص "افحص شبكتي" — يُختبَر كل مزود وحده وتُعرض نتيجته (v3.1.1)
+var TURN_PROVIDERS=[
+  {name:"OpenRelay (TCP)", servers:[{urls:"turn:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]},
+  {name:"OpenRelay (UDP)", servers:[{urls:"turn:openrelay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"}]},
+  {name:"AnyFirewall (TCP)", servers:[{urls:"turn:turn.anyfirewall.com:443?transport=tcp", username:"webrtc", credential:"webrtc"}]},
+  {name:"Viagenie numb (UDP)", servers:[{urls:"turn:numb.viagenie.ca:3478", username:"webrtc@live.com", credential:"muazkh"}]},
+  {name:"Metered relay (TCP)", servers:[{urls:"turn:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]}
 ];
 function $(id){ return document.getElementById(id); }
 function rand4(){ return Math.random().toString(36).slice(2,6); }
@@ -409,9 +429,75 @@ var localStream=null, remoteAudioEl=null;
 var noiseOn=true, transOn=false, recog=null, lastTransText="";
 var callVolume=1.0, muted=false, videoOn=false, facingMode="user";
 var lastAudioBytes={sent:0, recv:0}, lastAudioChange=0, audioWarnShown=false;
-var iceStateByTid={}, iceCandTypes={}, iceRetryCount=0, iceDisconnectSince=0, iceFailShown=false;
+var iceStateByTid={}, iceCandTypes={}, iceCandCount={}, iceGatheringDone={}, iceRetryCount=0, iceDisconnectSince=0, iceFailShown=false;
 var presenceSettled=false, presenceSettleAt=0, presenceFirstSeenAt=0, presenceSettleTimer=null;
 var towerClashWarned=false;
+// ---------- حارس التبويبات على نفس الجهاز (v3.1.1) ----------
+// تبويبات قديمة مفتوحة على نفس التليفون كانت تنشر حضورها كبرج ١ كل 5 ثوانٍ
+// فتُشعل تحذير تطابق البرج بلا نهاية. الحارس يكشف التبويبات الحية على نفس الجهاز ويوقفها.
+var TAB_GUARD_KEY="sayeghMeshTabsV1", DEVICE_KEY="sayeghMeshDeviceIdV1", TAB_CHANNEL="sayegh-mesh-tabs";
+var myDeviceId="", myTabId=rand4()+Date.now().toString(36).slice(-4);
+try{
+  myDeviceId=localStorage.getItem(DEVICE_KEY);
+  if(!myDeviceId){ myDeviceId="dev-"+rand4()+Date.now().toString(36); localStorage.setItem(DEVICE_KEY, myDeviceId); }
+}catch(e){ myDeviceId="dev-"+rand4(); }
+var tabKilled=false, tabGuardTimer=null, tabChannel=null;
+function tabHeartbeat(){
+  if(tabKilled) return;
+  try{
+    var tabs={}; try{ tabs=JSON.parse(localStorage.getItem(TAB_GUARD_KEY)||"{}"); }catch(e){ tabs={}; }
+    var now=Date.now();
+    Object.keys(tabs).forEach(function(k){ if(now-(tabs[k].ts||0)>6000) delete tabs[k]; });
+    tabs[myTabId]={device:myDeviceId, ts:now};
+    localStorage.setItem(TAB_GUARD_KEY, JSON.stringify(tabs));
+  }catch(e){}
+}
+function otherLiveTabs(){
+  try{
+    var tabs=JSON.parse(localStorage.getItem(TAB_GUARD_KEY)||"{}");
+    var now=Date.now(), out=[];
+    Object.keys(tabs).forEach(function(k){
+      if(k!==myTabId && tabs[k].device===myDeviceId && now-(tabs[k].ts||0)<6000) out.push(k);
+    });
+    return out;
+  }catch(e){ return []; }
+}
+function showTabGuard(){
+  var w=$("tabGuardWarn"); if(!w) return;
+  w.style.display="block";
+  w.innerHTML='⚠️ التطبيق مفتوح في تبويب آخر على نفس التليفون — أغلق التبويبات الأخرى من زر التبويبات فوق، ثم حدّث هذه الصفحة. <button id="tabTakeoverBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">🔄 أنا التبويب الصحيح — أغلق الآخرين</button>';
+  var b=$("tabTakeoverBtn"); if(b) b.addEventListener("click", tabTakeover);
+  log("⚠️ التطبيق مفتوح في تبويب آخر على نفس التليفون — أغلق التبويبات الأخرى.");
+}
+function hideTabGuard(){ var w=$("tabGuardWarn"); if(w) w.style.display="none"; }
+function checkTabGuard(){
+  if(tabKilled) return;
+  if(otherLiveTabs().length){ showTabGuard(); } else { hideTabGuard(); }
+}
+function tabTakeover(){
+  try{ if(tabChannel) tabChannel.postMessage({type:"takeover", from:myTabId}); }catch(e){}
+  try{ var tabs=JSON.parse(localStorage.getItem(TAB_GUARD_KEY)||"{}"); Object.keys(tabs).forEach(function(k){ if(k!==myTabId && tabs[k].device===myDeviceId) delete tabs[k]; }); localStorage.setItem(TAB_GUARD_KEY, JSON.stringify(tabs)); }catch(e){}
+  hideTabGuard();
+  log("🔄 أرسلت أمر إغلاق للتبويبات الأخرى على نفس التليفون.");
+}
+function initTabGuard(){
+  tabHeartbeat();
+  tabGuardTimer=setInterval(function(){ tabHeartbeat(); checkTabGuard(); }, 2000);
+  try{
+    tabChannel=new BroadcastChannel(TAB_CHANNEL);
+    tabChannel.onmessage=function(ev){
+      var m=ev.data||{};
+      if(m.type==="takeover" && m.from!==myTabId){
+        tabKilled=true;
+        if(tabGuardTimer){ clearInterval(tabGuardTimer); tabGuardTimer=null; }
+        try{ var tabs=JSON.parse(localStorage.getItem(TAB_GUARD_KEY)||"{}"); delete tabs[myTabId]; localStorage.setItem(TAB_GUARD_KEY, JSON.stringify(tabs)); }catch(e){}
+        var w=$("tabGuardWarn"); if(w){ w.style.display="block"; w.innerHTML='⛔ تم إغلاق هذا التبويب من تبويب آخر على نفس التليفون — أغلق هذا التبويب وابقَ في التبويب الآخر.'; }
+        log("⛔ تبويب آخر على نفس التليفون أخذ مكاني — توقفت عن نشر الحضور.");
+      }
+    };
+  }catch(e){}
+  setTimeout(checkTabGuard, 2500);
+}
 var lastRttMs=null;
 var autoJoined=false, autoEntryDone=false, autoTimer=null, autoSecs=3;
 var keypadTarget="";
@@ -550,8 +636,9 @@ function scheduleBrokerRetry(ms){
 
 // ---------- الحضور ----------
 function publishPresence(){
+  if(tabKilled) return; // تبويب أُغلق من تبويب آخر — لا حضور بعد الآن
   if(!mqttClient || !mqttConnected || !myTowerId) return;
-  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy", relayLoad:relayLoadOf(myTowerId)});
+  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy", relayLoad:relayLoadOf(myTowerId), device:myDeviceId, tab:myTabId});
   try{ mqttClient.publish(presenceTopic(myRoom, myTowerId), payload, {qos:1, retain:true}); }catch(e){}
 }
 setInterval(function(){ if(mqttConnected) publishPresence(); }, 5000);
@@ -577,7 +664,7 @@ function handlePresence(topic, raw){
   try{
     var p=JSON.parse(raw);
     var isNew=!presenceMap[tid];
-    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), super:!!p.super, ts:Date.now(), call:p.call||"idle", relayLoad:p.relayLoad||0};
+    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), super:!!p.super, ts:Date.now(), call:p.call||"idle", relayLoad:p.relayLoad||0, device:p.device||"", tab:p.tab||""};
     if(!presenceFirstSeenAt){ presenceFirstSeenAt=Date.now(); if(presenceSettleTimer) clearTimeout(presenceSettleTimer); presenceSettleTimer=setTimeout(function(){ presenceSettled=true; }, 500); }
     // وقائي: جهاز آخر بنفس رقم برجي — تحذير واضح بزر انتقال (ليس سبب عطل v3.0)
     if(p.node===myNode) showTowerClash(p.node, tid);
@@ -595,10 +682,16 @@ function isTowerPresent(node){ return !!towerIdByNode(node); }
 function showTowerClash(node, otherTid){
   if(towerClashWarned) return; towerClashWarned=true;
   var w=$("towerClashWarn"); if(!w) return;
+  var sameDevice=!!(otherTid && presenceMap[otherTid] && presenceMap[otherTid].device && presenceMap[otherTid].device===myDeviceId);
   w.style.display="block";
-  w.innerHTML='⚠️ جهاز آخر يستخدم نفس رقم برجك ('+towerName(node)+') — المكالمة معه مستحيلة. <button id="clashMoveBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">🔄 انتقل لبرج متاح</button>';
+  if(sameDevice){
+    w.innerHTML='⚠️ تبويب آخر على نفس تليفونك يستخدم برج '+towerName(node)+' — أغلق التبويبات الأخرى من زر التبويبات فوق، ثم حدّث الصفحة. <button id="clashMoveBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">🔄 انتقل لبرج متاح</button>';
+    log("⚠️ تبويب آخر على نفس تليفونك يستخدم نفس رقم برجك ("+towerName(node)+") — أغلق التبويبات الأخرى.");
+  } else {
+    w.innerHTML='⚠️ جهاز آخر يستخدم نفس رقم برجك ('+towerName(node)+') — المكالمة معه مستحيلة. <button id="clashMoveBtn" class="btn-gold" style="padding:6px 12px;font-size:14px">🔄 انتقل لبرج متاح</button>';
+    log("⚠️ جهاز آخر يستخدم نفس رقم برجك ("+towerName(node)+") — دوس «انتقل لبرج متاح».");
+  }
   var b=$("clashMoveBtn"); if(b) b.addEventListener("click", moveToFreeTower);
-  log("⚠️ جهاز آخر يستخدم نفس رقم برجك ("+towerName(node)+") — دوس «انتقل لبرج متاح».");
 }
 function hideTowerClash(){ towerClashWarned=false; var w=$("towerClashWarn"); if(w) w.style.display="none"; }
 function checkClashResolved(){
@@ -786,11 +879,21 @@ function stopLocalStream(){
 function newMediaPC(tid){
   var pc=new RTCPeerConnection({iceServers:ICE_SERVERS});
   pc.onicecandidate=function(ev){ if(ev.candidate){ recordIceCandidate(tid, ev.candidate); sendSignal(tid, {type:"ice", candidate:ev.candidate}); } };
+  pc.onicegatheringstatechange=function(){
+    if(pc.iceGatheringState==="complete" && !iceGatheringDone[tid]){
+      iceGatheringDone[tid]=true;
+      var c=iceCandCount[tid]||{host:0,srflx:0,relay:0};
+      log("📡 جمع المرشحات اكتمل مع "+(presenceMap[tid]?presenceMap[tid].name:tid)+": محلي "+c.host+" • مباشر "+c.srflx+" • وسيط "+c.relay+(c.relay===0?" — ❌ لم يُجمع أي مرشح relay (TURN غير متاح من شبكتك)":""));
+      updateIceStatusBox();
+    }
+  };
   return pc;
 }
 function recordIceCandidate(tid, cand){
   var s=(cand.candidate||"").toLowerCase();
   var t=s.indexOf("typ relay")>=0?"relay":(s.indexOf("typ srflx")>=0?"srflx":(s.indexOf("typ host")>=0?"host":"؟"));
+  if(!iceCandCount[tid]) iceCandCount[tid]={host:0,srflx:0,relay:0};
+  if(iceCandCount[tid][t]!=null) iceCandCount[tid][t]++;
   if(!iceCandTypes[tid]) iceCandTypes[tid]={};
   if(!iceCandTypes[tid][t]){
     iceCandTypes[tid][t]=true;
@@ -805,10 +908,14 @@ function updateIceStatusBox(){
   var el=$("callPath"); if(!el) return;
   if(callState!=="in-call" && callState!=="calling"){ el.textContent=""; return; }
   var tid=callPartner||callTarget;
-  var st=iceStateByTid[tid]||"—";
+  // الحالة الفعلية دائماً — لا "—" أبداً: من الاتصال الحي أولاً، ثم آخر حالة مسجلة، ثم "جديد"
+  var st="new";
+  if(mediaPCs[tid] && mediaPCs[tid].pc && mediaPCs[tid].pc.iceConnectionState) st=mediaPCs[tid].pc.iceConnectionState;
+  else if(iceStateByTid[tid]) st=iceStateByTid[tid];
   var types=iceCandTypes[tid]||{};
-  var list=Object.keys(types).map(function(t){ return t==="relay"?"وسيط relay":t==="srflx"?"مباشر srflx":t==="host"?"محلي host":t; }).join("، ")||"—";
-  el.innerHTML="📡 حالة ICE: <b>"+iceStateLabel(st)+"</b> &nbsp;|&nbsp; المسارات: <b>"+list+"</b> &nbsp;|&nbsp; أرسل <b>"+(lastAudioBytes.sent/1024).toFixed(1)+" KB</b> | وصل <b>"+(lastAudioBytes.recv/1024).toFixed(1)+" KB</b>"+(iceRetryCount>0?" &nbsp;|&nbsp; 🔄 إعادة المحاولة رقم "+iceRetryCount:"");
+  var list=Object.keys(types).map(function(t){ return t==="relay"?"وسيط relay":t==="srflx"?"مباشر srflx":t==="host"?"محلي host":t; }).join("، ")||"لم تُجمع بعد";
+  var relayTxt=types.relay?"وسيط relay: <b style='color:#8fce8f'>✅ جُمع</b>":(iceGatheringDone[tid]?"وسيط relay: <b style='color:#ff9a9a'>❌ لم يُجمع — TURN غير متاح من شبكتك</b>":"وسيط relay: ⏳ جارٍ الجمع...");
+  el.innerHTML="📡 حالة ICE: <b>"+iceStateLabel(st)+"</b> &nbsp;|&nbsp; "+relayTxt+" &nbsp;|&nbsp; المسارات: <b>"+list+"</b> &nbsp;|&nbsp; أرسل <b>"+(lastAudioBytes.sent/1024).toFixed(1)+" KB</b> | وصل <b>"+(lastAudioBytes.recv/1024).toFixed(1)+" KB</b>"+(iceRetryCount>0?" &nbsp;|&nbsp; 🔄 إعادة المحاولة رقم "+iceRetryCount:"");
 }
 
 // ================= شبكة الناس v3.1 — طبقات هندسية =================
@@ -1049,14 +1156,22 @@ async function runDiagnostics(){
   var res=$("diagResults");
   if(!res) return;
   if(!mqttClient || !mqttConnected){ res.innerHTML="<div class='warn'>⚠️ ادخل الشبكة الأول — التشخيص يحتاج اتصال وسيط الإشارة.</div>"; return; }
-  res.innerHTML="<div class='hint'>⏳ جارٍ فحص الشبكة... (STUN ثم TURN ثم MQTT ثم السرعة)</div>";
-  log("🔍 بدأت فحص الشبكة (STUN/TURN/MQTT/سرعة).");
+  res.innerHTML="<div class='hint'>⏳ جارٍ فحص الشبكة... (STUN ثم كل مزودي TURN واحداً واحداً ثم MQTT ثم السرعة)</div>";
+  log("🔍 بدأت فحص الشبكة (STUN + كل مزودي TURN + MQTT + سرعة).");
   var stunServers=ICE_SERVERS.filter(function(sv){ return (sv.urls||"").indexOf("stun:")===0; });
-  var turnServers=ICE_SERVERS.filter(function(sv){ return (sv.urls||"").indexOf("turn")===0; });
   var stunCands=await gatherCandidates(stunServers, 5000);
   var stunOk=stunCands.some(function(c){ return c.indexOf("typ srflx")>=0; });
-  var turnCands=await gatherCandidates(turnServers, 8000);
-  var turnOk=turnCands.some(function(c){ return c.indexOf("typ relay")>=0; });
+  // v3.1.1: اختبار كل مزود TURN وحده — نجاح أي مزود يكفي للمكالمة عبر وسيط
+  var turnResults=[];
+  for(var pi=0; pi<TURN_PROVIDERS.length; pi++){
+    var tp=TURN_PROVIDERS[pi];
+    res.innerHTML="<div class='hint'>⏳ جارٍ فحص TURN: "+tp.name+" ("+(pi+1)+"/"+TURN_PROVIDERS.length+")...</div>";
+    var pc2=await gatherCandidates(tp.servers, 8000);
+    var relayN=pc2.filter(function(c){ return c.indexOf("typ relay")>=0; }).length;
+    turnResults.push({name:tp.name, ok:relayN>0, n:relayN});
+    log("🔍 TURN "+tp.name+": "+(relayN>0?("نجح — جُمع "+relayN+" مرشح relay"):("فشل — لم يُجمع مرشح relay")));
+  }
+  var turnOk=turnResults.some(function(r){ return r.ok; });
   var mqttMs=null;
   try{
     var topic="sayegh-mesh/diag/"+myTowerId+"-"+rand4();
@@ -1089,11 +1204,12 @@ async function runDiagnostics(){
   else rec="✅ شبكتك تسمح باتصال مباشر.";
   res.innerHTML="<div class='card' style='margin:8px 0'><h3>📋 نتيجة فحص الشبكة</h3><div style='line-height:2'>"
     +"<div>"+(stunOk?"✅":"❌")+" <b>STUN:</b> "+(stunOk?"نجح — جُمع مرشح srflx (اتصال مباشر ممكن)":"فشل — لم يُجمع مرشح srflx خلال 5 ثوانٍ")+"</div>"
-    +"<div>"+(turnOk?"✅":"❌")+" <b>TURN (OpenRelay):</b> "+(turnOk?"نجح — جُمع مرشح relay":"فشل — لم يُجمع مرشح relay خلال 8 ثوانٍ")+"</div>"
+    +"<div><b>TURN (كل مزود وحده):</b></div>"
+    +turnResults.map(function(r){ return "<div style='padding-right:14px'>"+(r.ok?"✅":"❌")+" "+r.name+": "+(r.ok?("نجح — جُمع "+r.n+" مرشح relay"):("فشل — لم يُجمع مرشح relay خلال 8 ثوانٍ"))+"</div>"; }).join("")
     +"<div>"+(mqttMs!=null?"✅":"❌")+" <b>MQTT ("+BROKERS[brokerIdx].name+"):</b> "+(mqttMs!=null?("زمن الوصول "+mqttMs+"ms"):"فشل — لم يرد الوسيط خلال 5 ثوانٍ")+"</div>"
     +"<div>📥 <b>تقدير سرعة الشبكة:</b> "+speedTxt+"</div>"
     +"<div style='margin-top:6px'><b>التوصية:</b> "+rec+"</div></div></div>";
-  log("🔍 نتيجة فحص الشبكة: STUN "+(stunOk?"نجح":"فشل")+"، TURN "+(turnOk?"نجح":"فشل")+"، MQTT "+(mqttMs!=null?mqttMs+"ms":"فشل")+"، السرعة "+speedTxt+" — "+rec);
+  log("🔍 نتيجة فحص الشبكة: STUN "+(stunOk?"نجح":"فشل")+"، TURN ["+turnResults.map(function(r){ return r.name+":"+(r.ok?"✅":"❌"); }).join(" ")+"]، MQTT "+(mqttMs!=null?mqttMs+"ms":"فشل")+"، السرعة "+speedTxt+" — "+rec);
 }
 
 // ---------- إعادة محاولة ICE تلقائياً (fix 2c) ----------
@@ -1103,8 +1219,8 @@ function attemptIceRestart(tid, reason){
   iceRetryCount++;
   iceDisconnectSince=0;
   log("🔄 جارٍ إعادة محاولة الاتصال (ICE restart) — السبب: "+reason+"...");
-  var el=$("callPath"); if(el) el.innerHTML="🔄 جارٍ إعادة محاولة الاتصال...";
   var cb=$("callBarText"); if(cb) cb.textContent="🔄 جارٍ إعادة محاولة الاتصال...";
+  updateIceStatusBox(); // سطر ICE يعرض الحالة الفعلية حتى أثناء إعادة المحاولة
   try{ mediaPCs[tid].pc.restartIce(); }catch(e){ log("⚠️ فشلت إعادة محاولة ICE: "+e.message); showIceFail(); }
 }
 function showIceFail(){
@@ -2078,6 +2194,7 @@ function leaveNetwork(switching){
 
 // ---------- التشغيل ----------
 async function init(){
+  initTabGuard(); // حارس التبويبات أولاً — قبل أي حضور أو اتصال
   updateClock();
   wireUI(); renderKeypad(); renderNetTab(); renderDash();
   if(!cryptoOK){ $("cryptoWarn").style.display="block"; }
@@ -2108,7 +2225,7 @@ async function init(){
   $("roomInp").value=myRoom;
   connectBroker(0);
   startAutoEntry();
-  log("📡 شبكة الناس v3.1 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
+  log("📡 شبكة الناس v3.1.1 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
 }
 document.addEventListener("DOMContentLoaded", init);
 </script>
