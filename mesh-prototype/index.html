@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>شبكة الناس — التليفونات نفسها أبراج</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:#0f1410;color:#f2f2f2;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px 40px}
+h1{font-size:26px;margin:6px 0 2px;text-align:center}
+.sub{text-align:center;color:#b8d8a8;margin:0 0 14px;font-size:15px}
+.card{background:#1b231b;border:1px solid #33402f;border-radius:16px;padding:16px;margin:12px 0}
+.card h2{font-size:19px;margin:0 0 10px}
+label{display:block;font-size:17px;font-weight:700;margin:10px 0 4px}
+input,select{width:100%;font-size:19px;padding:13px 12px;border-radius:12px;border:2px solid #4a5a44;background:#fff;color:#111}
+input:focus,select:focus{outline:3px solid #8bc34a}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+button{font-size:19px;font-weight:800;padding:14px 16px;border-radius:14px;border:0;cursor:pointer;width:100%;margin-top:10px}
+.btn-green{background:#7ed321;color:#12200a}
+.btn-gold{background:#d4a853;color:#1a1409}
+.btn-grey{background:#3a463a;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:active{transform:scale(.98)}
+.hint{font-size:14px;color:#c9c9c9;margin:6px 0 0}
+.warn{background:#4a2a00;border:1px solid #a86a00;color:#ffe0a3;border-radius:12px;padding:12px;font-size:15px;margin:10px 0}
+.err{background:#4a0f0f;border:1px solid #c0392b;color:#ffd7d7;border-radius:12px;padding:12px;font-size:15px;margin:10px 0}
+.ok{background:#0f3d1a;border:1px solid #2e7d32;color:#c8f7c5;border-radius:12px;padding:12px;font-size:15px;margin:10px 0}
+.nodes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.node{background:#111811;border:1px solid #33402f;border-radius:14px;padding:12px;text-align:center}
+.node .letter{font-size:32px;font-weight:900}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:#777;vertical-align:middle}
+.dot.on{background:#4caf50}.dot.try{background:#ff9800}.dot.off{background:#777}
+.node .st{font-size:14px;margin-top:4px}
+.node .key{font-size:13px;color:#b8d8a8;margin-top:4px;min-height:20px}
+.stats{display:flex;gap:10px;text-align:center}
+.stat{flex:1;background:#111811;border:1px solid #33402f;border-radius:12px;padding:10px}
+.stat b{font-size:24px;display:block}
+.stat span{font-size:13px;color:#bbb}
+.mode{display:flex;gap:10px}
+.mode label{flex:1;background:#111811;border:2px solid #33402f;border-radius:12px;padding:12px;text-align:center;font-size:16px;cursor:pointer;margin:0}
+.mode input{width:auto}
+.mode label.sel{border-color:#7ed321;background:#1e2d1e}
+#pathBox{font-size:20px;text-align:center;padding:12px;background:#111811;border-radius:12px;margin-top:10px;min-height:52px}
+.chip{display:inline-block;background:#2e4a22;padding:6px 12px;border-radius:20px;margin:2px;font-weight:800}
+.arrow{color:#7ed321;font-weight:900}
+#ptt{font-size:26px;padding:26px 16px;background:#d32f2f;color:#fff;border-radius:20px;touch-action:none;user-select:none;-webkit-user-select:none}
+#ptt.rec{background:#ff5722;animation:pulse 1s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,87,34,.6)}70%{box-shadow:0 0 0 18px rgba(255,87,34,0)}100%{box-shadow:0 0 0 0 rgba(255,87,34,0)}}
+#recTimer{text-align:center;font-size:20px;font-weight:800;color:#ffb74d;min-height:28px}
+#log{background:#0a0f0a;border:1px solid #33402f;border-radius:12px;padding:12px;height:260px;overflow-y:auto;font-size:15px}
+#log div{padding:6px 4px;border-bottom:1px solid #1e2a1e}
+#log .t{color:#888;font-size:12px}
+.lock{color:#7ed321;font-weight:800}
+.small{font-size:14px;color:#bbb}
+audio{width:100%;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>📡 شبكة الناس</h1>
+<p class="sub">التليفونات نفسها أبراج — من التطبيق للتطبيق، من غير رقم تليفون</p>
+<p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ</p>
+
+<div id="peerWarn" class="err" style="display:none">❌ مكتبة PeerJS ما اتحملتش — اتأكد إن عندك نت وإن الصفحة مفتوحة من https أو localhost، وحدّث الصفحة.</div>
+<div id="cryptoWarn" class="warn" style="display:none">⚠️ التشفير (WebCrypto) مش متاح في السياق ده — افتح الصفحة من <b>https</b> أو من <b>localhost</b> (سيرفر محلي) مش من ملف file:// مباشرة. التشفير شرط أساسي، فالرسايل والصوت مش هيتبعتوا لحد ما يشتغل.</div>
+
+<div class="card">
+<h2>١) ادخل الشبكة</h2>
+<div class="row">
+<div><label for="nodeSel">اسم العقدة بتاعتك</label>
+<select id="nodeSel"><option value="A">أ — A</option><option value="B">ب — B</option><option value="C">ج — C</option></select></div>
+<div><label for="roomInp">كود الغرفة</label>
+<input id="roomInp" value="sayegh-mesh-1" dir="ltr" autocomplete="off"></div>
+</div>
+<button id="joinBtn" class="btn-green">ادخل الشبكة</button>
+<button id="leaveBtn" class="btn-grey" style="display:none">اخرج من الشبكة</button>
+<p class="hint">كل تليفون يختار عقدة مختلفة: واحد أ، واحد ب، واحد ج — ونفس كود الغرفة. من غير رقم تليفون، ومن غير سيرفر خاص — الإشارة بس عبر PeerJS المجاني (0.peerjs.com).</p>
+<div id="joinMsg"></div>
+</div>
+
+<div class="card">
+<h2>٢) حالة العقد — مين متصل؟</h2>
+<div class="nodes">
+<div class="node" id="card-A"><div class="letter">أ</div><span class="dot off" id="dot-A"></span><div class="st" id="st-A">غير متصل</div><div class="key" id="key-A">—</div></div>
+<div class="node" id="card-B"><div class="letter">ب</div><span class="dot off" id="dot-B"></span><div class="st" id="st-B">غير متصل</div><div class="key" id="key-B">—</div></div>
+<div class="node" id="card-C"><div class="letter">ج</div><span class="dot off" id="dot-C"></span><div class="st" id="st-C">غير متصل</div><div class="key" id="key-C">—</div></div>
+</div>
+<div class="stats" style="margin-top:12px">
+<div class="stat"><b id="statNodes">0</b><span>عقدة متصلة</span></div>
+<div class="stat"><b id="statHops">—</b><span>آخر عدد قفزات</span></div>
+<div class="stat"><b id="statMs">—</b><span>آخر زمن (ms)</span></div>
+</div>
+</div>
+
+<div class="card">
+<h2>٣) اختبر الترحيل — جوهر الفكرة 🔒</h2>
+<label for="targetSel">اختار العقدة الهدف</label>
+<select id="targetSel"><option value="B">ب — B</option><option value="C">ج — C</option></select>
+<p style="margin:10px 0 4px;font-weight:700">وضع الإرسال:</p>
+<div class="mode">
+<label id="modeDirectLbl"><input type="radio" name="mode" value="direct"> مباشر<br><span class="small">أ → ج على طول</span></label>
+<label id="modeRelayLbl" class="sel"><input type="radio" name="mode" value="relay" checked> ترحيل إجباري عبر الوسيط<br><span class="small">أ → ب → ج — حتى لو المباشر شغال</span></label>
+</div>
+<button id="testBtn" class="btn-gold" disabled>اختبر الترحيل 🔒</button>
+<div id="pathBox">المسار هيظهر هنا بعد الاختبار</div>
+<p class="hint">🔒 الرسالة بتتشفر بمفتاح مشترك بين المرسل والهدف بس (AES-GCM). الوسيط بيستلم حزمة مشفرة ويعدّيها زي ما هي — <b>لا يسمع ولا يقرأ</b>.</p>
+</div>
+
+<div class="card">
+<h2>٤) اضغط وتكلم 🎤 <span class="lock">🔒 مشفر</span></h2>
+<div id="recTimer"></div>
+<button id="ptt" disabled>🎤 اضغط وتكلم<br><span style="font-size:15px">(حد أقصى ٥ ثواني — بيتبعت للهدف اللي اخترته فوق)</span></button>
+<p class="hint">دوس وخلّيك دايس، اتكلم، وسيب — المقطع هيتشفر ويتبعت للهدف (مباشرة أو عبر الوسيط حسب الوضع). المستقبل هيشغله تلقائياً. أول دوسة بتفعّل الصوت على الموبايل.</p>
+<div id="voiceBox"></div>
+</div>
+
+<div class="card">
+<h2>٥) سجل الأحداث</h2>
+<div id="log"></div>
+<button id="copyBtn" class="btn-grey">📋 انسخ لينك الغرفة</button>
+<p class="hint">ابعت اللينك للتليفونين التانيين — هيفتحوا نفس الغرفة على طول. اللينك فيه <span dir="ltr">?room=...</span> بس، من غير أي بيانات شخصية.</p>
+</div>
+
+<p class="small" style="text-align:center">نموذج أولي محلي — لا سيرفر خاص، لا أسعار، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM) من غير مكتبات تشفير خارجية.</p>
+</div>
+
+<script>
+"use strict";
+// ---------- helpers ----------
+function $(id){return document.getElementById(id);}
+function nowTime(){var d=new Date();return d.toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit",second:"2-digit"});}
+function log(msg, cls){
+  var box=$("log"); var div=document.createElement("div");
+  if(cls) div.className=cls;
+  div.innerHTML='<span class="t">'+nowTime()+' — </span>'+msg;
+  box.appendChild(div); box.scrollTop=box.scrollHeight;
+}
+function bufToB64(buf){
+  var bytes=new Uint8Array(buf); var s="";
+  for(var i=0;i<bytes.length;i+=0x8000){ s+=String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); }
+  return btoa(s);
+}
+function b64ToBuf(b64){
+  var s=atob(b64); var bytes=new Uint8Array(s.length);
+  for(var i=0;i<s.length;i++) bytes[i]=s.charCodeAt(i);
+  return bytes.buffer;
+}
+function sanitizeRoom(v){
+  v=(v||"").trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,"");
+  return v||"sayegh-mesh-1";
+}
+
+// ---------- state ----------
+var NODES=["A","B","C"];
+var myNode="", myRoom="", myId="", peer=null, myKeyPair=null, myPubJwk=null;
+var conns={}; // peerId -> DataConnection
+var connStatus={}; // node -> 'on'|'try'|'off'
+var sharedKeys={}; // node -> CryptoKey (AES-GCM)
+var peerPub={}; // node -> JWK
+var helloSent={};
+var pendingTests={}; // id -> {sentAt, target, path}
+var lastHops=null, lastMs=null;
+var cryptoOK = !!(window.crypto && window.crypto.subtle);
+var mediaRecorder=null, recChunks=[], recStream=null, recStart=0, recTimerInt=null, isRecording=false, audioCtx=null;
+
+function nodeFromPeerId(pid){
+  // pid = room-node ; node is after last '-'
+  var parts=pid.split("-"); return parts[parts.length-1];
+}
+function peerIdFor(node){ return myRoom+"-"+node; }
+function updateStats(){
+  var n=0; NODES.forEach(function(nd){ if(nd===myNode) n++; else if(connStatus[nd]==="on") n++; });
+  $("statNodes").textContent=n;
+  $("statHops").textContent = lastHops===null?"—":lastHops;
+  $("statMs").textContent = lastMs===null?"—":lastMs;
+}
+function updateCards(){
+  NODES.forEach(function(nd){
+    var dot=$("dot-"+nd), st=$("st-"+nd), key=$("key-"+nd);
+    if(nd===myNode){
+      dot.className="dot on"; st.textContent="دي عقدتك ✓";
+      key.textContent = myKeyPair ? "🔒 مفتاحي جاهز (ECDH)" : "⏳ بيولد المفتاح...";
+    } else if(connStatus[nd]==="on"){
+      dot.className="dot on"; st.textContent="متصل ✓";
+      key.textContent = sharedKeys[nd] ? "🔒 مفتاح مشترك جاهز" : "⏳ بيتبادل المفاتيح...";
+    } else if(connStatus[nd]==="try"){
+      dot.className="dot try"; st.textContent="بيحاول يتصل...";
+      key.textContent="⏳ ...";
+    } else {
+      dot.className="dot off"; st.textContent="غير متصل";
+      key.textContent="—";
+    }
+  });
+  updateStats();
+}
+function refreshTargetOptions(){
+  var sel=$("targetSel"); var cur=sel.value;
+  sel.innerHTML="";
+  NODES.forEach(function(nd){ if(nd!==myNode){ var o=document.createElement("option"); o.value=nd; o.textContent=(nd==="A"?"أ — A":nd==="B"?"ب — B":"ج — C"); sel.appendChild(o);} });
+  if(cur && cur!==myNode) sel.value=cur;
+}
+function setModeUI(){
+  var m=document.querySelector('input[name="mode"]:checked').value;
+  $("modeDirectLbl").classList.toggle("sel", m==="direct");
+  $("modeRelayLbl").classList.toggle("sel", m==="relay");
+}
+document.querySelectorAll('input[name="mode"]').forEach(function(r){ r.addEventListener("change", setModeUI); });
+
+// ---------- URL params ----------
+(function(){
+  try{
+    var q=new URLSearchParams(location.search);
+    var r=q.get("room"); if(r) $("roomInp").value=sanitizeRoom(r);
+    var n=q.get("node"); if(n && NODES.indexOf(n.toUpperCase())>=0) $("nodeSel").value=n.toUpperCase();
+  }catch(e){}
+})();
+
+if(typeof Peer==="undefined"){ $("peerWarn").style.display="block"; $("joinBtn").disabled=true; log("❌ مكتبة PeerJS ما اتحملتش — اتأكد من النت وحدّث الصفحة."); }
+if(!cryptoOK){ $("cryptoWarn").style.display="block"; }
+
+// ---------- join / leave ----------
+$("joinBtn").addEventListener("click", async function(){
+  if(typeof Peer==="undefined"){ alert("مكتبة PeerJS مش متاحة — اتأكد من النت وحدّث الصفحة."); return; }
+  if(!cryptoOK){
+    $("cryptoWarn").style.display="block";
+    log("❌ التشفير مش متاح — افتح الصفحة من https أو localhost. مش هينفع نبعت رسايل من غير تشفير.");
+    return;
+  }
+  myNode=$("nodeSel").value; myRoom=sanitizeRoom($("roomInp").value); $("roomInp").value=myRoom;
+  myId=peerIdFor(myNode);
+  $("joinBtn").disabled=true; $("joinMsg").innerHTML='<div class="warn">⏳ بيولد مفتاح التشفير ويدخل الشبكة...</div>';
+  try{
+    // 1) ECDH P-256 key pair — WebCrypto only
+    myKeyPair=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"}, true, ["deriveKey"]);
+    myPubJwk=await crypto.subtle.exportKey("jwk", myKeyPair.publicKey);
+    log("🔒 اتولد مفتاح ECDH (P-256) للعقدة "+myNode+" — المفتاح الخاص عمره ما بيتبعت.");
+  }catch(e){
+    $("joinMsg").innerHTML='<div class="err">❌ فشل توليد مفتاح التشفير: '+e.message+'</div>';
+    $("joinBtn").disabled=false; return;
+  }
+  // unlock audio on mobile (user gesture)
+  try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
+  try{
+    peer=new Peer(myId);
+  }catch(e){
+    $("joinMsg").innerHTML='<div class="err">❌ فشل إنشاء الاتصال: '+e.message+'</div>';
+    $("joinBtn").disabled=false; return;
+  }
+  peer.on("open", function(id){
+    $("joinMsg").innerHTML='<div class="ok">✅ دخلت الشبكة كعقدة <b>'+myNode+'</b> — المعرّف: <span dir="ltr">'+id+'</span></div>';
+    log("✅ انضميت للغرفة <b>"+myRoom+"</b> كعقدة <b>"+myNode+"</b>");
+    $("joinBtn").style.display="none"; $("leaveBtn").style.display="block";
+    $("testBtn").disabled=false; $("ptt").disabled=false;
+    refreshTargetOptions(); updateCards();
+    // connect to the other two nodes (full mesh)
+    NODES.forEach(function(nd){ if(nd!==myNode) connectToPeer(nd); });
+    // retry missing peers every 6s
+    setInterval(function(){
+      if(!peer || peer.destroyed) return;
+      NODES.forEach(function(nd){ if(nd!==myNode && connStatus[nd]!=="on") connectToPeer(nd); });
+    }, 6000);
+  });
+  peer.on("connection", function(conn){ setupConnection(conn); });
+  peer.on("error", function(err){
+    var msg="❌ خطأ في PeerJS: "+(err && err.type ? err.type : (err && err.message ? err.message : err));
+    if(err && err.type==="unavailable-id") msg="❌ العقدة "+myNode+" مستخدمة already في الغرفة دي — اختار عقدة تانية (أ / ب / ج) أو غيّر كود الغرفة.";
+    if(err && err.type==="peer-unavailable") { log("⏳ العقدة التانية لسه ما دخلتش — هنحاول تاني تلقائياً."); return; }
+    log(msg); $("joinMsg").innerHTML='<div class="err">'+msg+'</div>';
+  });
+  peer.on("disconnected", function(){ log("⚠️ اتقطع الاتصال بسيرفر الإشارة — بيحاول يرجع..."); try{ peer.reconnect(); }catch(e){} });
+});
+$("leaveBtn").addEventListener("click", function(){ location.reload(); });
+
+function connectToPeer(node){
+  if(!peer || peer.destroyed) return;
+  var pid=peerIdFor(node);
+  if(conns[pid] && (conns[pid].open || connStatus[node]==="try")) return;
+  connStatus[node]="try"; updateCards();
+  try{
+    var conn=peer.connect(pid, {reliable:true});
+    setupConnection(conn);
+  }catch(e){ connStatus[node]="off"; updateCards(); }
+}
+
+function setupConnection(conn){
+  var pid=conn.peer; var node=nodeFromPeerId(pid);
+  if(NODES.indexOf(node)<0){ return; } // ignore unknown nodes
+  conns[pid]=conn;
+  conn.on("open", function(){
+    connStatus[node]="on"; updateCards();
+    log("✅ اتصلت بالعقدة <b>"+node+"</b> مباشرة");
+    sendHello(conn, node);
+  });
+  conn.on("data", function(data){ handleData(data, conn); });
+  conn.on("close", function(){ connStatus[node]="off"; delete sharedKeys[node]; delete conns[pid]; updateCards(); log("⚠️ اتقطع الاتصال بالعقدة <b>"+node+"</b>"); });
+  conn.on("error", function(){ connStatus[node]="off"; updateCards(); });
+}
+
+async function sendHello(conn, node){
+  if(!myPubJwk) return;
+  try{ conn.send({kind:"hello", from:myNode, to:node, pub:myPubJwk}); helloSent[node]=true; }catch(e){}
+}
+
+async function deriveSharedKey(node, theirJwk){
+  try{
+    var theirPub=await crypto.subtle.importKey("jwk", theirJwk, {name:"ECDH",namedCurve:"P-256"}, true, []);
+    var key=await crypto.subtle.deriveKey({name:"ECDH", public:theirPub}, myKeyPair.privateKey, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
+    sharedKeys[node]=key; peerPub[node]=theirJwk; updateCards();
+    log("🔒 اتفقنا على مفتاح مشترك AES-GCM مع العقدة <b>"+node+"</b> — جاهز للتشفير.");
+    return key;
+  }catch(e){
+    log("❌ فشل اشتقاق المفتاح المشترك مع "+node+": "+e.message);
+    return null;
+  }
+}
+
+// ---------- crypto: encrypt / decrypt (WebCrypto only) ----------
+async function encryptFor(targetNode, obj){
+  var key=sharedKeys[targetNode];
+  if(!key) throw new Error("لسه مفتاح التشفير المشترك مع "+targetNode+" ما اتبادلش — استنى ثواني وحاول تاني.");
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var plain=new TextEncoder().encode(JSON.stringify(obj));
+  var ct=await crypto.subtle.encrypt({name:"AES-GCM", iv:iv}, key, plain);
+  return {iv:bufToB64(iv.buffer), ct:bufToB64(ct)};
+}
+async function decryptFrom(fromNode, ivB64, ctB64){
+  var key=sharedKeys[fromNode];
+  if(!key) throw new Error("مفيش مفتاح مشترك مع "+fromNode+" — المفاتيح لسه ما اتبادلتش.");
+  var iv=b64ToBuf(ivB64), ct=b64ToBuf(ctB64);
+  var plain=await crypto.subtle.decrypt({name:"AES-GCM", iv:new Uint8Array(iv)}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+// ---------- routing ----------
+function getRelayNode(from, to){
+  return NODES.find(function(n){ return n!==from && n!==to; }) || null;
+}
+function sendEnvelopeToPeer(node, env){
+  var pid=peerIdFor(node); var conn=conns[pid];
+  if(conn && conn.open){ conn.send(env); return true; }
+  return false;
+}
+async function sendEncrypted(encKind, targetNode, payload){
+  var mode=document.querySelector('input[name="mode"]:checked').value;
+  var relayNode=getRelayNode(myNode, targetNode);
+  var id="m"+Date.now().toString(36)+Math.floor(Math.random()*1000);
+  var enc;
+  try{ enc=await encryptFor(targetNode, payload); }
+  catch(e){ log("❌ مش هينفع نبعت: "+e.message); alert("مش هينفع نبعت دلوقتي: "+e.message); return null; }
+  var env={kind:"enc", encKind:encKind, id:id, from:myNode, to:targetNode, path:[myNode], hops:0, sentAt:Date.now(), iv:enc.iv, ct:enc.ct, mode:mode};
+  if(mode==="relay" && relayNode){
+    env.path=[myNode, relayNode, targetNode]; env.hops=2; env.relayVia=relayNode;
+    if(sendEnvelopeToPeer(relayNode, env)){
+      log("🔒 بعت "+(encKind==="test"?"اختبار ترحيل":"مقطع صوت")+" مشفر إلى <b>"+targetNode+"</b> عبر الوسيط <b>"+relayNode+"</b> — الوسيط هيعدّي الحزمة المشفرة زي ما هي.");
+      return env;
+    }
+    log("⚠️ الوسيط "+relayNode+" مش متصل — هحاول مباشر.");
+  }
+  env.path=[myNode, targetNode]; env.hops=1; env.relayVia=null;
+  if(sendEnvelopeToPeer(targetNode, env)){
+    log("🔒 بعت "+(encKind==="test"?"اختبار ترحيل":"مقطع صوت")+" مشفر مباشرة إلى <b>"+targetNode+"</b> (قفزة واحدة).");
+    return env;
+  }
+  log("❌ مفيش اتصال مفتوح إلى "+targetNode+" ولا إلى الوسيط — اتأكد إن العقد التانية دخلت الشبكة.");
+  alert("مفيش اتصال مفتوح — اتأكد إن العقدة الهدف دخلت الشبكة.");
+  return null;
+}
+function forwardEnvelope(env){
+  // Relay: forward AS-IS, no decrypt, no re-encrypt
+  var ok=sendEnvelopeToPeer(env.to, env);
+  var relayName=myNode;
+  if(ok){
+    log("🔁 تم التمرير عبر <b>"+relayName+"</b> (مشفر، لم يُفك) — الحزمة راحت لـ <b>"+env.to+"</b> زي ما هي، الوسيط لا يسمع ولا يقرأ. 🔒");
+  } else {
+    log("❌ أنا وسيط ("+relayName+") بس مش قادر أوصل لـ "+env.to+" — الاتصال مقطوع.");
+  }
+  return ok;
+}
+function sendAck(originalEnv, viaRelay){
+  var ack={kind:"ack", id:originalEnv.id, from:myNode, to:originalEnv.from, path:originalEnv.path.slice().reverse(), hops:originalEnv.hops, sentAt:originalEnv.sentAt, receivedAt:Date.now()};
+  if(viaRelay && originalEnv.path.length===3){
+    var relayNode=originalEnv.path[1];
+    if(sendEnvelopeToPeer(relayNode, ack)){ log("↩️ بعت تأكيد الاستلام عبر الوسيط "+relayNode); return; }
+  }
+  if(!sendEnvelopeToPeer(ack.to, ack)){ log("⚠️ مش قادر أبعت تأكيد الاستلام لـ "+ack.to); }
+}
+
+// ---------- handle incoming ----------
+async function handleData(data, conn){
+  if(!data || typeof data!=="object") return;
+  if(data.kind==="hello"){
+    var fromNode=data.from;
+    log("👋 وصل مفتاح عام من العقدة <b>"+fromNode+"</b> — بيشتق المفتاح المشترك...");
+    await deriveSharedKey(fromNode, data.pub);
+    // reply with my hello if not sent on this conn yet
+    if(!helloSent[fromNode]) sendHello(conn, fromNode);
+    return;
+  }
+  if(data.kind==="ack"){
+    if(data.to!==myNode){ // relay ack as-is (metadata only, no content)
+      log("🔁 تم التمرير عبر <b>"+myNode+"</b> (مشفر، لم يُفك) — تأكيد استلام رايح لـ <b>"+data.to+"</b>.");
+      sendEnvelopeToPeer(data.to, data); return;
+    }
+    var pend=pendingTests[data.id];
+    var rtt=Date.now()-data.sentAt;
+    lastHops=data.hops; lastMs=rtt; updateStats();
+    var pathStr=(data.path||[]).join(" ← ");
+    $("pathBox").innerHTML='<span class="chip">'+data.path.join('</span> <span class="arrow">→</span> <span class="chip">')+'</span><br><span style="font-size:16px">✅ وصل الرد! القفزات: <b>'+data.hops+'</b> — الزمن: <b>'+rtt+' ms</b> — 🔒 مشفر</span>';
+    log("✅ وصل تأكيد الاختبار من <b>"+data.from+"</b> — المسار: "+data.path.join(" → ")+" — "+data.hops+" قفزات — "+rtt+" ms 🔒");
+    if(pend) delete pendingTests[data.id];
+    return;
+  }
+  if(data.kind==="enc"){
+    if(data.to!==myNode){
+      // I am the relay — DO NOT decrypt, forward as-is
+      log("📦 وصلتني حزمة مشفرة مش ليّا — أنا وسيط، هعدّيها زي ما هي لـ <b>"+data.to+"</b> من غير ما أفكها. 🔒");
+      forwardEnvelope(data);
+      return;
+    }
+    // For me — decrypt
+    var via = data.path && data.path.length===3 ? data.path[1] : null;
+    var hops = data.hops || (via?2:1);
+    var pathStr = (data.path||[data.from,myNode]).join(" → ");
+    var payload;
+    try{
+      payload=await decryptFrom(data.from, data.iv, data.ct);
+    }catch(e){
+      log("❌ <b>فك التشفير فشل</b> — الرسالة/الصوت من "+data.from+" مش هيتشغل ولا هيظهر. السبب: "+e.message);
+      $("pathBox").innerHTML='<span style="color:#ff8a80">❌ فك التشفير فشل — الرسالة مش هتظهر. اتأكد إن المفاتيح اتبادلت صح.</span>';
+      return;
+    }
+    if(data.encKind==="test"){
+      lastHops=hops; updateStats();
+      $("pathBox").innerHTML='<span class="chip">'+(data.path||[]).join('</span> <span class="arrow">→</span> <span class="chip">')+'</span><br><span style="font-size:16px">✅ وصل اختبار مشفر من <b>'+data.from+'</b>'+(via?' عبر <b>'+via+'</b>':' مباشرة')+' — '+hops+' قفزات 🔒 مشفر — الوسيط لا يسمع</span>';
+      log("✅ وصل اختبار ترحيل مشفر 🔒 من <b>"+data.from+"</b>"+(via?" عبر الوسيط <b>"+via+"</b>":" مباشرة")+" — المسار: "+pathStr+" — "+hops+" قفزات — 🔒 مشفر — الوسيط لا يسمع");
+      sendAck(data, !!via);
+    } else if(data.encKind==="voice"){
+      lastHops=hops; updateStats();
+      var label="وصل صوت من "+data.from+(via?" عبر "+via+" ("+hops+" قفزتان)":" مباشرة")+" 🔒 مشفر — الوسيط لا يسمع";
+      log("🎤 "+label);
+      var box=$("voiceBox");
+      var div=document.createElement("div");
+      div.innerHTML='<div class="ok">🎤 '+label+'<br><span class="small">'+nowTime()+'</span></div>';
+      box.prepend(div);
+      try{
+        var audio=document.createElement("audio");
+        audio.controls=true; audio.autoplay=true;
+        audio.src="data:"+(payload.mime||"audio/webm")+";base64,"+payload.b64;
+        div.appendChild(audio);
+        var p=audio.play();
+        if(p && p.catch) p.catch(function(err){ log("⚠️ المتصفح منع التشغيل التلقائي — دوس زر التشغيل في المشغل اللي ظهر فوق."); });
+      }catch(e){ log("❌ فشل تشغيل الصوت: "+e.message); }
+    }
+    return;
+  }
+}
+
+// ---------- test relay ----------
+$("testBtn").addEventListener("click", async function(){
+  var target=$("targetSel").value;
+  if(!target || target===myNode){ alert("اختار عقدة هدف مختلفة عن عقدتك."); return; }
+  if(!sharedKeys[target]){ alert("لسه مفتاح التشفير المشترك مع "+target+" ما اتبادلش — استنى ثواني لحد ما يظهر 🔒 مفتاح مشترك جاهز، وحاول تاني."); log("⏳ مفتاح التشفير مع "+target+" لسه مش جاهز — استنى ثواني."); return; }
+  var mode=document.querySelector('input[name="mode"]:checked').value;
+  var payload={text:"اختبار ترحيل من "+myNode+" إلى "+target, sentAt:Date.now()};
+  var env=await sendEncrypted("test", target, payload);
+  if(env){
+    pendingTests[env.id]={sentAt:env.sentAt, target:target};
+    $("pathBox").innerHTML='<span class="chip">'+env.path.join('</span> <span class="arrow">→</span> <span class="chip">')+'</span><br><span style="font-size:16px">⏳ اتبعت مشفر 🔒 — مستني تأكيد الاستلام... المسار المتوقع: '+env.path.join(" → ")+' ('+env.hops+' قفزات)</span>';
+    setTimeout(function(){ if(pendingTests[env.id]){ log("⏳ لسه مفيش تأكيد استلام للاختبار "+env.id+" — ممكن الهدف مش متصل أو الوسيط مش متصل."); delete pendingTests[env.id]; } }, 10000);
+  }
+});
+
+// ---------- push-to-talk ----------
+function stopTimer(){ if(recTimerInt){ clearInterval(recTimerInt); recTimerInt=null; } $("recTimer").textContent=""; }
+async function startRecording(){
+  if(isRecording) return;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    log("❌ المتصفح ده مش بيدعم الميكروفون — جرّب Chrome أو Safari حديث.");
+    alert("المتصفح ده مش بيدعم الميكروفون."); return;
+  }
+  var target=$("targetSel").value;
+  if(!target || target===myNode){ alert("اختار عقدة هدف مختلفة عن عقدتك الأول."); return; }
+  if(!sharedKeys[target]){ alert("لسه مفتاح التشفير المشترك مع "+target+" ما اتبادلش — استنى ثواني وحاول تاني."); return; }
+  try{
+    recStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    log("❌ الميكروفون مرفوض أو مش متاح: "+e.message+" — اسمح بالميكروفون من إعدادات المتصفح وحاول تاني.");
+    alert("الميكروفون مرفوض — اسمح بالميكروفون من إعدادات المتصفح وحاول تاني.");
+    return;
+  }
+  try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); }catch(e){}
+  recChunks=[]; isRecording=true; recStart=Date.now();
+  $("ptt").classList.add("rec"); $("ptt").innerHTML="🔴 بيسجّل... سيب عشان تبعت<br><span style='font-size:15px'>(حد أقصى ٥ ثواني)</span>";
+  var mime=""; try{ if(MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) mime="audio/webm;codecs=opus"; else if(MediaRecorder.isTypeSupported("audio/webm")) mime="audio/webm"; }catch(e){}
+  try{ mediaRecorder=new MediaRecorder(recStream, mime?{mimeType:mime}:undefined); }
+  catch(e){ mediaRecorder=new MediaRecorder(recStream); }
+  mediaRecorder.ondataavailable=function(ev){ if(ev.data && ev.data.size) recChunks.push(ev.data); };
+  mediaRecorder.onstop=async function(){ await finishRecording(target); };
+  mediaRecorder.start(200);
+  recTimerInt=setInterval(function(){
+    var s=Math.floor((Date.now()-recStart)/1000);
+    $("recTimer").textContent="⏱️ "+s+" / ٥ ثواني";
+    if(s>=5) stopRecording();
+  }, 200);
+  log("🎤 بدأ التسجيل — اتكلم دلوقتي (حد أقصى ٥ ثواني)...");
+}
+function stopRecording(){
+  if(!isRecording) return;
+  isRecording=false; stopTimer();
+  $("ptt").classList.remove("rec"); $("ptt").innerHTML="🎤 اضغط وتكلم<br><span style='font-size:15px'>(حد أقصى ٥ ثواني — بيتبعت للهدف اللي اخترته فوق)</span>";
+  try{ if(mediaRecorder && mediaRecorder.state!=="inactive") mediaRecorder.stop(); }catch(e){}
+}
+async function finishRecording(target){
+  try{ if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream=null; } }catch(e){}
+  var blob=new Blob(recChunks, {type:(mediaRecorder && mediaRecorder.mimeType)||"audio/webm"});
+  var dur=Date.now()-recStart;
+  if(!blob || blob.size<100){ log("⚠️ التسجيل فاضي أو قصير أوي — دوس أطول شوية."); return; }
+  log("🎤 خلص التسجيل ("+(dur/1000).toFixed(1)+" ث — "+Math.round(blob.size/1024)+" KB) — بيتشفر وبيتبعت لـ "+target+" 🔒...");
+  var reader=new FileReader();
+  reader.onload=async function(){
+    var dataUrl=reader.result; var b64=dataUrl.split(",")[1]; var mime=dataUrl.split(";")[0].split(":")[1]||"audio/webm";
+    await sendEncrypted("voice", target, {mime:mime, b64:b64, durationMs:dur, sentAt:Date.now()});
+  };
+  reader.onerror=function(){ log("❌ فشل قراءة التسجيل."); };
+  reader.readAsDataURL(blob);
+}
+var ptt=$("ptt");
+ptt.addEventListener("pointerdown", function(e){ e.preventDefault(); startRecording(); });
+ptt.addEventListener("pointerup", function(e){ e.preventDefault(); stopRecording(); });
+ptt.addEventListener("pointerleave", function(){ if(isRecording) stopRecording(); });
+ptt.addEventListener("pointercancel", function(){ if(isRecording) stopRecording(); });
+ptt.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+
+// ---------- copy link ----------
+$("copyBtn").addEventListener("click", async function(){
+  var base=location.href.split("?")[0];
+  var url=base+"?room="+encodeURIComponent(myRoom||sanitizeRoom($("roomInp").value));
+  try{ await navigator.clipboard.writeText(url); log("📋 اتنسخ لينك الغرفة: "+url); alert("اتنسخ اللينك — ابعته للتليفونين التانيين."); }
+  catch(e){
+    var ta=document.createElement("textarea"); ta.value=url; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); alert("اتنسخ اللينك — ابعته للتليفونين التانيين."); }catch(e2){ prompt("انسخ اللينك ده:", url); }
+    document.body.removeChild(ta);
+  }
+});
+
+// ---------- init ----------
+log("👋 أهلاً بيك في شبكة الناس — اختار عقدتك وكود الغرفة ودوس «ادخل الشبكة».");
+log("🔒 التشفير end-to-end إجباري: كل عقدة بتولد مفتاح ECDH، والمفتاح المشترك AES-GCM بيتشتق لكل زوج — الوسيط بيعدّي الحزمة المشفرة زي ما هي.");
+updateCards();
+window.addEventListener("error", function(ev){ log("❌ خطأ في الصفحة: "+(ev.message||ev.error)); });
+</script>
+</body>
+</html>
