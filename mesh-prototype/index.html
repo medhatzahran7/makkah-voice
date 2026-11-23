@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>شبكة الناس v2.12 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v2.13 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -117,9 +117,40 @@ body{padding-bottom:92px}
 #callBarWarn{display:none;margin-top:8px;background:#4a2a00;border:1px solid #a86a00;color:#ffe0a3;border-radius:10px;padding:8px;font-size:14px;text-align:center}
 .call-mode-btns{display:flex;gap:8px;margin-top:8px}
 .call-mode-btns button{margin-top:0}
+
+/* ===== v2.13: واجهة تليفون ===== */
+#phoneStatusBar{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;background:#000;color:#e8f5e9;font-size:14px;font-weight:700;border-radius:0 0 14px 14px}
+#phoneStatusBar .ps-icons{letter-spacing:1px;direction:ltr}
+.contact-row{display:flex;align-items:center;gap:12px;margin:8px 0;padding:12px;border:1px solid #33402f;border-radius:16px;background:#111811;text-align:right}
+.contact-avatar{flex:0 0 54px;width:54px;height:54px;border-radius:50%;background:linear-gradient(160deg,#d4a853,#b8860b);color:#1a1409;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:18px;font-weight:800}
+.contact-status{font-size:14px;color:#8fce8f}
+.contact-status.off{color:#999}
+.round-call{flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:0;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:0!important;padding:0!important}
+.round-call.voice{background:#1f7a33;color:#fff}
+.round-call.av{background:#b8860b;color:#fff}
+.round-call:disabled{background:#333;color:#888;cursor:not-allowed}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:320px;margin:12px auto}
+.key-btn{width:84px;height:84px;border-radius:50%;background:#1c2b1f;color:#e8f5e9;border:1px solid #33402f;font-size:32px;font-weight:800;margin:0 auto!important;cursor:pointer;padding:0!important}
+.key-btn.sel{background:linear-gradient(160deg,#d4a853,#b8860b);color:#1a1409;border-color:#d4a853}
+.phone-screen{text-align:center;padding:10px 6px 4px}
+.phone-avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(160deg,#d4a853,#b8860b);color:#1a1409;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:900;margin:6px auto;border:4px solid #6b5316}
+.phone-name{font-size:26px;font-weight:900}
+.phone-type{font-size:16px;color:#c8f7c5;margin-top:4px}
+.phone-timer{font-size:34px;font-weight:900;direction:ltr;margin:6px 0}
+.round-row{display:flex;gap:16px;justify-content:center;margin:14px 0}
+.round-btn{width:60px;height:60px;border-radius:50%;background:#1c2b1f;color:#e8f5e9;border:1px solid #33402f;font-size:26px;cursor:pointer;margin-top:0!important;padding:0!important}
+.round-btn.on{background:#b8860b;color:#1a1409}
+.round-btn.round-green{background:#1f7a33}
+.round-btn.round-red{background:#c62828}
+.round-end{width:84px;height:84px;border-radius:50%;background:#c62828;color:#fff;border:3px solid #ff5252;font-size:36px;margin:8px auto 0!important;display:block;cursor:pointer;padding:0!important}
+#inCallBox #endCallBtn,#inCallBox #callTimer,#inCallBox #callStatus,#callingBox #cancelCallBtn,#incomingBox #acceptBtn,#incomingBox #rejectBtn{display:none}
+.hero-ver{font-size:13px;color:#9db89d;margin-top:8px}
 </style>
 </head>
 <body>
+<div id="phoneStatusBar"><span id="phoneClock">--:--</span><span class="ps-icons"><span id="phoneNet">📶 غير متصل</span> <span>📡</span> <span id="phoneBatt">🔋</span></span></div>
 <header class="topbar">
 <div class="top-status"><span class="dot off" id="topDot"></span><span id="topStatus">غير متصل</span></div>
 <button id="sosBtnTop" class="btn-red sos-top">🆘 استغاثة</button>
@@ -134,6 +165,7 @@ body{padding-bottom:92px}
 <h1>شبكة الناس</h1>
 <div class="hero-tag">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="hero-badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
+<div class="hero-ver">الإصدار v2.13 — واجهة تليفون 📱</div>
 <p class="sub">مكالمات صوت+فيديو مشفرة — دخول تلقائي، مباشر أولاً، وسيط مشفر عند الحاجة فقط</p>
 <p class="sub" style="font-size:14px">🔒 كل المكالمات والرسايل مشفرة end-to-end — الوسيط لا يسمع ولا يقرأ ولا يعرف أصلاً أن مكالمة بدأت</p>
 </div>
@@ -169,7 +201,7 @@ body{padding-bottom:92px}
 <p class="hint">ابعت اللينك للتليفونين التانيين — هيفتحوا نفس الغرفة على طول. اللينك فيه <span dir="ltr">?room=...</span> بس، من غير أي بيانات شخصية.</p>
 </details>
 <div class="card">
-<h2>اتصل بمين؟ 🔒 طلب خاص</h2>
+<h2>📇 جهات الاتصال — اتصل بمين؟ 🔒 طلب خاص</h2>
 <div id="privateCallList" style="text-align:center">⏳ ادخل الشبكة الأول عشان تشوف المتصلين.</div>
 <p class="hint">🔒 أنت وحدك تختار — الطلب مشفر للهدف فقط، والوسيط لا يعرف أن مكالمة بدأت. جنب كل برج زرارين: 📞 صوت فقط و📹 صوت+فيديو.</p>
 </div>
@@ -178,6 +210,28 @@ body{padding-bottom:92px}
 <h2>👥 مكالمة جماعية</h2>
 <button id="groupCallBtn" class="btn-green">👥 ابدأ مكالمة جماعية (كل المتصلين في الغرفة)</button>
 <p class="hint" style="text-align:center">تتصل بكل الأبراج المتصلة في نفس الغرفة في نفس الوقت — كل واحد يسمع الباقين معاً.</p>
+</div>
+</section>
+<section class="tab-page" id="tab-keypad">
+<div class="card">
+<h2>🔢 لوحة المفاتيح</h2>
+<div id="keypadDisplay" style="text-align:center;font-size:22px;font-weight:800;margin:6px 0">اختار برجاً من اللوحة</div>
+<div class="keypad" id="keypadGrid">
+<button type="button" class="key-btn" data-node="1">١</button>
+<button type="button" class="key-btn" data-node="2">٢</button>
+<button type="button" class="key-btn" data-node="3">٣</button>
+<button type="button" class="key-btn" data-node="4">٤</button>
+<button type="button" class="key-btn" data-node="5">٥</button>
+<button type="button" class="key-btn" data-node="6">٦</button>
+<button type="button" class="key-btn" data-node="7">٧</button>
+<button type="button" class="key-btn" data-node="8">٨</button>
+<button type="button" class="key-btn" data-node="clear">⌫</button>
+</div>
+<div class="row" style="margin-top:12px">
+<button id="keypadCallVoice" class="btn-grey" disabled style="font-size:20px">📞 صوت فقط</button>
+<button id="keypadCallAV" class="btn-green" disabled style="font-size:20px">📹 صوت+فيديو</button>
+</div>
+<p class="hint" style="text-align:center">دوس رقم البرج (١..٨) ثم اختار نوع المكالمة — الزراران يشتغلان فقط عندما يكون البرج متصلاً ومفتاحه جاهزاً 🔒.</p>
 </div>
 </section>
 <section class="tab-page" id="tab-net">
@@ -217,6 +271,8 @@ body{padding-bottom:92px}
 <div id="callingText" style="text-align:center;font-size:20px;font-weight:800">⏳ بيتصل...</div>
 <p class="hint" style="text-align:center">مستني الطرف التاني يرد... لو مردش خلال ٣٠ ثانية المكالمة هتتلغي لوحدها.</p>
 <button id="cancelCallBtn" class="btn-grey">إلغاء الاتصال</button>
+<button id="cancelBigBtn" class="round-end" type="button">🔴</button>
+<div style="font-size:14px;font-weight:800;text-align:center;margin-top:6px">إلغاء الاتصال</div>
 </div>
 <div id="incomingBox" style="display:none">
 <h3 id="incomingText">📞 مكالمة واردة</h3>
@@ -226,9 +282,27 @@ body{padding-bottom:92px}
 <button id="acceptBtn" class="btn-green">✅ رد</button>
 <button id="rejectBtn" class="btn-red">❌ رفض</button>
 </div>
+<div class="round-row">
+<button id="acceptBigBtn" class="round-btn round-green" type="button">✅</button>
+<button id="rejectBigBtn" class="round-btn round-red" type="button">❌</button>
+</div>
+<div style="text-align:center;font-size:14px;font-weight:800">✅ رد &nbsp;•&nbsp; ❌ رفض</div>
 <button id="muteRingBtn" class="btn-grey">🔕 كتم الرنة (يبقى الاهتزاز والوميض)</button>
 </div>
 <div id="inCallBox" style="display:none">
+<div class="phone-screen">
+<div class="phone-avatar" id="callAvatarBig">؟</div>
+<div class="phone-name" id="callPartnerBig">—</div>
+<div class="phone-type" id="callTypeBig">📞 مكالمة</div>
+<div class="phone-timer" id="callTimerBig">00:00</div>
+<div class="round-row">
+<button id="muteRoundBtn" class="round-btn" type="button" title="كتم صوتي">🎙️</button>
+<button id="speakerRoundBtn" class="round-btn" type="button" title="سماعة">🔊</button>
+<button id="videoRoundBtn" class="round-btn" type="button" title="فيديو">📹</button>
+</div>
+<button id="endCallBigBtn" class="round-end" type="button">🔴</button>
+<div style="font-size:14px;font-weight:800;margin-top:6px">إنهاء المكالمة</div>
+</div>
 <div id="callTimer">00:00</div>
 <div id="callStatus">📞 مكالمة مفتوحة 🔒 مشفرة</div>
 <div id="callPathBadge" class="path-badge" style="display:none">—</div>
@@ -414,15 +488,16 @@ body{padding-bottom:92px}
 <button id="leaveBtn" class="btn-grey" style="display:none">🚪 خروج من الشبكة</button>
 <p class="hint">يمسح الجلسة المحفوظة على هذا الجهاز حتى لا ترجع تلقائياً بعد الريفريش.</p>
 </div>
-<p class="small" style="text-align:center">نموذج أولي v2.12 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p class="small" style="text-align:center">نموذج أولي v2.13 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر PeerJS المجاني، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p class="small" style="text-align:center">نموذج أولي — الفيديو إطارات منخفضة، الترجمة تحتاج إنترنت، الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 <details class="help"><summary>؟ حدود صادقة باختصار</summary><p class="small">الفيديو إطارات منخفضة (5/ثانية، 320×240) وليس WebRTC كاملاً. الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجد مسار أبراج متصلة — ليست بديلاً عن 112. هوية الجار المباشر ظاهرة على مستوى PeerJS/WebRTC نفسه.</p></details>
 </section>
 </div>
 <nav class="bottomnav">
-<button type="button" class="navbtn active" data-tab="calls"><span class="ic">📞</span>المكالمات</button>
+<button type="button" class="navbtn active" data-tab="calls"><span class="ic">📇</span>جهات الاتصال</button>
+<button type="button" class="navbtn" data-tab="keypad"><span class="ic">🔢</span>المفاتيح</button>
+<button type="button" class="navbtn" data-tab="call"><span class="ic">📞</span>المكالمة</button>
 <button type="button" class="navbtn" data-tab="net"><span class="ic">🛰️</span>الشبكة</button>
-<button type="button" class="navbtn" data-tab="call"><span class="ic">📹</span>المكالمة</button>
 <button type="button" class="navbtn" data-tab="dash"><span class="ic">🎛️</span>التحكم</button>
 <button type="button" class="navbtn" data-tab="settings"><span class="ic">⚙️</span>الإعدادات</button>
 </nav>
@@ -1526,7 +1601,7 @@ function showCallUI(){
   updatePathBadge();
   // v2.8: شاشة المكالمة تظهر تلقائياً عند بدء/استقبال مكالمة
   if(callState==="calling" || callState==="ringing" || callState==="in-call") showTab("call");
-  updateCallBar(); ensureCallBarTimer();
+  updatePhoneCallScreen(); updateKeypad(); updateCallBar(); ensureCallBarTimer();
 }
 function callPathText(){
   if(!callPartner) return "";
@@ -1619,6 +1694,8 @@ function updateCallBar(){
   else if(callState==="ringing"){ txt.textContent="📞 مكالمة واردة من "+towerName(callPartner)+" — رد أو ارفض"; }
   var t0 = inGroup ? groupStartTime : callStartTime;
   if(tm) tm.textContent = t0 ? fmtDuration(Math.floor((Date.now()-t0)/1000)) : "00:00";
+  var ctb=$("callTimerBig"); if(ctb) ctb.textContent = t0 ? fmtDuration(Math.floor((Date.now()-t0)/1000)) : "00:00";
+  if(typeof updatePhoneCallScreen==="function") updatePhoneCallScreen();
 }
 function ensureCallBarTimer(){
   if(callBarInt) return;
@@ -1649,6 +1726,7 @@ function startCallTimer(){
   callTimerInt=setInterval(function(){
     var sec=Math.floor((Date.now()-callStartTime)/1000);
     $("callTimer").textContent=fmtDuration(sec);
+    var ctb=$("callTimerBig"); if(ctb) ctb.textContent=fmtDuration(sec);
   }, 1000);
 }
 function stopCallTimer(){ if(callTimerInt){ clearInterval(callTimerInt); callTimerInt=null; } }
@@ -2092,6 +2170,7 @@ function pumpPlayQueue(){
   try{
     var a=document.createElement("audio");
     a.preload="auto";
+    a.volume=(typeof callVolume!=="undefined")?callVolume:1;
     a.src=item.url;
     a.onended=function(){ URL.revokeObjectURL(item.url); playingChunk=false; pumpPlayQueue(); };
     a.onerror=function(){ URL.revokeObjectURL(item.url); playingChunk=false; pumpPlayQueue(); };
@@ -2197,17 +2276,24 @@ function renderPrivateCallList(){
   var box=$("privateCallList"); if(!box) return;
   if(!peer || !myNode){ box.textContent="⏳ ادخل الشبكة الأول عشان تشوف المتصلين."; return; }
   box.innerHTML="";
-  NODES.filter(function(n){ return n!==myNode; }).forEach(function(nd){
+  NODES.forEach(function(nd){
     var ready = connStatus[nd]==="on" && !!sharedKeys[nd];
     var div=document.createElement("div");
-    div.style.cssText="margin:8px 0;padding:10px;border:1px solid #33402f;border-radius:12px;background:#111811";
-    div.innerHTML='<div style="font-size:18px;font-weight:800">'+nodeLabel(nd)+' — '+(ready?"متصل ✓ 🔒 مفتاح جاهز":"⏳ لسه مش جاهز")+'</div>';
+    div.className="contact-row";
+    var avTxt=(typeof AR_NUM!=="undefined" && AR_NUM[nd])?AR_NUM[nd]:"👤";
+    if(nd===myNode){
+      div.innerHTML='<div class="contact-avatar">'+avTxt+'</div><div class="contact-info"><div class="contact-name">'+nodeLabel(nd)+'</div><div class="contact-status">⭐ ده أنت</div></div>';
+      box.appendChild(div);
+      return;
+    }
+    div.innerHTML='<div class="contact-avatar">'+avTxt+'</div><div class="contact-info"><div class="contact-name">'+nodeLabel(nd)+'</div><div class="contact-status'+(ready?"":" off")+'">'+(ready?"● متصل — مفتاح جاهز 🔒":"○ غير متصل / لسه مش جاهز")+'</div></div>';
     // v2.12: زراران جنب كل برج — صوت فقط أو صوت+فيديو (معطّلان معاً إن لم يكن جاهزاً).
     var row=document.createElement("div");
     row.className="call-mode-btns";
     var bVoice=document.createElement("button");
-    bVoice.className="btn-grey";
-    bVoice.textContent="📞 صوت فقط";
+    bVoice.className="round-call voice";
+    bVoice.textContent="📞";
+    bVoice.title="صوت فقط";
     bVoice.disabled=!ready || callState!=="idle";
     bVoice.addEventListener("click", function(){
       $("targetSel").value=nd; updateCallBtnLabel(); refreshCallAvailability();
@@ -2215,8 +2301,9 @@ function renderPrivateCallList(){
       startCallTo(nd, "voice");
     });
     var bAV=document.createElement("button");
-    bAV.className="btn-green";
-    bAV.textContent="📹 صوت+فيديو";
+    bAV.className="round-call av";
+    bAV.textContent="📹";
+    bAV.title="صوت+فيديو";
     bAV.disabled=!ready || callState!=="idle";
     bAV.addEventListener("click", function(){
       $("targetSel").value=nd; updateCallBtnLabel(); refreshCallAvailability();
@@ -2227,6 +2314,7 @@ function renderPrivateCallList(){
     div.appendChild(row);
     box.appendChild(div);
   });
+  if(typeof updateKeypad==="function") updateKeypad();
 }
 $("coverToggle").addEventListener("click", function(){
   coverOn=!coverOn;
@@ -3068,8 +3156,107 @@ function showTab(name){
   }
 })();
 
+
+// ---------- v2.13: واجهة تليفون ----------
+var callVolume=1, speakerLoud=true, micMuted=false, keypadTarget="";
+function updatePhoneClock(){
+  var c=$("phoneClock"); if(!c) return;
+  try{ c.textContent=new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}); }catch(e){}
+}
+function updatePhoneNet(){
+  var n=$("phoneNet"); if(!n) return;
+  n.textContent=(peer&&myNode)?"📶 متصل":"📶 غير متصل";
+}
+function updatePhoneBattery(){
+  var b=$("phoneBatt"); if(!b) return;
+  if(navigator.getBattery){
+    navigator.getBattery().then(function(bt){
+      var upd=function(){ b.textContent="🔋 "+Math.round(bt.level*100)+"٪"; };
+      upd();
+      try{ bt.addEventListener("levelchange", upd); }catch(e){}
+    }).catch(function(){ b.textContent="🔋"; });
+  } else { b.textContent="🔋"; }
+}
+function phoneAvatarText(n){
+  if(typeof AR_NUM!=="undefined" && AR_NUM[n]) return AR_NUM[n];
+  return "👤";
+}
+function updatePhoneCallScreen(){
+  var av=$("callAvatarBig"); if(!av) return;
+  var partner = (callState==="in-call"||callState==="ringing") ? callPartner : (callState==="calling" ? callTarget : "");
+  if(!partner){ av.textContent="؟"; $("callPartnerBig").textContent="—"; $("callTypeBig").textContent="📞 مكالمة"; $("callTimerBig").textContent="00:00"; return; }
+  av.textContent=phoneAvatarText(partner);
+  $("callPartnerBig").textContent=towerName(partner);
+  var tp=$("callTypeBig");
+  if(callState==="in-call") tp.textContent=callModeLabel();
+  else if(callState==="calling") tp.textContent="⏳ بيتصل...";
+  else if(callState==="ringing") tp.textContent=(callMode==="voice"?"📞 مكالمة صوتية فقط واردة":"📹📞 مكالمة صوت+فيديو واردة");
+  var ct=$("callTimer"); if(ct) $("callTimerBig").textContent=ct.textContent;
+  var vb=$("videoRoundBtn"); if(vb) vb.classList.toggle("on", !!videoOn);
+  var mb=$("muteRoundBtn"); if(mb){ mb.classList.toggle("on", micMuted); mb.textContent=micMuted?"🔇":"🎙️"; }
+  var sb=$("speakerRoundBtn"); if(sb){ sb.textContent=speakerLoud?"🔊":"🔈"; }
+}
+function toggleMicMute(){
+  if(callState!=="in-call") return;
+  micMuted=!micMuted;
+  try{
+    [callStream, callRawStream].forEach(function(s){
+      if(s) s.getAudioTracks().forEach(function(t){ t.enabled=!micMuted; });
+    });
+  }catch(e){}
+  log(micMuted?"🔇 كتمت صوتك — الطرف التاني مش هيسمعك.":"🎙️ شغلت صوتك تاني.");
+  updatePhoneCallScreen();
+}
+function toggleSpeaker(){
+  speakerLoud=!speakerLoud;
+  callVolume=speakerLoud?1:0.5;
+  log(speakerLoud?"🔊 سماعة عالية.":"🔈 سماعة خافتة.");
+  updatePhoneCallScreen();
+}
+function keypadReady(nd){
+  return !!(peer && myNode && nd && nd!==myNode && connStatus[nd]==="on" && sharedKeys[nd]);
+}
+function updateKeypad(){
+  var disp=$("keypadDisplay"); if(!disp) return;
+  disp.textContent=keypadTarget?("🎯 "+towerName(keypadTarget)+(keypadReady(keypadTarget)?" — جاهز 🔒":" — لسه مش جاهز")):"اختار برجاً من اللوحة";
+  var btns=document.querySelectorAll("#keypadGrid .key-btn");
+  for(var i=0;i<btns.length;i++){
+    var nd=btns[i].getAttribute("data-node");
+    if(nd!=="clear") btns[i].classList.toggle("sel", nd===keypadTarget);
+  }
+  var ok=keypadTarget && keypadReady(keypadTarget) && callState==="idle";
+  var kv=$("keypadCallVoice"), ka=$("keypadCallAV");
+  if(kv) kv.disabled=!ok;
+  if(ka) ka.disabled=!ok;
+}
+function keypadPick(nd){
+  if(nd==="clear"){ keypadTarget=""; updateKeypad(); return; }
+  keypadTarget=nd;
+  try{ $("targetSel").value=nd; updateCallBtnLabel(); refreshCallAvailability(); }catch(e){}
+  updateKeypad();
+}
+(function(){
+  updatePhoneClock(); setInterval(updatePhoneClock, 30000);
+  updatePhoneBattery(); updatePhoneNet(); setInterval(updatePhoneNet, 5000);
+  var kg=$("keypadGrid");
+  if(kg){
+    var ks=kg.querySelectorAll(".key-btn");
+    for(var i=0;i<ks.length;i++) ks[i].addEventListener("click", function(){ keypadPick(this.getAttribute("data-node")); });
+  }
+  var kv=$("keypadCallVoice"); if(kv) kv.addEventListener("click", function(){ if(keypadTarget) startCallTo(keypadTarget,"voice"); });
+  var ka=$("keypadCallAV"); if(ka) ka.addEventListener("click", function(){ if(keypadTarget) startCallTo(keypadTarget,"av"); });
+  var eb=$("endCallBigBtn"); if(eb) eb.addEventListener("click", function(){ endCurrentCall(); });
+  var cb=$("cancelBigBtn"); if(cb) cb.addEventListener("click", function(){ cancelOutgoingCall(); });
+  var ab=$("acceptBigBtn"); if(ab) ab.addEventListener("click", function(){ $("acceptBtn").click(); });
+  var rb=$("rejectBigBtn"); if(rb) rb.addEventListener("click", function(){ rejectIncomingCall(); });
+  var mb=$("muteRoundBtn"); if(mb) mb.addEventListener("click", toggleMicMute);
+  var sb=$("speakerRoundBtn"); if(sb) sb.addEventListener("click", toggleSpeaker);
+  var vb=$("videoRoundBtn"); if(vb) vb.addEventListener("click", function(){ $("videoToggleBtn").click(); });
+})();
+
 // ---------- init ----------
-log("👋 أهلاً بيك في شبكة الناس v2.12 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. دخول تلقائي: اختر برجاً متاحاً من خريطة الأبراج أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول برج متاح. تبويبات سفلية: المكالمات / الشبكة / المكالمة / التحكم / الإعدادات.");
+log("👋 أهلاً بيك في شبكة الناس v2.13 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. دخول تلقائي: اختر برجاً متاحاً من خريطة الأبراج أو دوس «ادخل تلقائياً»، وإن لم تختر خلال 3 ثوانٍ يدخل تلقائياً على أول برج متاح. تبويبات سفلية: المكالمات / الشبكة / المكالمة / التحكم / الإعدادات.");
+log("📱 v2.13: واجهة تليفون — شريط حالة بالساعة والبطارية، الأبراج كجهات اتصال، لوحة مفاتيح ١..٨، وشاشة مكالمة زي التليفون الحقيقي بزر إنهاء أحمر دائري كبير.");
 log("📹 v2.12: المكالمة صوت+فيديو معاً من البداية — الفيديو يبدأ تلقائياً مع الصوت (ثنائية وجماعية)، وزر الفيديو يوقفه ويعيد تشغيله من شاشة المكالمة. الثنائية تفضل المباشر («مباشر — مفيش وسيط») والوسيط بديل مشفر فقط عند تعذره، ولا طرف ثالث ينضم لثنائية جارية.");
 log("🔎 v2.12: اكتشاف الأبراج — عند تعارض المعرّف نعيد المحاولة بالمعرّف الحتمي 3 مرات (كل 2 ثانية) قبل اللجوء للاحقة عشوائية، وكل برج يعلن معرّفه الفعلي في hello حتى يُكتشف. محاولة الاتصال لها مهلة 10 ثوانٍ ثم تُعاد تلقائياً، فلا يعلق أي برج في «بيحاول يتصل...» إلى الأبد. زر التنفيذ يظهر «⏳ جارٍ التنفيذ...» أثناء الانتقال، و«أفضل مسار» لا يُعرض إلا لمسار متصل فعلاً.");
 log("🔄 v2.5: جلستك محفوظة على جهازك (البرج والغرفة والإعدادات فقط — لا مفاتيح تشفير ولا محتوى مكالمات) — لو حدّثت الصفحة هترجع للشبكة تلقائياً بنفس البرج. للخروج نهائياً دوس «🚪 خروج من الشبكة» — بيمسح الجلسة المحفوظة.");
