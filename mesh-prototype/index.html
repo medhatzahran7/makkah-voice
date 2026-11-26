@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="شبكة الناس">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
-<title>شبكة الناس v3.3 — ✦ الجيل الجديد من الاتصال</title>
+<title>شبكة الناس v3.3.1 — ✦ الجيل الجديد من الاتصال</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -92,7 +92,7 @@ video{width:100%;border-radius:12px;background:#000}
 #sosBtn{position:fixed;top:84px;left:10px;z-index:65;background:#c62828;color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px}
 .small{font-size:12px;color:#9db89d}
 /* ===== v3.2 — احترافي ===== */
-/* ===== v3.3 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث ===== */
+/* ===== v3.3.1 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث ===== */
 .hero .logo{width:64px;height:64px;border-radius:50%;border:2px solid #d4a853}
 .sect{font-size:15px;font-weight:800;color:#d4a853;margin:18px 0 4px;border-bottom:1px solid #2a3d2e;padding-bottom:4px}
 #toast{position:fixed;top:56px;right:50%;transform:translateX(50%);z-index:200;background:#b8860b;color:#fff;font-weight:700;font-size:15px;padding:10px 18px;border-radius:24px;box-shadow:0 4px 18px rgba(0,0,0,.5);display:none;max-width:92%;text-align:center}
@@ -162,7 +162,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <div class="hero">
 <div class="big"><img class="logo" src="icon.svg" alt="شبكة الناس"></div>
-<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.3</span></h1>
+<h1>شبكة الناس <span style="font-size:15px;color:#d4a853">v3.3.1</span></h1>
 <div style="font-size:15px">اختراع جديد في تكنولوجيا الاتصالات — التليفونات نفسها أبراج</div>
 <div class="badge">✦ الجيل الجديد من الاتصال — بلا شركات، بلا أرقام، بلا فواتير</div>
 <div class="hint" style="margin-top:8px">مكالمات صوت+فيديو حقيقية عبر WebRTC — دخول تلقائي، مباشر أولاً، مشفرة DTLS-SRTP</div>
@@ -467,7 +467,7 @@ video{width:100%;border-radius:12px;background:#000}
 <h2>؟ حدود صادقة باختصار</h2>
 <div class="hint">الصوت والفيديو حقيقيان عبر WebRTC ومشفران بـ DTLS-SRTP. الإشارة تمر عبر وسيط MQTT عام (يرى بيانات الإشارة فقط — من يتصل بمن — ولا يسمع الصوت ولا يرى الفيديو). الترجمة تحتاج إنترنت وقد لا تعمل على Safari/iOS. الأوفلاين الحقيقي (WiFi Direct/بلوتوث) يحتاج تطبيقاً أصلياً. الاستغاثة تصل فقط إذا وُجدت أبراج متصلة — ليست بديلاً عن 112. الوسائط تمر عبر TURN مجاني (عدة مزودين: OpenRelay وAnyFirewall وViagenie، TCP أولاً) عند تعذّر الاتصال المباشر — قد يكون أبطأ قليلاً.</div>
 </div>
-<p style="text-align:center" class="small">نموذج أولي v3.3 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
+<p style="text-align:center" class="small">نموذج أولي v3.3.1 — ✦ الجيل الجديد من الاتصال: التليفونات نفسها أبراج. لا سيرفر خاص، لا أرقام تليفون. الإشارة عبر MQTT عام، والصوت/الفيديو WebRTC حقيقي (DTLS-SRTP)، والتشفير WebCrypto فقط (ECDH P-256 + AES-GCM).</p>
 <p style="text-align:center" class="small">نموذج أولي — الصوت والفيديو WebRTC حقيقيان الآن؛ الترجمة تحتاج إنترنت؛ الأوفلاين الحقيقي يحتاج تطبيقاً أصلياً.</p>
 </div>
 </div>
@@ -502,7 +502,7 @@ video{width:100%;border-radius:12px;background:#000}
 
 <script>
 "use strict";
-// ================= شبكة الناس v3.3 — معمارية جديدة + طبقات هندسية + نسخة احترافية + مزايا اتصال =================
+// ================= شبكة الناس v3.3.1 — معمارية جديدة + طبقات هندسية + نسخة احترافية + مزايا اتصال =================
 // إشارة MQTT عام + صوت/فيديو WebRTC حقيقي + بيانات مشفرة ECDH/AES-GCM
 // لا سيرفر إشارة خاص، لا معرّفات حتمية، لا مقاطع مسجلة، لا إطارات صور.
 var NODES=["1","2","3","4","5","6","7","8"];
@@ -521,17 +521,21 @@ var ICE_SERVERS=[
   // TURN-TCP أولاً — شبكات الموبايل تحجب UDP غالباً وتمرّر TCP 443 (v3.1.1: في اختبار v3.0.1 لم يُجمع أي مرشح relay أبداً)
   {urls:"turn:openrelay.metered.ca:80?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:openrelay.metered.ca:3478?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:turn.anyfirewall.com:443?transport=tcp", username:"webrtc", credential:"webrtc"},
   {urls:"turn:relay.metered.ca:80?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
   // TURN-UDP
   {urls:"turn:openrelay.metered.ca:80", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:openrelay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turn:openrelay.metered.ca:3478", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:numb.viagenie.ca:3478", username:"webrtc@live.com", credential:"muazkh"},
   {urls:"turn:relay.metered.ca:80", username:"openrelayproject", credential:"openrelayproject"},
   {urls:"turn:relay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"},
-  // TURNS
-  {urls:"turns:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}
+  // TURNS (TLS — يمر عبر الجدران النارية التي تحجب TURN العادي)
+  {urls:"turns:openrelay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turns:openrelay.metered.ca:5349?transport=tcp", username:"openrelayproject", credential:"openrelayproject"},
+  {urls:"turns:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}
 ];
 // مزودو TURN لفحص "افحص شبكتي" — يُختبَر كل مزود وحده وتُعرض نتيجته (v3.1.1)
 var TURN_PROVIDERS=[
@@ -539,7 +543,10 @@ var TURN_PROVIDERS=[
   {name:"OpenRelay (UDP)", servers:[{urls:"turn:openrelay.metered.ca:443", username:"openrelayproject", credential:"openrelayproject"}]},
   {name:"AnyFirewall (TCP)", servers:[{urls:"turn:turn.anyfirewall.com:443?transport=tcp", username:"webrtc", credential:"webrtc"}]},
   {name:"Viagenie numb (UDP)", servers:[{urls:"turn:numb.viagenie.ca:3478", username:"webrtc@live.com", credential:"muazkh"}]},
-  {name:"Metered relay (TCP)", servers:[{urls:"turn:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]}
+  {name:"Metered relay (TCP)", servers:[{urls:"turn:relay.metered.ca:443?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]},
+  {name:"OpenRelay 3478 (UDP)", servers:[{urls:"turn:openrelay.metered.ca:3478", username:"openrelayproject", credential:"openrelayproject"}]},
+  {name:"OpenRelay 3478 (TCP)", servers:[{urls:"turn:openrelay.metered.ca:3478?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]},
+  {name:"OpenRelay TURNS 5349 (TLS)", servers:[{urls:"turns:openrelay.metered.ca:5349?transport=tcp", username:"openrelayproject", credential:"openrelayproject"}]}
 ];
 function $(id){ return document.getElementById(id); }
 function rand4(){ return Math.random().toString(36).slice(2,6); }
@@ -782,7 +789,7 @@ function scheduleBrokerRetry(ms){
 function publishPresence(){
   if(tabKilled) return; // تبويب أُغلق من تبويب آخر — لا حضور بعد الآن
   if(!mqttClient || !mqttConnected || !myTowerId) return;
-  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), uname:(identity&&identity.name)||"", ucolor:(identity&&identity.color)||"", uicon:(identity&&identity.icon)||"", super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy", relayLoad:relayLoadOf(myTowerId), device:myDeviceId, tab:myTabId});
+  var payload=JSON.stringify({id:myTowerId, node:myNode, name:towerName(myNode), uname:(identity&&identity.name)||"", ucolor:(identity&&identity.color)||"", uicon:(identity&&identity.icon)||"", super:isSuperNode, ts:Date.now(), call:callState==="idle"?"idle":"busy", relayLoad:relayLoadOf(myTowerId), device:myDeviceId, tab:myTabId, devLabel:deviceLabel()});
   try{ mqttClient.publish(presenceTopic(myRoom, myTowerId), payload, {qos:1, retain:true}); }catch(e){}
 }
 setInterval(function(){ if(mqttConnected) publishPresence(); }, 5000);
@@ -808,7 +815,7 @@ function handlePresence(topic, raw){
   try{
     var p=JSON.parse(raw);
     var isNew=!presenceMap[tid];
-    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), uname:p.uname||"", ucolor:p.ucolor||"", uicon:p.uicon||"", super:!!p.super, ts:Date.now(), call:p.call||"idle", relayLoad:p.relayLoad||0, device:p.device||"", tab:p.tab||""};
+    presenceMap[tid]={node:p.node, name:p.name||towerName(p.node), uname:p.uname||"", ucolor:p.ucolor||"", uicon:p.uicon||"", super:!!p.super, ts:Date.now(), call:p.call||"idle", relayLoad:p.relayLoad||0, device:p.device||"", tab:p.tab||"", devLabel:p.devLabel||""};
     if(!presenceFirstSeenAt){ presenceFirstSeenAt=Date.now(); if(presenceSettleTimer) clearTimeout(presenceSettleTimer); presenceSettleTimer=setTimeout(function(){ presenceSettled=true; }, 500); }
     // وقائي: جهاز آخر بنفس رقم برجي — تحذير واضح بزر انتقال (ليس سبب عطل v3.0)
     if(p.node===myNode) showTowerClash(p.node, tid);
@@ -2019,7 +2026,7 @@ function renderContacts(){
     var ready=!isMe; // الحضور الطازج يكفي لبدء مكالمة WebRTC مباشرة
     var div=document.createElement("div");
     div.className="contact-row";
-    div.innerHTML='<div class="avatar" style="background:'+peerColorOf(p)+'">'+(peerIconOf(p)||arNum(p.node))+'</div><div class="info"><div class="name">'+escHtml(displayNameOf(p))+(p.super?" ⭐":"")+(isFav(p.node)?" ⭐":"")+(isMe?" — ⭐ ده أنت":"")+'</div><div class="st">برج '+arNum(p.node)+' • ● متصل ✓'+(dataReady[tid]?" 🔒 قناة بيانات جاهزة":"")+(rttMap[tid]!=null?" • آخر قياس: "+rttMap[tid]+"ms":" • آخر قياس: —")+(tid===fastestTid?" ⚡ الأسرع":"")+'</div></div>';
+    div.innerHTML='<div class="avatar" style="background:'+peerColorOf(p)+'">'+(peerIconOf(p)||arNum(p.node))+'</div><div class="info"><div class="name">'+escHtml(displayNameOf(p))+(p.super?" ⭐":"")+(isFav(p.node)?" ⭐":"")+(isMe?" — ⭐ ده أنت":"")+'</div><div class="st">برج '+arNum(p.node)+' • ● متصل ✓'+(dataReady[tid]?" 🔒 قناة بيانات جاهزة":"")+(rttMap[tid]!=null?" • آخر قياس: "+rttMap[tid]+"ms":" • آخر قياس: —")+(tid===fastestTid?" ⚡ الأسرع":"")+(p.devLabel?" • "+escHtml(p.devLabel):"")+(p.device&&p.device===myDeviceId&&!isMe?" • 📱 نفس هذا الجهاز":"")+'</div></div>';
     if(!isMe){
       var b1=document.createElement("button"); b1.className="round-btn green"; b1.textContent="📞"; b1.title="صوت فقط"; b1.disabled=!ready||callState!=="idle";
       b1.addEventListener("click", function(){ startCallTo(p.node, "voice"); });
@@ -2095,7 +2102,8 @@ function renderNetTab(){
     var pp=tid?presenceMap[tid]:null;
     var nmTxt=n===myNode?((identity&&identity.name)||towerName(n)):(pp?displayNameOf(pp):towerName(n));
     var stTxt=n===myNode?"⭐ ده أنت":(!tid?"○ غير متصل":(pp.call==="busy"?"📞 في مكالمة":"● متصل"));
-    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+escHtml(nmTxt)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+stTxt+rttTxt+'</div><div style="font-size:14px">📶</div>';
+    var devTxt=n===myNode?deviceLabel():(pp?pp.devLabel||"":"");
+    d.innerHTML='<div class="num">'+arNum(n)+'</div><div class="tn">'+escHtml(nmTxt)+'</div><div class="ts'+((tid||n===myNode)?"":" off")+'">'+stTxt+rttTxt+'</div>'+(devTxt?'<div style="font-size:12px;color:#aaa">'+escHtml(devTxt)+'</div>':'')+'<div style="font-size:14px">📶</div>';
     grid.appendChild(d);
   });
   var n=Object.keys(presenceMap).length;
@@ -2447,7 +2455,7 @@ function continueInit(){
   $("roomInp").value=myRoom;
   connectBroker(0);
   startAutoEntry();
-  log("📡 شبكة الناس v3.3 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
+  log("📡 شبكة الناس v3.3.1 — إشارة MQTT + صوت/فيديو WebRTC حقيقي. اختر برجاً أو استنَ الدخول التلقائي.");
 }
 // ================= شبكة الناس v3.2 — إضافات احترافية =================
 // PWA + هوية + سجل مكالمات + مفضلة + دردشة مشفرة + TURN/وسيط مخصص + Toast
@@ -2465,7 +2473,7 @@ var mutedPeers={};
 var chatOpenTid=null;
 var chatUnread={};
 
-// ---------- v3.3 — متغيرات مشاركة الملفات + الرسائل الصوتية + تمييز المتحدث ----------
+// ---------- v3.3.1 — متغيرات مشاركة الملفات + الرسائل الصوتية + تمييز المتحدث ----------
 var contactQuery="";
 var FILE_CHUNK=16384, FILE_MAX=10*1024*1024; // 16KB لكل جزء — 10MB حد الملف
 var fileRecv={}, fileBlobs={}, fileProgress={};
@@ -2480,6 +2488,15 @@ var toastTimer=null;
 function loadIdentity(){ try{ var s=JSON.parse(localStorage.getItem(IDENT_KEY)||"null"); if(s) return s; }catch(e){} return null; }
 function saveIdentity(id){ identity=id; try{ localStorage.setItem(IDENT_KEY, JSON.stringify(id)); }catch(e){} }
 function displayNameOf(p){ if(!p) return "؟"; if(p.uname) return p.uname; return p.name||towerName(p.node); }
+// وصف مقروء للجهاز الحالي (نوع + نظام + متصفح) — يُنشر مع الحضور ويُعرض بجانب كل برج (v3.3.1)
+function deviceLabel(){
+  var ua=navigator.userAgent||"";
+  var type=/iPad/i.test(ua)||(/Android/i.test(ua)&&!/Mobile/i.test(ua))?"📱 تابلت":(/Mobi|Android|iPhone/i.test(ua)?"📱 هاتف":"💻 كمبيوتر");
+  var os=/Android/i.test(ua)?"أندرويد":/iPhone|iPad/i.test(ua)?"iOS":/Windows/i.test(ua)?"ويندوز":/Mac OS/i.test(ua)?"ماك":/Linux/i.test(ua)?"لينكس":"";
+  var br=/Edg\//i.test(ua)?"إيدج":/Chrome\//i.test(ua)?"كروم":/Firefox\//i.test(ua)?"فايرفوكس":/Safari\//i.test(ua)?"سفاري":"";
+  var parts=[type]; if(os) parts.push(os); if(br) parts.push(br);
+  return parts.join(" • ");
+}
 function peerColorOf(p){ return (p&&p.ucolor)||"#d4a853"; }
 function peerIconOf(p){ return (p&&p.uicon)||""; }
 function escHtml(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -2729,7 +2746,7 @@ function registerSW(){
 }
 
 
-// ================= شبكة الناس v3.3 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث =================
+// ================= شبكة الناس v3.3.1 — مشاركة ملفات + رسائل صوتية + شبكة جماعية + بحث =================
 
 // ---------- مشاركة الملفات عبر قناة البيانات المشفرة (16KB/جزء، حتى 10MB) ----------
 function fmtSize(n){ if(n<1024) return n+" B"; if(n<1024*1024) return (n/1024).toFixed(1)+" KB"; return (n/1024/1024).toFixed(2)+" MB"; }
@@ -2944,7 +2961,7 @@ function onGroupConvert(from, msg){
   toast("👥 المكالمة بقت جماعية.");
 }
 
-// ---------- ربط أزرار v3.3 ----------
+// ---------- ربط أزرار v3.3.1 ----------
 function wireV33UI(){
   var fb=$("chatFileBtn"); if(fb) fb.addEventListener("click", function(){ var i=$("chatFileInp"); if(i) i.click(); });
   var fi=$("chatFileInp"); if(fi) fi.addEventListener("change", onChatFilePicked);

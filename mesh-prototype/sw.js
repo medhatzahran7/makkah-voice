@@ -1,8 +1,8 @@
-// شبكة الناس v3.2 — Service Worker
+// شبكة الناس v3.3.1 — Service Worker
 // يخزّن غلاف التطبيق (الصفحة + المانيفست + الأيقونات) للتحميل دون إنترنت.
 // استراتيجية: غلاف التطبيق من الكاش أولاً ثم الشبكة، وأي طلب آخر من الشبكة.
-var CACHE_NAME = "sayegh-mesh-v3.2";
-var SHELL = ["./v3-2.html", "./manifest.webmanifest", "./icon.svg"];
+var CACHE_NAME = "sayegh-mesh-v3.3.1";
+var SHELL = ["./v3-3-1.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(
